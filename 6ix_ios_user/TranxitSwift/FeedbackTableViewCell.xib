@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Inter-SemiBold.ttf">
+            <string>Inter-SemiBold</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="feedbackCell" id="ouO-hq-so3" customClass="FeedbackTableViewCell" customModule="TranxitUser" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ouO-hq-so3" id="AOf-Q4-nbV">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="712-yP-fh9">
+                        <rect key="frame" x="24" y="16" width="284" height="27"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6tQ-cY-eI2">
+                                <rect key="frame" x="0.0" y="0.0" width="284" height="27"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="41d-Rb-RCj">
+                                <rect key="frame" x="0.0" y="27" width="284" height="0.0"/>
+                                <fontDescription key="fontDescription" name="Inter-SemiBold" family="Inter" pointSize="16"/>
+                                <color key="textColor" name="Black Color"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                    </stackView>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Empty" translatesAutoresizingMaskIntoConstraints="NO" id="yZr-qx-6J8">
+                        <rect key="frame" x="324" y="16" width="27" height="27"/>
+                        <color key="tintColor" name="Grey Color 6"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="27" id="2oo-ze-m8A"/>
+                            <constraint firstAttribute="width" constant="27" id="cz4-xE-WRT"/>
+                        </constraints>
+                    </imageView>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fnq-bs-vZV">
+                        <rect key="frame" x="24" y="59" width="327" height="1"/>
+                        <color key="backgroundColor" name="Grey Color 6"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="1" id="gtD-cm-Ef1"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="fnq-bs-vZV" secondAttribute="bottom" id="1JR-0B-pem"/>
+                    <constraint firstItem="712-yP-fh9" firstAttribute="leading" secondItem="AOf-Q4-nbV" secondAttribute="leading" constant="24" id="AG8-bX-UBh"/>
+                    <constraint firstAttribute="trailing" secondItem="yZr-qx-6J8" secondAttribute="trailing" constant="24" id="CvD-CK-EkZ"/>
+                    <constraint firstItem="712-yP-fh9" firstAttribute="top" secondItem="AOf-Q4-nbV" secondAttribute="top" constant="16" id="PhS-f8-vZb"/>
+                    <constraint firstItem="yZr-qx-6J8" firstAttribute="centerY" secondItem="6tQ-cY-eI2" secondAttribute="centerY" id="TPN-eD-PIi"/>
+                    <constraint firstItem="fnq-bs-vZV" firstAttribute="top" secondItem="712-yP-fh9" secondAttribute="bottom" constant="16" id="VNn-Y3-kRL"/>
+                    <constraint firstAttribute="trailing" secondItem="fnq-bs-vZV" secondAttribute="trailing" constant="24" id="d5u-wd-ZMx"/>
+                    <constraint firstItem="fnq-bs-vZV" firstAttribute="leading" secondItem="AOf-Q4-nbV" secondAttribute="leading" constant="24" id="pdG-0H-7uZ"/>
+                    <constraint firstItem="yZr-qx-6J8" firstAttribute="leading" secondItem="712-yP-fh9" secondAttribute="trailing" constant="16" id="qAE-fP-Aih"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="m6j-16-MIO"/>
+            <connections>
+                <outlet property="checkmarkImageView" destination="yZr-qx-6J8" id="bRH-hr-HnB"/>
+                <outlet property="optionDescriptionLabel" destination="41d-Rb-RCj" id="d0c-dT-BR3"/>
+                <outlet property="optionTitleLabel" destination="6tQ-cY-eI2" id="M24-Px-jzL"/>
+            </connections>
+            <point key="canvasLocation" x="138" y="15"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="Empty" width="24" height="24"/>
+        <namedColor name="Black Color">
+            <color red="0.32899999618530273" green="0.32400000095367432" blue="0.4779999852180481" alpha="0.33000001311302185" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Grey Color 6">
+            <color red="0.32899999618530273" green="0.32400000095367432" blue="0.4779999852180481" alpha="0.33000001311302185" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

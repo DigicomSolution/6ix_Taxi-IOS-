@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>319368476349-tn6lp4o5rspeakgpk4u35u68ur9nbbo0.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.319368476349-tn6lp4o5rspeakgpk4u35u68ur9nbbo0</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>319368476349-ee9q9e8dl4tu9uac2avagcjnerta3jp4.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCxS2tj5dBdV50bWpvt2_bIC33nTyo5Z9o</string>
+	<key>GCM_SENDER_ID</key>
+	<string>319368476349</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.6ixtaxi.customer</string>
+	<key>PROJECT_ID</key>
+	<string>ixtaxi</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ixtaxi.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:319368476349:ios:b2e7c5f8becdee779269d4</string>
+	<key>DATABASE_URL</key>
+	<string>https://ixtaxi.firebaseio.com</string>
+</dict>
+</plist>

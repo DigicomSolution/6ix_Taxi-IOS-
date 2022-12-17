@@ -1,0 +1,60 @@
+# Uncomment the next line to define a global platform for your project
+ platform :ios, '12.4'
+
+target 'TranxitUser' do
+  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  use_frameworks!
+
+    pod 'Alamofire', '~> 4.0'
+    pod 'KWDrawerController'
+    #pod 'SwiftLint'
+    pod 'GoogleMaps'
+    pod 'GooglePlaces'
+    pod 'lottie-ios'
+    pod 'DateTimePicker'
+    pod 'PopupDialog'
+    #pod 'FloatRatingView', '~> 2.0.0'
+    pod 'GoogleSignIn'
+    pod 'FBSDKLoginKit'
+    pod 'IQKeyboardManagerSwift'
+    pod 'IHKeyboardAvoiding'
+    pod 'Fabric'
+    pod 'Crashlytics'
+    pod 'FirebaseAnalytics'
+    pod 'FirebaseCore'
+    pod 'FirebaseMessaging'
+    pod 'FirebaseDatabase'
+    pod 'FirebaseStorage'
+    pod 'ImagePicker'
+    pod 'Lightbox'
+    pod 'FacebookCore'
+    pod 'FacebookLogin'
+    pod 'Stripe'
+    pod 'CreditCardForm'
+    pod 'DropDown'
+    pod "FlagPhoneNumber"
+    pod 'SwiftKeychainWrapper'
+    pod 'DTTJailbreakDetection'
+#  target 'UserTests' do
+#    inherit! :search_paths
+#    # Pods for testing
+#  end
+#
+#  target 'UserUITests' do
+#    inherit! :search_paths
+#    # Pods for testing
+#  end
+  
+  post_install do |installer|
+    installer.pods_project.build_configurations.each do |config|
+      config.build_settings.delete('CODE_SIGNING_ALLOWED')
+      config.build_settings.delete('CODE_SIGNING_REQUIRED')
+      installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+      config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
+      end
+      end
+      end
+      end
+
+end
