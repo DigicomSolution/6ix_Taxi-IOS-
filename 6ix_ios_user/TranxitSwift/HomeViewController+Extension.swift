@@ -146,7 +146,7 @@ extension HomeViewController {
         }
     }
     
-    @objc func openMsgVC(){
+    @objc func openMsgVC() {
         if let vc = self.storyboard?.instantiateViewController(withIdentifier: Storyboard.Ids.SingleChatController) as? SingleChatController {
             vc.set(user: providerForMsg, requestId: self.currentRequestId)
             let navigation = UINavigationController(rootViewController: vc)

@@ -21,6 +21,9 @@ var riderStatus : RideStatus = .none // Provider Current Status
 
 class HomeViewController: UIViewController {
     
+    @IBOutlet weak var offerCancelButton: UIButton!
+    @IBOutlet weak var offerTableView: UITableView!
+    @IBOutlet weak var offerView: UIView!
     var updatingDestination = false
     var isRoundTrip = false
     var updatePositions:[Positions]?
@@ -236,6 +239,11 @@ class HomeViewController: UIViewController {
              self.showOutstandingAlertView()
         }
     }
+    
+    
+    @IBAction func offerCancelBtnTapped(_ sender: UIButton) {
+    }
+    
     @objc func isChatPushRedirection() {
         
         if let ChatPage = self.storyboard?.instantiateViewController(withIdentifier: Storyboard.Ids.SingleChatController) as? SingleChatController {
@@ -308,6 +316,8 @@ extension HomeViewController {
     }
     private func initialLoads() {
         
+        
+        offerTableView.register(UINib(nibName: "OfferCell", bundle: nil), forCellReuseIdentifier: "OfferCell")
         localSelectionParentView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(locationSelectionTapAction)))
         
         let lat =   currentLocation.value?.latitude
@@ -1135,10 +1145,10 @@ extension HomeViewController  {
                     if stops.count == 1 {
                         let stop1 = stops[0]
                         self.stop1AddressLabel.text = stop1.d_address
-                        self.stop2StackView.isHidden = true
-                        self.stop3StackView.isHidden = true
-                        self.stop2AddressLabel.text = ""
-                        self.stop3AddressLabel.text = ""
+                        self.stop2StackView?.isHidden = true
+                        self.stop3StackView?.isHidden = true
+                        self.stop2AddressLabel?.text = ""
+                        self.stop3AddressLabel?.text = ""
                         if stop1.status == "DROPPED"{
                             self.stop1AddressLabel.textColor = .systemGray
                         }
@@ -1840,5 +1850,19 @@ extension HomeViewController: MultiLocationVCDelegate{
             self.mapViewHelper.getMapView(withDelegate: self, in: self.viewMapOuter, interfaceStyle: .light, isMultilocVC: true)
         }
         
+    }
+}
+extension HomeViewController : UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "OfferCell") as! OfferCell
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 180
     }
 }

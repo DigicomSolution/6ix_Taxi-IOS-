@@ -244,6 +244,13 @@
 		8894E2241FE7D7980097B4B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8894E2231FE7D7980097B4B3 /* AppDelegate.swift */; };
 		8894E22B1FE7D7980097B4B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8894E22A1FE7D7980097B4B3 /* Assets.xcassets */; };
 		8A246AC57C006D33F3758D05 /* Pods_TranxitUser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6662DE5BCE4E42C6F27B3CBD /* Pods_TranxitUser.framework */; };
+		AC89226629570DA9005B5012 /* Radomir Tinkov - Gilroy-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC89226429570DA8005B5012 /* Radomir Tinkov - Gilroy-Light.otf */; };
+		AC89226729570DA9005B5012 /* Radomir Tinkov - Gilroy-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC89226529570DA8005B5012 /* Radomir Tinkov - Gilroy-ExtraBold.otf */; };
+		AC89226C29570DED005B5012 /* Gilroy-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC89226929570DEC005B5012 /* Gilroy-ExtraBold.otf */; };
+		AC89226D29570DED005B5012 /* Gilroy-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC89226A29570DEC005B5012 /* Gilroy-Light.otf */; };
+		ACE9E0A82957469000BFDB51 /* Offers.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ACE9E0A72957469000BFDB51 /* Offers.storyboard */; };
+		ACE9E0AD295747DA00BFDB51 /* OfferCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACE9E0AB295747DA00BFDB51 /* OfferCell.swift */; };
+		ACE9E0AE295747DA00BFDB51 /* OfferCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ACE9E0AC295747DA00BFDB51 /* OfferCell.xib */; };
 		BEE9EF6B242BD30C007B765B /* SignUpMobileNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE9EF6A242BD30C007B765B /* SignUpMobileNumberViewController.swift */; };
 		BEF8DAEB242BFE8B0070FCDE /* VerifyMobileNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEF8DAEA242BFE8A0070FCDE /* VerifyMobileNumberViewController.swift */; };
 		BEF8DAED242BFFB40070FCDE /* OTPStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEF8DAEC242BFFB40070FCDE /* OTPStackView.swift */; };
@@ -512,6 +519,13 @@
 		8894E2231FE7D7980097B4B3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8894E22A1FE7D7980097B4B3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		92D29CDF2363655EE2062287 /* Pods-TranxitUser.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TranxitUser.debug.xcconfig"; path = "Target Support Files/Pods-TranxitUser/Pods-TranxitUser.debug.xcconfig"; sourceTree = "<group>"; };
+		AC89226429570DA8005B5012 /* Radomir Tinkov - Gilroy-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Radomir Tinkov - Gilroy-Light.otf"; sourceTree = "<group>"; };
+		AC89226529570DA8005B5012 /* Radomir Tinkov - Gilroy-ExtraBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Radomir Tinkov - Gilroy-ExtraBold.otf"; sourceTree = "<group>"; };
+		AC89226929570DEC005B5012 /* Gilroy-ExtraBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-ExtraBold.otf"; sourceTree = "<group>"; };
+		AC89226A29570DEC005B5012 /* Gilroy-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-Light.otf"; sourceTree = "<group>"; };
+		ACE9E0A72957469000BFDB51 /* Offers.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Offers.storyboard; sourceTree = "<group>"; };
+		ACE9E0AB295747DA00BFDB51 /* OfferCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfferCell.swift; sourceTree = "<group>"; };
+		ACE9E0AC295747DA00BFDB51 /* OfferCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OfferCell.xib; sourceTree = "<group>"; };
 		BEE9EF6A242BD30C007B765B /* SignUpMobileNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpMobileNumberViewController.swift; sourceTree = "<group>"; };
 		BEF8DAEA242BFE8A0070FCDE /* VerifyMobileNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyMobileNumberViewController.swift; sourceTree = "<group>"; };
 		BEF8DAEC242BFFB40070FCDE /* OTPStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPStackView.swift; sourceTree = "<group>"; };
@@ -1682,6 +1696,10 @@
 				085F4DDE21367E5000648591 /* clanpro_book.otf */,
 				085F4DDC21367E4C00648591 /* clanpro_medium.otf */,
 				085F4DDD21367E4E00648591 /* clanpro_narrnews.otf */,
+				AC89226929570DEC005B5012 /* Gilroy-ExtraBold.otf */,
+				AC89226A29570DEC005B5012 /* Gilroy-Light.otf */,
+				AC89226529570DA8005B5012 /* Radomir Tinkov - Gilroy-ExtraBold.otf */,
+				AC89226429570DA8005B5012 /* Radomir Tinkov - Gilroy-Light.otf */,
 				082D1B91209333F10000B7C8 /* FontHelper.swift */,
 			);
 			name = Fonts;
@@ -1839,6 +1857,7 @@
 				08FA70AB20E3E695009B060A /* Main.storyboard */,
 				08FA708920E3CA99009B060A /* Launch.storyboard */,
 				08FA708C20E3CAA3009B060A /* User.storyboard */,
+				ACE9E0A72957469000BFDB51 /* Offers.storyboard */,
 			);
 			name = StoryBoard;
 			sourceTree = "<group>";
@@ -1846,6 +1865,7 @@
 		8894E25F1FE7D9450097B4B3 /* View Controller */ = {
 			isa = PBXGroup;
 			children = (
+				ACE9E0A92957479900BFDB51 /* Offers */,
 				08B7DC70209A1487002CF17A /* Main StoryBoard */,
 				082D1B9420933C5B0000B7C8 /* User Storyboard */,
 			);
@@ -1880,6 +1900,23 @@
 				8833894F1FE8E3DC006B6C05 /* WebService.swift */,
 			);
 			name = "Data Manager";
+			sourceTree = "<group>";
+		};
+		ACE9E0A92957479900BFDB51 /* Offers */ = {
+			isa = PBXGroup;
+			children = (
+				ACE9E0AA295747A200BFDB51 /* cell */,
+			);
+			name = Offers;
+			sourceTree = "<group>";
+		};
+		ACE9E0AA295747A200BFDB51 /* cell */ = {
+			isa = PBXGroup;
+			children = (
+				ACE9E0AB295747DA00BFDB51 /* OfferCell.swift */,
+				ACE9E0AC295747DA00BFDB51 /* OfferCell.xib */,
+			);
+			name = cell;
 			sourceTree = "<group>";
 		};
 		BEE9EF69242BD2F1007B765B /* SignUpMobileNumber */ = {
@@ -2033,6 +2070,7 @@
 			files = (
 				08EA70CD2147D18E00079908 /* TipsView.xib in Resources */,
 				08FA708A20E3CAA3009B060A /* User.storyboard in Resources */,
+				AC89226C29570DED005B5012 /* Gilroy-ExtraBold.otf in Resources */,
 				080FB9D920BC452B008C23F5 /* AccountKitStrings.bundle in Resources */,
 				08001A0C203C241E0076D324 /* countryCodes.json in Resources */,
 				08B6053B2294786E0075B8BD /* OTPScreenView.xib in Resources */,
@@ -2068,11 +2106,16 @@
 				0881352321527DD800DA668E /* search.json in Resources */,
 				08001A0D203C241E0076D324 /* CountryPicker.bundle in Resources */,
 				0826C13620B011C80005D0D8 /* RequestSelectionView.xib in Resources */,
+				ACE9E0AE295747DA00BFDB51 /* OfferCell.xib in Resources */,
+				AC89226629570DA9005B5012 /* Radomir Tinkov - Gilroy-Light.otf in Resources */,
 				0811B17920E7B2AD00B78323 /* ChatReciever.xib in Resources */,
 				0802718920A2DC0100EAE8C8 /* LocationSelectionView.xib in Resources */,
+				ACE9E0A82957469000BFDB51 /* Offers.storyboard in Resources */,
 				08A50C482109B78A00CCDDA8 /* CancelListTableViewCell.xib in Resources */,
 				082F77D220A5AA2200D6474B /* ServiceSelectionCollectionViewCell.xib in Resources */,
+				AC89226729570DA9005B5012 /* Radomir Tinkov - Gilroy-ExtraBold.otf in Resources */,
 				0123A4642750FD8400A40AE0 /* WalletAlertView.xib in Resources */,
+				AC89226D29570DED005B5012 /* Gilroy-Light.otf in Resources */,
 				083617CD20B714CE009C9658 /* YourTripCell.xib in Resources */,
 				68F3FAA92462584000404A46 /* BoosterCableViewController.xib in Resources */,
 				58D764582878E034000236A2 /* FeedbackTableViewCell.xib in Resources */,
@@ -2277,6 +2320,7 @@
 				08A8823620C6DEBE0088BC5A /* KeyboardHelper.swift in Sources */,
 				0811B17A20E7B2AD00B78323 /* ChatCell.swift in Sources */,
 				08B6053C2294786E0075B8BD /* OTPScreenView.swift in Sources */,
+				ACE9E0AD295747DA00BFDB51 /* OfferCell.swift in Sources */,
 				0123A4622750FD7600A40AE0 /* WalletAlertView.swift in Sources */,
 				083A59B120A4351D00D64574 /* LocationHeaderTableViewCell.swift in Sources */,
 				086BAF5720076E0D0087F15A /* MakeJson.swift in Sources */,

@@ -35,6 +35,8 @@ target 'TranxitUser' do
     pod "FlagPhoneNumber"
     pod 'SwiftKeychainWrapper'
     pod 'DTTJailbreakDetection'
+    pod "ScalingCarousel"
+
 #  target 'UserTests' do
 #    inherit! :search_paths
 #    # Pods for testing
