@@ -68,7 +68,6 @@ extension STPAPIClient {
         locale: Locale,
         legalName: String?,
         countryCode: String?,
-        consentAction: String?,
         cookieStore: LinkCookieStore,
         completion: @escaping (Result<ConsumerSession.SignupResponse, Error>) -> Void
     ) {
@@ -91,10 +90,6 @@ extension STPAPIClient {
 
         if let cookies = cookieStore.formattedSessionCookies() {
             parameters["cookies"] = cookies
-        }
-
-        if let consentAction = consentAction {
-            parameters["consent_action"] = consentAction
         }
 
         APIRequest<ConsumerSession.SignupResponse>.post(

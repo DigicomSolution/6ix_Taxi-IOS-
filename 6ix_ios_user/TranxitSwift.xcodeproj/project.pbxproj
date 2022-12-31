@@ -244,10 +244,14 @@
 		8894E2241FE7D7980097B4B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8894E2231FE7D7980097B4B3 /* AppDelegate.swift */; };
 		8894E22B1FE7D7980097B4B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8894E22A1FE7D7980097B4B3 /* Assets.xcassets */; };
 		8A246AC57C006D33F3758D05 /* Pods_TranxitUser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6662DE5BCE4E42C6F27B3CBD /* Pods_TranxitUser.framework */; };
+		AC193B5B29608431001E8DAA /* Offers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC193B5A29608431001E8DAA /* Offers.swift */; };
+		AC87CA422959B685000DBEA0 /* VehicleColCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC87CA402959B685000DBEA0 /* VehicleColCell.swift */; };
+		AC87CA432959B685000DBEA0 /* VehicleColCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AC87CA412959B685000DBEA0 /* VehicleColCell.xib */; };
 		AC89226629570DA9005B5012 /* Radomir Tinkov - Gilroy-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC89226429570DA8005B5012 /* Radomir Tinkov - Gilroy-Light.otf */; };
 		AC89226729570DA9005B5012 /* Radomir Tinkov - Gilroy-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC89226529570DA8005B5012 /* Radomir Tinkov - Gilroy-ExtraBold.otf */; };
 		AC89226C29570DED005B5012 /* Gilroy-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC89226929570DEC005B5012 /* Gilroy-ExtraBold.otf */; };
 		AC89226D29570DED005B5012 /* Gilroy-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC89226A29570DEC005B5012 /* Gilroy-Light.otf */; };
+		AC9550392959DBD100C7B8C1 /* RaiseFareVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9550382959DBD100C7B8C1 /* RaiseFareVc.swift */; };
 		ACE9E0A82957469000BFDB51 /* Offers.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ACE9E0A72957469000BFDB51 /* Offers.storyboard */; };
 		ACE9E0AD295747DA00BFDB51 /* OfferCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACE9E0AB295747DA00BFDB51 /* OfferCell.swift */; };
 		ACE9E0AE295747DA00BFDB51 /* OfferCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ACE9E0AC295747DA00BFDB51 /* OfferCell.xib */; };
@@ -519,10 +523,14 @@
 		8894E2231FE7D7980097B4B3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8894E22A1FE7D7980097B4B3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		92D29CDF2363655EE2062287 /* Pods-TranxitUser.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TranxitUser.debug.xcconfig"; path = "Target Support Files/Pods-TranxitUser/Pods-TranxitUser.debug.xcconfig"; sourceTree = "<group>"; };
+		AC193B5A29608431001E8DAA /* Offers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Offers.swift; sourceTree = "<group>"; };
+		AC87CA402959B685000DBEA0 /* VehicleColCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleColCell.swift; sourceTree = "<group>"; };
+		AC87CA412959B685000DBEA0 /* VehicleColCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VehicleColCell.xib; sourceTree = "<group>"; };
 		AC89226429570DA8005B5012 /* Radomir Tinkov - Gilroy-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Radomir Tinkov - Gilroy-Light.otf"; sourceTree = "<group>"; };
 		AC89226529570DA8005B5012 /* Radomir Tinkov - Gilroy-ExtraBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Radomir Tinkov - Gilroy-ExtraBold.otf"; sourceTree = "<group>"; };
 		AC89226929570DEC005B5012 /* Gilroy-ExtraBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-ExtraBold.otf"; sourceTree = "<group>"; };
 		AC89226A29570DEC005B5012 /* Gilroy-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gilroy-Light.otf"; sourceTree = "<group>"; };
+		AC9550382959DBD100C7B8C1 /* RaiseFareVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaiseFareVc.swift; sourceTree = "<group>"; };
 		ACE9E0A72957469000BFDB51 /* Offers.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Offers.storyboard; sourceTree = "<group>"; };
 		ACE9E0AB295747DA00BFDB51 /* OfferCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfferCell.swift; sourceTree = "<group>"; };
 		ACE9E0AC295747DA00BFDB51 /* OfferCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OfferCell.xib; sourceTree = "<group>"; };
@@ -726,6 +734,7 @@
 		0826C13420B0119E0005D0D8 /* HomePage */ = {
 			isa = PBXGroup;
 			children = (
+				AC87CA3E2959B639000DBEA0 /* Vehicle Selection */,
 				68F3FAA52462582500404A46 /* BoosterCable */,
 				68F3FA9C2461DE2300404A46 /* Instructions */,
 				08A50C402109AB5300CCDDA8 /* CancelReason */,
@@ -1352,6 +1361,7 @@
 				089B4F7620C10FD600DDEAF3 /* HomePageHelper.swift */,
 				68F3FA9A2461DDB400404A46 /* HomeViewController+ExtensionTowBoat.swift */,
 				68405C252492647700D8E0DC /* HomeScreenEstimateExtension.swift */,
+				AC9550382959DBD100C7B8C1 /* RaiseFareVc.swift */,
 			);
 			name = Home;
 			sourceTree = "<group>";
@@ -1812,6 +1822,7 @@
 				08BE443322B24B5500663BBD /* locationplaceEntity.swift */,
 				58D764522878DFE0000236A2 /* FeedbackModels.swift */,
 				58D764592878E8BC000236A2 /* DeleteAccountModel.swift */,
+				AC193B5A29608431001E8DAA /* Offers.swift */,
 			);
 			name = Entities;
 			sourceTree = "<group>";
@@ -1900,6 +1911,15 @@
 				8833894F1FE8E3DC006B6C05 /* WebService.swift */,
 			);
 			name = "Data Manager";
+			sourceTree = "<group>";
+		};
+		AC87CA3E2959B639000DBEA0 /* Vehicle Selection */ = {
+			isa = PBXGroup;
+			children = (
+				AC87CA402959B685000DBEA0 /* VehicleColCell.swift */,
+				AC87CA412959B685000DBEA0 /* VehicleColCell.xib */,
+			);
+			name = "Vehicle Selection";
 			sourceTree = "<group>";
 		};
 		ACE9E0A92957479900BFDB51 /* Offers */ = {
@@ -2125,6 +2145,7 @@
 				E4977843221D35D100C0FE55 /* GoogleService-Info.plist in Resources */,
 				081548FC20A1DEA2004D0F7D /* heart.json in Resources */,
 				085F4DE121367E5100648591 /* clanpro_book.otf in Resources */,
+				AC87CA432959B685000DBEA0 /* VehicleColCell.xib in Resources */,
 				689311882449856D00F9D0AD /* EstimatedFareViewController.xib in Resources */,
 				5897140D25A1FB6500DAE6DF /* server.der in Resources */,
 			);
@@ -2255,6 +2276,7 @@
 				084182B5200F508900527D0D /* TableView.swift in Sources */,
 				08C9E90E20D244F7002928EA /* Rating.swift in Sources */,
 				082C442620E7AE0E00A7C892 /* SingleChatController.swift in Sources */,
+				AC9550392959DBD100C7B8C1 /* RaiseFareVc.swift in Sources */,
 				01F5123627591E5D00D2E01B /* GMSGeocoderExtension.swift in Sources */,
 				084BB94B2094401D00EFD493 /* EmailViewController.swift in Sources */,
 				086BAF5C200777890087F15A /* Global.swift in Sources */,
@@ -2313,6 +2335,7 @@
 				08F595E32076462A00369048 /* UIAplication+RLT.swift in Sources */,
 				089B4F7720C10FD600DDEAF3 /* HomePageHelper.swift in Sources */,
 				086BAF6420078E220087F15A /* ViewController.swift in Sources */,
+				AC193B5B29608431001E8DAA /* Offers.swift in Sources */,
 				8894801F1FECE2CA006AF5A9 /* Label.swift in Sources */,
 				082C441F20E7913A00A7C892 /* FloatyItem.swift in Sources */,
 				082F77D120A5AA2200D6474B /* ServiceSelectionCollectionViewCell.swift in Sources */,
@@ -2338,6 +2361,7 @@
 				08A39DA220B5BB9300314935 /* RideStatusView.swift in Sources */,
 				68F3FAA32462578F00404A46 /* TowTruckInstructionViewController.swift in Sources */,
 				08BE879D20DA429800876C93 /* Work+CoreDataProperties.swift in Sources */,
+				AC87CA422959B685000DBEA0 /* VehicleColCell.swift in Sources */,
 				01F5123327591E0C00D2E01B /* FPNCountryRepositoryExtension.swift in Sources */,
 				0811B16B20E7AF6600B78323 /* ChatEntity.swift in Sources */,
 				08147B81208A23F600C5CFD3 /* Bundle.swift in Sources */,

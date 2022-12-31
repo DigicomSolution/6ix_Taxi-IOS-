@@ -36,6 +36,7 @@ ${BUILT_PRODUCTS_DIR}/KWDrawerController/KWDrawerController.framework
 ${BUILT_PRODUCTS_DIR}/Lightbox/Lightbox.framework
 ${BUILT_PRODUCTS_DIR}/PopupDialog/PopupDialog.framework
 ${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework
+${BUILT_PRODUCTS_DIR}/ScalingCarousel/ScalingCarousel.framework
 ${BUILT_PRODUCTS_DIR}/Stripe/Stripe.framework
 ${BUILT_PRODUCTS_DIR}/StripeApplePay/StripeApplePay.framework
 ${BUILT_PRODUCTS_DIR}/StripeCore/StripeCore.framework

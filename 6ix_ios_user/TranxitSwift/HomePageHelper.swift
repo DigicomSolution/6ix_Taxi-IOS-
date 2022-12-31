@@ -14,13 +14,13 @@ class HomePageHelper {
     private var timer : Timer?
     static var shared = HomePageHelper()
     // MARK:- Start Listening for Provider Status Changes
-    func startListening(on completion : @escaping ((CustomError?,Request?)->Void)) {
+    func startListening(on completion : @escaping ((CustomError?,Request?, [Offer]? )->Void)) {
         
         DispatchQueue.main.async {
             self.stopListening()
             self.timer = Timer.scheduledTimer(withTimeInterval: requestCheckInterval, repeats: true, block: { (_) in
-                self.getData(on: { (error, request) in
-                    completion(error,request)
+                self.getData(on: { (error, request, offers) in
+                    completion(error,request, offers)
                 })
             })
             self.timer?.fire()
@@ -39,14 +39,14 @@ class HomePageHelper {
     
     //MARK:- Get Request Data From Service
     
-    private func getData(on completion : @escaping ((CustomError?,Request?)->Void)) {
+    private func getData(on completion : @escaping ((CustomError?,Request?, [Offer]?)->Void)) {
         
         
         
         Webservice().retrieve(api: .checkRequest, url: nil, data: nil, imageData: nil, paramters: nil, type: .GET) { (error, data) in
             
             guard error == nil else {
-                completion(error, nil)
+                completion(error, nil,nil)
                // DispatchQueue.main.async { self.stopListening() }
                 return
             }
@@ -54,7 +54,7 @@ class HomePageHelper {
             guard let data = data,
                 let request = data.getDecodedObject(from: RequestModal.self)
                 else {
-                    completion(error, nil)
+                    completion(error, nil,nil)
                    // DispatchQueue.main.async { self.stopListening() }
                     return
             }
@@ -71,12 +71,13 @@ class HomePageHelper {
             }
             
             guard let requestFirst = request.data?.first else {
-                completion(nil, nil)
+                completion(nil, nil,nil)
                 riderStatus = .none
                // DispatchQueue.main.async { self.stopListening() }
                 return
             }
-            completion(nil, requestFirst)
+             let offer = request.requests ?? []
+            completion(nil, requestFirst, offer)
         }
     }
     

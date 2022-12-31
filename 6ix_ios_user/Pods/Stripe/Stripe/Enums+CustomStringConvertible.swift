@@ -242,8 +242,6 @@ extension STPIntentActionType: CustomStringConvertible {
             return "verifyWithMicrodeposits"
         case .weChatPayRedirectToApp:
             return "weChatPayRedirectToApp"
-        case .upiAwaitNotification:
-            return "upiAwaitNotification"
         }
     }
 }

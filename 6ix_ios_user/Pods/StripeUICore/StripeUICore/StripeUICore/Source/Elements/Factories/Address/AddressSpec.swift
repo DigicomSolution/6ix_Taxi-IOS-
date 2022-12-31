@@ -84,8 +84,6 @@ struct AddressSpec: Decodable {
     let stateNameType: StateNameType
     let zip: String?
     let zipNameType: ZipNameType
-    let subKeys: [String]? // e.g. state abbreviations - "CA"
-    let subLabels: [String]? // e.g. state display names - "California"
     
     enum CodingKeys: String, CodingKey {
         case format = "fmt"
@@ -94,8 +92,6 @@ struct AddressSpec: Decodable {
         case stateNameType = "state_name_type"
         case zip = "zip"
         case zipNameType = "zip_name_type"
-        case subKeys = "sub_keys"
-        case subLabels = "sub_labels"
     }
     
     static var `default`: AddressSpec {
@@ -110,9 +106,7 @@ struct AddressSpec: Decodable {
             cityNameType: try? container.decode(LocalityNameType.self, forKey: .localityNameType),
             stateNameType: try? container.decode(StateNameType.self, forKey: .stateNameType),
             zip: try? container.decode(String.self, forKey: .zip),
-            zipNameType: try? container.decode(ZipNameType.self, forKey: .zipNameType),
-            subKeys: try? container.decode([String].self, forKey: .subKeys),
-            subLabels: try? container.decode([String].self, forKey: .subLabels)
+            zipNameType: try? container.decode(ZipNameType.self, forKey: .zipNameType)
         )
     }
     
@@ -122,9 +116,7 @@ struct AddressSpec: Decodable {
         cityNameType: LocalityNameType? = nil,
         stateNameType: StateNameType? = nil,
         zip: String? = nil,
-        zipNameType: ZipNameType? = nil,
-        subKeys: [String]? = nil,
-        subLabels: [String]? = nil
+        zipNameType: ZipNameType? = nil
     ) {
         var fieldOrdering: [FieldType] = (format ?? "NACSZ").compactMap {
            FieldType(rawValue: String($0))
@@ -141,7 +133,5 @@ struct AddressSpec: Decodable {
         self.stateNameType = stateNameType ?? .province
         self.zip = zip
         self.zipNameType = zipNameType ?? .postal_code
-        self.subKeys = subKeys
-        self.subLabels = subLabels
     }
 }

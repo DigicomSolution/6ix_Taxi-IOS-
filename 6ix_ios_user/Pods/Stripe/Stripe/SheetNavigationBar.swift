@@ -124,7 +124,6 @@ class SheetNavigationBar: UIView {
     enum Style {
         case close(showAdditionalButton: Bool)
         case back
-        case none
     }
 
     func setStyle(_ style: Style) {
@@ -140,10 +139,6 @@ class SheetNavigationBar: UIView {
             if showAdditionalButton {
                 bringSubviewToFront(additionalButton)
             }
-            backButton.isHidden = true
-        case .none:
-            closeButton.isHidden = true
-            additionalButton.isHidden = true
             backButton.isHidden = true
         }
     }

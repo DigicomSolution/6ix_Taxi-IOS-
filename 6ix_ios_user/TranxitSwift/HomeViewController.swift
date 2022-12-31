@@ -16,14 +16,55 @@ import MapKit
 import FirebaseDatabase
 import PopupDialog
 import SwiftKeychainWrapper
+import ScalingCarousel
+import SwiftUI
+import StripeUICore
 
 var riderStatus : RideStatus = .none // Provider Current Status
 
 class HomeViewController: UIViewController {
+    // single trip
+    @IBOutlet weak var vehicleNameLabel: UILabel!
+   
+    @IBOutlet weak var tripCurrentFareLabel: UILabel!
+    @IBOutlet weak var addFareLabel: UILabel!
+    @IBOutlet weak var minusFareLabel: UILabel!
+    @IBOutlet weak var tripDistanceLabel: UILabel!
+    @IBOutlet weak var tripTimeLAbel: UILabel!
+    @IBOutlet weak var tripDesLabel: UILabel!
+    @IBOutlet weak var tripSourceAddressLabel: UILabel!
+    @IBOutlet weak var tripPriceLabel: UILabel!
     
+    
+    @IBOutlet weak var locationViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var offerTopView: NSLayoutConstraint!
+    @IBOutlet weak var estmView: UIView!
+    @IBOutlet weak var priceTextfield: UITextField!
+    @IBOutlet weak var bottomRaiseView: UIView!
+    @IBOutlet weak var topRideDetailView: UIView!
+    @IBOutlet weak var estPRiceLabel: UILabel!
+    @IBOutlet weak var addressVieww: UIView!
+    @IBOutlet weak var moreLabel: UILabel!
+    @IBOutlet weak var mileLabel: UILabel!
+    @IBOutlet weak var timeLAbel: UILabel!
+    @IBOutlet weak var cardButton: UIButton!
+    @IBOutlet weak var cashButton: UIButton!
+    @IBOutlet weak var messageTextfield: UITextField!
+    @IBOutlet weak var roundTripViewBottomConstriant: NSLayoutConstraint!
+    @IBOutlet weak var locationViewButtonConstraint: NSLayoutConstraint!
+    @IBOutlet weak var vehicleCollectionView: ScalingCarouselView!
     @IBOutlet weak var offerCancelButton: UIButton!
     @IBOutlet weak var offerTableView: UITableView!
     @IBOutlet weak var offerView: UIView!
+    
+    var currntRequest : Request?
+    var rides = [Service]()
+    var offers = [Offer]()
+    var selectedVehIndex = -1
+    var newPaymentType : PaymentType = .CASH
+    var selectedService : Service?
+    var curOfferAmountByUser : Double = 0
+    
     var updatingDestination = false
     var isRoundTrip = false
     var updatePositions:[Positions]?
@@ -198,6 +239,7 @@ class HomeViewController: UIViewController {
     var sourceMarker : GMSMarker = {
         let marker = GMSMarker()
         marker.title = Constants.string.ETA.localize()
+        print(Constants.string.ETA.localize())
         marker.appearAnimation = .pop
         marker.icon =  #imageLiteral(resourceName: "sourcePin").resizeImage(newWidth: 30)
         return marker
@@ -222,7 +264,7 @@ class HomeViewController: UIViewController {
         
         self.localize()
         print("riderstatus>>>>>.",riderStatus)
-        
+        riderStatus = .none
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -230,6 +272,9 @@ class HomeViewController: UIViewController {
         self.viewWillAppearCustom()
         NotificationCenter.default.addObserver(self, selector: #selector(isChatPushRedirection), name: NSNotification.Name("ChatPushRedirection"), object: nil)
         
+//        offerView.isHidden = false
+//        offerView.alpha = 1
+//        offerCancelButton.isHidden = false
         //IQKeyboardManager.shared.enable = true
     }
     
@@ -241,9 +286,7 @@ class HomeViewController: UIViewController {
     }
     
     
-    @IBAction func offerCancelBtnTapped(_ sender: UIButton) {
-    }
-    
+   
     @objc func isChatPushRedirection() {
         
         if let ChatPage = self.storyboard?.instantiateViewController(withIdentifier: Storyboard.Ids.SingleChatController) as? SingleChatController {
@@ -287,8 +330,83 @@ class HomeViewController: UIViewController {
         }
     }
     
+    @IBAction func addStopBtnTapped(_ sender: UIButton) {
+        locationSelectionTapAction()
+    }
+    @IBAction func singleBtnTapped(_ sender: UIButton) {
+
+        
+        sendRequest()
+    }
+  
+    @IBAction func offerCancelBtnTapped(_ sender: UIButton) {
+        topRideDetailView.alpha = 0
+        bottomRaiseView.alpha = 0
+        offerCancelButton.alpha = 0
+    }
+    @IBAction func sendRaiseSubmBtnTapped(_ sender: UIButton) {
+        sendRequest()
+
+    }
+    @IBAction func downFareBtnTapped(_ sender: UIButton) {
+        if curOfferAmountByUser > 5 {
+            curOfferAmountByUser = curOfferAmountByUser - 5
+        }
+        tripCurrentFareLabel.text = "\(curOfferAmountByUser)"
+    }
+    @IBAction func raiseFateBtnTapped(_ sender: UIButton) {
+        // request sent
+        curOfferAmountByUser = curOfferAmountByUser + 5
+        tripCurrentFareLabel.text = "\(curOfferAmountByUser)"
+
+    }
+    @IBAction func roundTripBtnTapped(_ sender: UIButton) {
+        
+    }
+    @IBAction func cashBtnTapped(_ sender: UIButton) {
+        
+//        cashButton.backgroundColor = .black
+//        cashButton.setTitleColor(.white, for: .normal)
+//
+//        cardButton.backgroundColor = .black
+//        cardButton.setTitleColor(.white, for: .normal)
+    }
+    @IBAction func cardBtnTapped(_ sender: UIButton) {
+//        cardButton.backgroundColor = .black
+//        cardButton.setTitleColor(.white, for: .normal)
+//
+//        cashButton.backgroundColor = UIColor(named: "offWhite")
+//        cashButton.setTitleColor(.black, for: .normal)
+        
+    }
+    @IBAction func offerCancelBtnTapped1(_ sender: UIButton) {
+        offerView.isHidden.toggle()
+        offerView.alpha = 0
+        offerCancelButton.isHidden = true
+    }
     
+    func sendRequest(){
+        UserDefaults.standard.setValue(true, forKey: "onRide")
+        self.service?.round_trip = 0
+        
+            if curOfferAmountByUser ==  0 {
+            self.showToast(string: "Please enter your offer price")
+            return
+        }
+         
+        guard let service = self.selectedService else {
+            self.showToast(string: "Please select")
+
+            return
+        }
+
+            
+        self.createRequest(for: service, isScheduled: false, scheduleDate: nil, cardEntity: nil, paymentType: self.newPaymentType, price: Double(self.priceTextfield.text!)!)
+        
+    }
 }
+
+
 
 // MARK:- Methods
 
@@ -315,11 +433,17 @@ extension HomeViewController {
         
     }
     private func initialLoads() {
-        
-        
+        localSelectionParentView.alpha = 0
+        vehicleCollectionView.register(UINib(nibName: "VehicleColCell", bundle: nil), forCellWithReuseIdentifier: "VehicleColCell")
+        vehicleCollectionView.inset = 50
+        vehicleCollectionView.delegate = self
+        vehicleCollectionView.dataSource = self
+        priceTextfield.delegate = self
         offerTableView.register(UINib(nibName: "OfferCell", bundle: nil), forCellReuseIdentifier: "OfferCell")
-        localSelectionParentView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(locationSelectionTapAction)))
-        
+//        localSelectionParentView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(locationSelectionTapAction)))
+//
+        addressVieww.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(locationSelectionTapAction)))
+      
         let lat =   currentLocation.value?.latitude
         
         UserDefaults.standard.set(lat, forKey: "lat")
@@ -626,6 +750,10 @@ extension HomeViewController {
         vc.callback = { [weak self] (positions,source)in
             
             guard let self = self else { return }
+            
+            self.vehicleCollectionView.isHidden = false
+            self.vehicleCollectionView.alpha = 1
+            
             self.positions = positions
             self.sourceLocationDetail = source
             self.drawPolyline(isReroute: false)
@@ -652,10 +780,10 @@ extension HomeViewController {
                     if let stop1 = positi[0].value?.address
                     {
                         self.stop1AddressLabel.text = stop1
-                        self.stop2StackView.isHidden = true
-                        self.stop3StackView.isHidden = true
-                        self.stop2AddressLabel.text = ""
-                        self.stop3AddressLabel.text = ""
+                        self.stop2StackView?.isHidden = true
+                        self.stop3StackView?.isHidden = true
+                        self.stop2AddressLabel?.text = ""
+                        self.stop3AddressLabel?.text = ""
                     }
                 }else if count == 2{
                     if let stop1 = positi[0].value?.address
@@ -664,12 +792,12 @@ extension HomeViewController {
                     }
                     if let stop2 = positi[1].value?.address
                     {
-                        self.stop2AddressLabel.text = stop2
+                        self.stop2AddressLabel?.text = stop2
                         
                     }
-                    self.stop2StackView.isHidden = false
-                    self.stop3StackView.isHidden = true
-                    self.stop3AddressLabel.text = ""
+                    self.stop2StackView?.isHidden = false
+                    self.stop3StackView?.isHidden = true
+                    self.stop3AddressLabel?.text = ""
                 }else if count == 3{
                     if let stop1 = positi[0].value?.address
                     {
@@ -897,7 +1025,7 @@ extension HomeViewController {
     func addMarker(coordinates: CLLocationCoordinate2D){
         let marker = GMSMarker()
         marker.position = coordinates
-        marker.title = "ETA"
+        marker.title = "ETA1"
         marker.icon =  #imageLiteral(resourceName: "sourcePin").resizeImage(newWidth: 30)
         marker.map = self.mapViewHelper.mapView
     }
@@ -927,7 +1055,8 @@ extension HomeViewController {
     // MARK:- SideMenu Button Action
     
     @IBAction private func sideMenuAction(){
-        
+        self.cancelRequest()
+
         sideMenuBtn.addPressAnimation()
         
         if self.isOnBooking { // If User is on Ride Selection remove all view and make it to default
@@ -949,15 +1078,18 @@ extension HomeViewController {
 //        self.getCurrentLocationDetails()
         self.positions = [Bind<LocationDetail>(nil)]
         self.stop1AddressLabel.text = "Where to?"
-        stop2AddressLabel.text = ""
-        stop3AddressLabel.text = ""
-        stop2StackView.isHidden = true
-        stop3StackView.isHidden = true
+        stop2AddressLabel?.text = ""
+        stop3AddressLabel?.text = ""
+        stop2StackView?.isHidden = true
+        stop3StackView?.isHidden = true
         
         self.removeLoaderView()
         self.removeUnnecessaryView(with: .cancelled)
         self.clearMapview()
         self.viewLocationButtons.isHidden = false
+        self.topRideDetailView.alpha = 0
+        self.bottomRaiseView.alpha = 0
+        self.offerView.alpha = 0
     }
     
     
@@ -1105,7 +1237,7 @@ extension HomeViewController  {
     
     private func checkForProviderStatus() {
         
-        HomePageHelper.shared.startListening(on: { [weak self] (error, request) in
+        HomePageHelper.shared.startListening(on: { [weak self] (error, request , offers) in
             
             guard let self = self else {
                 return
@@ -1113,20 +1245,13 @@ extension HomeViewController  {
             
             //List of all available providers
             self.getProviders()
-            
+            self.currntRequest = request
             if error != nil {
                 riderStatus = .none
-                //                    DispatchQueue.main.async {
-                //                        showAlert(message: error?.localizedDescription, okHandler: nil, fromView: self)
-                //                    }
+             
             } else if request != nil {
                 
-                //                    if request?.status ?? .none ==  RideStatus.searching || request?.status ?? .none ==  RideStatus.accepted || request?.status ?? .none ==  RideStatus.started {
-                //
-                //                        self.viewAddressOuter.isHidden = true
-                //
-                //                    }
-                
+              
                 if let stops = request?.stops{
                     
                     
@@ -1145,6 +1270,7 @@ extension HomeViewController  {
                     if stops.count == 1 {
                         let stop1 = stops[0]
                         self.stop1AddressLabel.text = stop1.d_address
+                        self.tripDesLabel.text = stop1.d_address
                         self.stop2StackView?.isHidden = true
                         self.stop3StackView?.isHidden = true
                         self.stop2AddressLabel?.text = ""
@@ -1159,31 +1285,31 @@ extension HomeViewController  {
                         let stop1 = stops[0]
                         self.stop1AddressLabel.text = stop1.d_address
                         let stop2 = stops[1]
-                        self.stop2AddressLabel.text = stop2.d_address
+                        self.stop2AddressLabel?.text = stop2.d_address
                         if stop1.status == "DROPPED"{
                             self.stop1AddressLabel.textColor = .systemGray
                         }
                         if stop2.status == "DROPPED"{
                             self.stop2AddressLabel.textColor = .systemGray
                         }
-                        self.stop2StackView.isHidden = false
-                        self.stop3StackView.isHidden = true
-                        self.stop3AddressLabel.text = ""
+                        self.stop2StackView?.isHidden = false
+                        self.stop3StackView?.isHidden = true
+                        self.stop3AddressLabel?.text = ""
                     }
                     else if stops.count == 3{
                         let stop1 = stops[0]
-                        self.stop1AddressLabel.text = stop1.d_address
+                        self.stop1AddressLabel?.text = stop1.d_address
                         let stop2 = stops[1]
-                        self.stop2AddressLabel.text = stop2.d_address
+                        self.stop2AddressLabel?.text = stop2.d_address
                         let stop3 = stops[2]
-                        self.stop3AddressLabel.text = stop3.d_address
+                        self.stop3AddressLabel?.text = stop3.d_address
                         if stop1.status == "DROPPED"
                         {
-                            self.stop1AddressLabel.textColor = .systemGray
+                            self.stop1AddressLabel?.textColor = .systemGray
                         }
                         if stop2.status == "DROPPED"
                         {
-                            self.stop2AddressLabel.textColor = .systemGray
+                            self.stop2AddressLabel?.textColor = .systemGray
                         }
                         if stop3.status == "DROPPED"
                         {
@@ -1203,6 +1329,8 @@ extension HomeViewController  {
                 }
                 if let service_type_id = request?.service_type_id{
                     self.service_type_id = service_type_id
+                    self.vehicleNameLabel.text = request?.service?.name
+                    
                 }
                 if let pLatitude = request?.provider?.latitude, let pLongitude = request?.provider?.longitude {
                     DispatchQueue.main.async {
@@ -1292,6 +1420,17 @@ extension HomeViewController  {
                     self.removeUnnecessaryView(with: .none)
                 }
                 
+            }
+            if let offrs = offers, offrs.count > 0 {
+                DispatchQueue.main.async {
+                    self.topRideDetailView.alpha = 0
+                    self.bottomRaiseView.alpha = 0
+                    self.offerView.alpha = 1
+                    self.offerView.isHidden = false
+                    self.offers = offrs
+                    self.offerTableView.reloadData()
+                }
+              
             }
         })
     }
@@ -1477,7 +1616,7 @@ extension HomeViewController  {
     
     // Create Request
     
-    func createRequest(for service : Service, isScheduled : Bool, scheduleDate : Date?, cardEntity entity : CardEntity?, paymentType : PaymentType) {
+    func createRequest(for service : Service, isScheduled : Bool, scheduleDate : Date?, cardEntity entity : CardEntity?, paymentType : PaymentType, price: Double) {
         // Validate whether the card entity has valid data
         if paymentType == .CARD && entity == nil {
             UIApplication.shared.keyWindow?.make(toast: Constants.string.selectCardToContinue.localize())
@@ -1525,6 +1664,7 @@ extension HomeViewController  {
             request.distance = "\(service.pricing?.distance ?? 0)"
             request.use_wallet = service.pricing?.useWallet
             request.card_id = entity?.card_id
+            request.offer_price =  price
             if service.id == 7{
                 request.is_booster_cable = service.is_booster_cable
             }
@@ -1854,15 +1994,27 @@ extension HomeViewController: MultiLocationVCDelegate{
 }
 extension HomeViewController : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return self.offers.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "OfferCell") as! OfferCell
+        let item = self.offers[indexPath.row]
+        cell.setData(item: item,distane: self.currntRequest?.distance ?? "",time: self.currntRequest?.travel_time ?? "")
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 180
+    }
+}
+
+
+extension HomeViewController : UITextFieldDelegate {
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if !textField.text!.isEmpty {
+            self.curOfferAmountByUser = Double(textField.text!) ?? 0
+        }
     }
 }

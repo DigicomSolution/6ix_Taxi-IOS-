@@ -319,14 +319,14 @@ class Webservice : PostWebServiceProtocol {
             return
         }
         print("Testing URL: \(url)")
-         
+        print("access_token: \(User.main.accessToken) ")
         // Setting Secret Key to Identify the response Api
 
         urlRequest?.addValue(api.rawValue, forHTTPHeaderField: WebConstants.string.secretKey)
         urlRequest?.addValue(WebConstants.string.application_json, forHTTPHeaderField: WebConstants.string.Content_Type)
         urlRequest?.addValue(WebConstants.string.XMLHttpRequest, forHTTPHeaderField: WebConstants.string.X_Requested_With)
         urlRequest?.addValue(WebConstants.string.bearer+String.removeNil(User.main.accessToken), forHTTPHeaderField: WebConstants.string.Authorization)
-
+    
         
         sessionManager?.request(urlRequest!).validate(statusCode: StatusCode.success.rawValue..<StatusCode.multipleResponse.rawValue).response(completionHandler: { (response) in
             

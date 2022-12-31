@@ -170,7 +170,51 @@ extension HomeViewController {
     }
 }
 
+extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSource , UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.rides.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "VehicleColCell", for: indexPath) as! VehicleColCell
+        let item = self.rides[indexPath.row]
+        cell.setData(ride: item)
+        if selectedVehIndex == indexPath.row {
+            cell.selectedButton.isHidden = false
+        }else {
+            cell.selectedButton.isHidden = true
+        }
+        
+     
+       
+        
+        
+     
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
+        let service = self.rides[indexPath.row]
+        self.selectedService = service
+        self.roundTripViewBottomConstriant.constant = 20
+        selectedVehIndex = indexPath.row
+        self.vehicleCollectionView.reloadData()
+                
+       // self.isOnBooking = true
+
+        self.showEstimationView(with: service)
+      
+      //  self.popUpCableView(service: service)
+        
+        self.sourceMarker.snippet = service.pricing?.time
+        self.mapViewHelper.mapView?.selectedMarker = (service.pricing?.time) == nil ? nil : self.sourceMarker
+    }
+    
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//      //  return CGSize(width: 300, height: 260)
+//    }
+}
 extension HomeViewController {
     
     
@@ -184,19 +228,25 @@ extension HomeViewController {
         //        var selectedPaymentDetail : CardEntity?
         //        var paymentType : PaymentType = (User.main.isCashAllowed ? .CASH : User.main.isCardAllowed ? .CARD : .NONE)
         if self.rideNowView == nil {
-            
+            self.vehicleCollectionView.alpha = 1
+            self.rides = source
+            self.vehicleCollectionView.reloadData()
             self.rideNowView = Bundle.main.loadNibNamed(XIB.Names.RideNowView, owner: self, options: [:])?.first as? RideNowView
             self.rideNowView?.frame = CGRect(origin: CGPoint(x: 0, y: self.view.frame.height-self.rideNowView!.frame.height), size: CGSize(width: self.view.frame.width, height: self.rideNowView!.frame.height))
             self.rideNowView?.clipsToBounds = false
             self.rideNowView?.show(with: .bottom, completion: nil)
             
-            self.view.addSubview(self.rideNowView!)
+        //   self.view.addSubview(self.rideNowView!)
             
             //self.updateSOSBtnOrigin(yAxisOfStatusView: self.rideNowView?.frame.origin.y)
             
             self.isOnBooking = true
             self.rideNowView?.onClickProceed = { [weak self] service in
-                self?.showEstimationView(with: service)
+                
+                self?.roundTripViewBottomConstriant.constant = 20
+                
+               self?.showEstimationView(with: service) // new
+            
             }
             
             self.rideNowView?.onClickBoatService = { [weak self] service in
@@ -220,32 +270,6 @@ extension HomeViewController {
                 self.sourceMarker.snippet = service?.pricing?.time
                 self.mapViewHelper.mapView?.selectedMarker = (service?.pricing?.time) == nil ? nil : self.sourceMarker
             }
-            //self.rideNowView?.imageViewCard.image = paymentType.image
-            //            self.rideNowView?.onClickRideNow = { service in
-            //                if service != nil {
-            //                    self.createRequest(for: service!, isScheduled: false, scheduleDate: nil, cardEntity: selectedPaymentDetail, paymentType: paymentType)
-            //                }
-            //            }
-            //            self.rideNowView?.onClickSchedule = { service in
-            //                self.schedulePickerView(on: { (date) in
-            //                    if service != nil {
-            //                        self.createRequest(for: service!, isScheduled: true, scheduleDate: date,cardEntity: selectedPaymentDetail, paymentType: paymentType)
-            //                    }
-            //                })
-            //            }
-            //            self.rideNowView?.onClickChangePayment = {
-            //                if let vc = self.storyboard?.instantiateViewController(withIdentifier: Storyboard.Ids.PaymentViewController) as? PaymentViewController{
-            //                    vc.isChangingPayment = true
-            //                    vc.onclickPayment = { (paymentTypeEntity , cardEntity) in
-            //                        selectedPaymentDetail = cardEntity
-            //                        paymentType = paymentTypeEntity
-            //                        self.rideNowView?.imageViewCard.image = paymentType.image
-            //                        self.rideNowView?.labelCardNumber.text = cardEntity == nil ? Constants.string.cash.localize() : String.removeNil(cardEntity?.last_four)
-            //                    }
-            //                    let navigation = UINavigationController(rootViewController: vc)
-            //                    self.present(navigation, animated: true, completion: nil)
-            //                }
-            //            }
         }
         self.rideNowView?.setAddress(source: sourceLocation.coordinate, destination: destinationLocation.coordinate,position: self.mulitPostions)
         self.rideNowView?.set(source: source)
@@ -289,7 +313,7 @@ extension HomeViewController {
             self.reasonView?.alpha = isHide ? 0 : 1
             self.buttonSOS.alpha = isHide ? 0 : 1
             self.changeDestinationButton.alpha = isHide ? 0 : 1
-            
+            self.vehicleCollectionView.alpha = isHide ? 0 : 1
             
         }
         
@@ -322,16 +346,16 @@ extension HomeViewController {
             self.estimationFareView?.frame = CGRect(x: 0, y: yAxis, width: self.view.frame.width, height: height)
             
             self.estimationFareView?.show(with: .bottom, completion: nil)
-            self.view.addSubview(self.estimationFareView!)
+           // self.view.addSubview(self.estimationFareView!)
             self.estimationFareView?.scheduleAction = { [weak self] service in
                 self?.schedulePickerView(on: { (date) in
-                    self?.createRequest(for: service, isScheduled: true, scheduleDate: date,cardEntity: selectedPaymentDetail, paymentType: paymentType)
+                    self?.createRequest(for: service, isScheduled: true, scheduleDate: date,cardEntity: selectedPaymentDetail, paymentType: paymentType, price: Double(self!.priceTextfield.text!)!)
                 })
             }
             self.estimationFareView?.rideNowAction = { [weak self] service in
                 UserDefaults.standard.setValue(true, forKey: "onRide")
                 self?.service?.round_trip = 0
-                self?.createRequest(for: service, isScheduled: false, scheduleDate: nil, cardEntity: selectedPaymentDetail, paymentType: paymentType)
+                self?.createRequest(for: service, isScheduled: false, scheduleDate: nil, cardEntity: selectedPaymentDetail, paymentType: paymentType, price: Double(self!.priceTextfield.text!)!) // new
             }
             self.estimationFareView?.roundTripAction = { [weak self] service in
                 self?.service = service
@@ -386,7 +410,7 @@ extension HomeViewController {
                     
                     self!.OTPScreen?.onClickOtp = {
                         self?.view.removeBlurView()
-                        self?.createRequest(for: service, isScheduled: false, scheduleDate: nil, cardEntity: selectedPaymentDetail, paymentType: paymentType)
+                        self?.createRequest(for: service, isScheduled: false, scheduleDate: nil, cardEntity: selectedPaymentDetail, paymentType: paymentType, price: Double(self!.priceTextfield.text!)!)
                         
                     }
                     //                self.OTPScreen?.set(number: self!.userOtp ?? "0", with: { (status) in
@@ -648,7 +672,7 @@ extension HomeViewController {
         })
     }
     
-    
+ 
     // MARK:- Show RideStatus View
     
     func showRatingView(with request : Request) {
@@ -768,6 +792,13 @@ extension HomeViewController {
     // MARK:- Show Loader View
     
     func showLoaderView(with requestId : Int? = nil) {
+        setDataOFFarwView()
+        topRideDetailView.alpha = 1
+        bottomRaiseView.alpha = 1
+        offerCancelButton.alpha = 1
+        
+        localSelectionParentView.isHidden = true
+        vehicleCollectionView.isHidden = true
         
         if self.requestLoaderView == nil, let singleView = Bundle.main.loadNibNamed(XIB.Names.LoaderView, owner: self, options: [:])?.first as? LoaderView {
             self.isOnBooking = true
@@ -776,7 +807,7 @@ extension HomeViewController {
             self.requestLoaderView?.onCancel = {
                 self.cancelCurrentRide()
             }
-            self.view.addSubview(singleView)
+            //self.view.addSubview(singleView)
             DispatchQueue.main.asyncAfter(deadline: .now()+0.5) { // Hiding Address View
                 UIView.animate(withDuration: 0.5, animations: {
                     //self.localSelectionParentView.isHidden = false
@@ -788,6 +819,15 @@ extension HomeViewController {
         self.requestLoaderView?.isCancelButtonEnabled = requestId != nil
     }
     
+    
+    func setDataOFFarwView(){
+        self.tripSourceAddressLabel.text = self.sourceAddressLabel.text
+        self.tripDesLabel.text = self.stop1AddressLabel.text
+        self.vehicleNameLabel.text = self.selectedService?.name
+        self.tripPriceLabel.text = "C$\(self.currntRequest?.offer_price ?? 0)"
+        self.tripCurrentFareLabel.text = "C$\(self.currntRequest?.offer_price ?? 0)"
+        
+    }
     // MARK:- Remove Loader View
     
     func removeLoaderView() {
@@ -872,19 +912,19 @@ extension HomeViewController {
         self.positions = [Bind<LocationDetail>(nil)]
         stop1AddressLabel.text = "Where to?"
 
-        stop2AddressLabel.text = ""
-        stop3AddressLabel.text = ""
+        stop2AddressLabel?.text = ""
+        stop3AddressLabel?.text = ""
         if #available(iOS 13.0, *) {
-            stop1AddressLabel.textColor = .label
-            stop2AddressLabel.textColor = .label
-            stop3AddressLabel.textColor = .label
+            stop1AddressLabel?.textColor = .label
+            stop2AddressLabel?.textColor = .label
+            stop3AddressLabel?.textColor = .label
         } else {
             stop1AddressLabel.textColor = .black
             stop2AddressLabel.textColor = .black
             stop3AddressLabel.textColor = .black
         }
-        self.stop2StackView.isHidden = true
-        self.stop3StackView.isHidden = true
+        self.stop2StackView?.isHidden = true
+        self.stop3StackView?.isHidden = true
         self.localSelectionParentView.isHidden = false
         self.viewLocationButtons.isHidden = false
         self.resetAll()

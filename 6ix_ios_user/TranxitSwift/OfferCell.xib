@@ -40,8 +40,8 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="C$ 19.99" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kdo-nY-fYX">
-                                <rect key="frame" x="228" y="15" width="67" height="20"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="C$ -" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kdo-nY-fYX">
+                                <rect key="frame" x="257" y="15" width="33" height="20"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -86,7 +86,7 @@
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JwS-1a-phe">
                                 <rect key="frame" x="10" y="110" width="132.5" height="40"/>
-                                <color key="backgroundColor" red="0.94117647059999998" green="0.94117647059999998" blue="0.94117647059999998" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" systemColor="quaternarySystemFillColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="NB7-bP-MDt"/>
                                 </constraints>
@@ -99,22 +99,28 @@
                                         <real key="value" value="10"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="declineBtnTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Quz-m6-GaD"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ofa-L6-ysG">
                                 <rect key="frame" x="157.5" y="110" width="132.5" height="40"/>
-                                <color key="backgroundColor" systemColor="labelColor"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="Lbb-KQ-SE4"/>
                                 </constraints>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" title="Accept">
-                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                                         <real key="value" value="10"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="acceptBtnTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="sYU-Fh-BQo"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -128,7 +134,7 @@
                             <constraint firstItem="1Nj-UL-JzV" firstAttribute="top" secondItem="52V-G7-2Rr" secondAttribute="top" constant="10" id="LI7-bU-fyl"/>
                             <constraint firstItem="CNI-Oo-4Nu" firstAttribute="leading" secondItem="VBF-vI-p7d" secondAttribute="trailing" constant="8" id="LaK-Rg-iVp"/>
                             <constraint firstItem="VBF-vI-p7d" firstAttribute="leading" secondItem="Rjv-pH-m4M" secondAttribute="trailing" constant="6" id="Ms1-ou-anE"/>
-                            <constraint firstAttribute="trailing" secondItem="Kdo-nY-fYX" secondAttribute="trailing" constant="5" id="OAO-dj-UrT"/>
+                            <constraint firstAttribute="trailing" secondItem="Kdo-nY-fYX" secondAttribute="trailing" constant="10" id="OAO-dj-UrT"/>
                             <constraint firstAttribute="bottom" secondItem="JwS-1a-phe" secondAttribute="bottom" constant="10" id="Qwn-vw-OwG"/>
                             <constraint firstItem="Ofa-L6-ysG" firstAttribute="leading" secondItem="JwS-1a-phe" secondAttribute="trailing" constant="15" id="RHf-hG-FfQ"/>
                             <constraint firstItem="Kdo-nY-fYX" firstAttribute="top" secondItem="52V-G7-2Rr" secondAttribute="top" constant="15" id="SRR-De-uDn"/>
@@ -146,7 +152,7 @@
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                <real key="value" value="20"/>
+                                <real key="value" value="15"/>
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </view>
@@ -161,6 +167,18 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <connections>
+                <outlet property="acceptButton" destination="Ofa-L6-ysG" id="NZ9-90-qJh"/>
+                <outlet property="declineButton" destination="JwS-1a-phe" id="f8p-XN-L7g"/>
+                <outlet property="distanceLabel" destination="3gc-XY-z73" id="nNl-uo-Pd8"/>
+                <outlet property="driverNameLabel" destination="EqN-1r-VeZ" id="LbG-Je-y8a"/>
+                <outlet property="driverProfileImage" destination="1Nj-UL-JzV" id="Owu-Fd-9Pk"/>
+                <outlet property="priceLabel" destination="Kdo-nY-fYX" id="6td-iS-bcZ"/>
+                <outlet property="reviewLAbel" destination="VBF-vI-p7d" id="cPF-K4-xeP"/>
+                <outlet property="timeLAbel" destination="Mcs-Yi-jqE" id="piK-nP-c9j"/>
+                <outlet property="totalReviewCountLabel" destination="CNI-Oo-4Nu" id="rQM-LY-KmJ"/>
+                <outlet property="vehicleNameLabel" destination="Qv7-jw-dwO" id="rEn-GH-5Zd"/>
+            </connections>
             <point key="canvasLocation" x="139" y="66"/>
         </tableViewCell>
     </objects>
@@ -172,6 +190,9 @@
         </systemColor>
         <systemColor name="opaqueSeparatorColor">
             <color red="0.77647058823529413" green="0.77647058823529413" blue="0.78431372549019607" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="quaternarySystemFillColor">
+            <color red="0.45490196078431372" green="0.45490196078431372" blue="0.50196078431372548" alpha="0.080000000000000002" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

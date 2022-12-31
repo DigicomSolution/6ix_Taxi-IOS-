@@ -12,4 +12,8 @@ struct RequestModal : JSONSerializable {
     var data : [Request]?
     var cash : Int?
     var card : Int?
+    var currency : String?
+
+    var requests : [Offer]?
+    // 1, request
 }

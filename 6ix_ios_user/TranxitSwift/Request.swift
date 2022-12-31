@@ -58,7 +58,7 @@ class Request : JSONSerializable {
     var waiting_minutes : Int?
     var instructions : String?
     var is_booster_cable : Int?
-    
+    var offer_price : Double?
     
   /*
     enum CodingKeys: String, CodingKey {

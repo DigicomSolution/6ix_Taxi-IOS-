@@ -118,6 +118,7 @@ extension RideStatusView {
     }
     
     func setETA(value : String) {
+        
         self.labelETA.text = " \(Constants.string.ETA.localize()): \(value) "
        
     }

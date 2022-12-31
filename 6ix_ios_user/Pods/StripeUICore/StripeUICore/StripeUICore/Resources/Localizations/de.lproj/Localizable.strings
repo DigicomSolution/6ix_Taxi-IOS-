@@ -12,8 +12,6 @@
 
 "BSB number" = "BSB-Nummer";
 
-"Billing address is same as shipping" = "Rechnungsadresse und Versandadresse sind identisch.";
-
 "Cancel" = "Abbrechen";
 
 "City" = "Ort";
@@ -46,13 +44,13 @@
 
 "First" = "Vorname";
 
-"Full name" = "Vollständiger Name";
+"Full name" = "Nachname";
 
 "Incomplete phone number" = "Unvollständige Telefonnummer";
 
 "Island" = "Insel";
 
-"Last" = "Name";
+"Last" = "Nachname";
 
 "Name" = "Name";
 

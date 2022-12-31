@@ -163,8 +163,7 @@ extension PayWithLinkViewController {
 
             linkAccount.signUp(
                 with: phoneNumber,
-                legalName: requiresNameCollection ? legalName : nil,
-                consentAction: .button
+                legalName: requiresNameCollection ? legalName : nil
             ) { [weak self] result in
                 switch result {
                 case .success():

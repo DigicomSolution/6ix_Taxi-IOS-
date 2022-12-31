@@ -82,7 +82,7 @@ extension HomeViewController{
             print(self.service?.waiting_minutes,"Waiting minutes are")
             
             
-            self.createRequest(for: self.service!, isScheduled: false, scheduleDate: nil, cardEntity: nil, paymentType: paymentType)
+          //  self.createRequest(for: self.service!, isScheduled: false, scheduleDate: nil, cardEntity: nil, paymentType: paymentType)
         }
        
         self.popUpDialog.dismiss()

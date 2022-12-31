@@ -23,7 +23,7 @@ class GooglePlacesHelper : NSObject {
         if fetcher == nil {
             self.fetcher = GMSAutocompleteFetcher()
             self.filter = GMSAutocompleteFilter()
-            filter?.country = "CA"
+          //  filter?.country = "CA"
             self.fetcher?.autocompleteFilter = filter
             self.fetcher?.delegate = self
         }

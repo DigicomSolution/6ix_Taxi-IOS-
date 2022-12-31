@@ -37,6 +37,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        IQKeyboardManager.shared.enable = true
+        
         guard !DTTJailbreakDetection.isJailbroken() else{
             let sb = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "jailbrokenDeviceVC")
             self.window?.rootViewController = sb
@@ -44,6 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             showAppTerminateAlert(title: "6ixTaxi", message: "This app is not allowed to run on insecure (jailbroken) devices")
             return false
         }
+        
         
         FirebaseApp.configure()
         

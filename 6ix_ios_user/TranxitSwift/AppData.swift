@@ -12,7 +12,7 @@ import UIKit
 let userDefault = UserDefaults.standard
 let AppName = "6ix Taxi"
 var deviceTokenString = Constants.string.noDevice
-let googleMapKey = "AIzaSyDZE-1-gX5j7eQt5RxzuOAMnOs2YMmTgXo"
+let googleMapKey = "AIzaSyDyn0l-4-daP476zj5wlVCvn7oi3fFgT7Q"//"AIzaSyDZE-1-gX5j7eQt5RxzuOAMnOs2YMmTgXo"
 
 //"AIzaSyCdP7OZb7vO8xVxc4mMvwh24O8mz45nVys"
 

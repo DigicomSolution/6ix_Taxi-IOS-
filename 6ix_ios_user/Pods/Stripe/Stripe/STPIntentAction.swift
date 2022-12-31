@@ -51,9 +51,6 @@ import Foundation
     
     /// Contains details describing the microdeposits verification flow for US Bank Account payments
     case verifyWithMicrodeposits
-    
-    /// The action type for UPI payment methods. The customer must complete the transaction in their banking app within 5 minutes.
-    case upiAwaitNotification
 
     /// Parse the string and return the correct `STPIntentActionType`,
     /// or `STPIntentActionTypeUnknown` if it's unrecognized by this version of the SDK.
@@ -76,8 +73,6 @@ import Foundation
             self = .BLIKAuthorize
         case "verify_with_microdeposits":
             self = .verifyWithMicrodeposits
-        case "upi_await_notification":
-            self = .upiAwaitNotification
         default:
             self = .unknown
         }
@@ -104,8 +99,6 @@ import Foundation
             return "boleto_display_details"
         case .verifyWithMicrodeposits:
             return "verify_with_microdeposits"
-        case .upiAwaitNotification:
-            return "upi_await_notification"
         case .unknown:
             break
         }
@@ -190,8 +183,6 @@ public class STPIntentAction: NSObject {
             if let verifyWithMicrodeposits = verifyWithMicrodeposits {
                 props.append("verifyWithMicrodeposits = \(verifyWithMicrodeposits)")
             }
-        case .upiAwaitNotification:
-            props.append("upiAwaitNotification != nil")
         case .unknown:
             // unrecognized type, just show the original dictionary for debugging help
             props.append("allResponseFields = \(allResponseFields)")
@@ -294,8 +285,6 @@ extension STPIntentAction: STPAPIResponseDecodable {
             if verifyWithMicrodeposits == nil {
                 type = .unknown
             }
-        case .upiAwaitNotification:
-            break // no additional details
         }
 
         return STPIntentAction(

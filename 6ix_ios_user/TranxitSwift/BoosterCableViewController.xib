@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -42,7 +43,7 @@
                             </connections>
                         </button>
                     </subviews>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstItem="i8k-s7-A6O" firstAttribute="leading" secondItem="4rt-J8-Ja3" secondAttribute="leading" id="0Gy-0a-WL7"/>
                         <constraint firstAttribute="height" constant="75" id="ByI-dN-hDx"/>
@@ -66,7 +67,7 @@
                             </connections>
                         </button>
                     </subviews>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="IYm-pN-7VQ" secondAttribute="trailing" id="5HX-9Y-1pR"/>
                         <constraint firstItem="IYm-pN-7VQ" firstAttribute="leading" secondItem="1Qs-aL-yAo" secondAttribute="leading" id="AWk-BA-mia"/>
@@ -75,7 +76,7 @@
                         <constraint firstAttribute="height" constant="75" id="wRw-Jd-B1o"/>
                     </constraints>
                 </view>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aCP-hk-FHs">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aCP-hk-FHs">
                     <rect key="frame" x="20" y="260.5" width="177" height="38"/>
                     <inset key="contentEdgeInsets" minX="0.0" minY="10" maxX="0.0" maxY="10"/>
                     <state key="normal" title="Cancel">
@@ -90,7 +91,7 @@
                         </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PJu-v6-Rjf">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PJu-v6-Rjf">
                     <rect key="frame" x="217" y="260.5" width="177" height="38"/>
                     <inset key="contentEdgeInsets" minX="0.0" minY="10" maxX="0.0" maxY="10"/>
                     <state key="normal" title="Add">
@@ -112,7 +113,8 @@
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
-            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="PJu-v6-Rjf" firstAttribute="top" secondItem="1Qs-aL-yAo" secondAttribute="bottom" constant="20" id="26q-62-tx6"/>
                 <constraint firstItem="1Qs-aL-yAo" firstAttribute="leading" secondItem="4rt-J8-Ja3" secondAttribute="trailing" id="81K-Me-bzB"/>
@@ -136,12 +138,14 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="aCP-hk-FHs" secondAttribute="bottom" constant="20" id="yEf-kk-ocN"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
-            <point key="canvasLocation" x="140.57971014492756" y="-56.25"/>
+            <point key="canvasLocation" x="61" y="-60"/>
         </view>
     </objects>
     <resources>
         <image name="circle-shape-outline" width="24" height="24"/>
         <image name="radio-on-button" width="24" height="24"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

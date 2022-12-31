@@ -171,20 +171,21 @@ PODS:
   - PopupDialog (1.1.1):
     - DynamicBlurView (~> 4.0)
   - PromisesObjC (2.1.1)
-  - Stripe (22.8.2):
-    - Stripe/Stripe3DS2 (= 22.8.2)
-    - StripeApplePay (= 22.8.2)
-    - StripeCore (= 22.8.2)
-    - StripeUICore (= 22.8.2)
-  - Stripe/Stripe3DS2 (22.8.2):
-    - StripeApplePay (= 22.8.2)
-    - StripeCore (= 22.8.2)
-    - StripeUICore (= 22.8.2)
-  - StripeApplePay (22.8.2):
-    - StripeCore (= 22.8.2)
-  - StripeCore (22.8.2)
-  - StripeUICore (22.8.2):
-    - StripeCore (= 22.8.2)
+  - ScalingCarousel (3.2.0)
+  - Stripe (22.8.1):
+    - Stripe/Stripe3DS2 (= 22.8.1)
+    - StripeApplePay (= 22.8.1)
+    - StripeCore (= 22.8.1)
+    - StripeUICore (= 22.8.1)
+  - Stripe/Stripe3DS2 (22.8.1):
+    - StripeApplePay (= 22.8.1)
+    - StripeCore (= 22.8.1)
+    - StripeUICore (= 22.8.1)
+  - StripeApplePay (22.8.1):
+    - StripeCore (= 22.8.1)
+  - StripeCore (22.8.1)
+  - StripeUICore (22.8.1):
+    - StripeCore (= 22.8.1)
   - SwiftKeychainWrapper (4.0.1)
 
 DEPENDENCIES:
@@ -214,6 +215,7 @@ DEPENDENCIES:
   - Lightbox
   - lottie-ios
   - PopupDialog
+  - ScalingCarousel
   - Stripe
   - SwiftKeychainWrapper
 
@@ -265,6 +267,7 @@ SPEC REPOS:
     - nanopb
     - PopupDialog
     - PromisesObjC
+    - ScalingCarousel
     - Stripe
     - StripeApplePay
     - StripeCore
@@ -318,12 +321,13 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PopupDialog: 720c92befd8bc23c13442254945213db5612f149
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  Stripe: 9b02a044432c68a3b63694e4d09c6b30c2c8dfef
-  StripeApplePay: 1b2dca823c710b7f09667e1b7d9290008dd54bec
-  StripeCore: c03842e8c9feed545ac5976efe2cc1429d5ba553
-  StripeUICore: 3efbad959661e9f3e9ee1855c84a21747c10f285
+  ScalingCarousel: d40f0ce438af5cfb2225e2f723f7161597961128
+  Stripe: b4cf3aa317a8e984b930d3545bac10b490dd3106
+  StripeApplePay: 858c1dadc39b658d317661dea8cc2b7158533a17
+  StripeCore: 52e0aba2fad604455692db593bf5edc04758b760
+  StripeUICore: b3d64c5cbcb4cacfa88f9a0950cdf1b4df72792e
   SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
 
-PODFILE CHECKSUM: 39791ed93c16bf79cd35c63c2b8f7e56db339b65
+PODFILE CHECKSUM: 19e22d71551fc27534dd13514c3d489e9bf21641
 
 COCOAPODS: 1.11.3

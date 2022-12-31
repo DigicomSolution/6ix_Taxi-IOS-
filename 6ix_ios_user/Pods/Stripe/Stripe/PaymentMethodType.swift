@@ -31,7 +31,6 @@ extension PaymentSheet {
         case linkInstantDebit
         case link
         case dynamic(String)
-        case UPI
 
         public init(from str: String) {
             switch(str) {
@@ -41,8 +40,6 @@ extension PaymentSheet {
                 self = .USBankAccount
             case STPPaymentMethod.string(from: .link):
                 self = .link
-            case STPPaymentMethod.string(from: .UPI):
-                self  = .UPI
             default:
                 self = .dynamic(str)
             }
@@ -58,8 +55,6 @@ extension PaymentSheet {
                 return STPPaymentMethod.string(from: .link)
             case .linkInstantDebit:
                 return nil
-            case .UPI:
-                return STPPaymentMethod.string(from: .UPI)
             case .dynamic(let str):
                 return str
             }

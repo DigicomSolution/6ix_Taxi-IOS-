@@ -22,12 +22,12 @@ class ServiceSelectionCollectionViewCell: UICollectionViewCell {
     
     override var isSelected: Bool {
         
-        didSet{
+        didSet {
             self.viewBackground.layer.masksToBounds = self.isSelected
             self.imageViewService.layer.masksToBounds = self.isSelected
             if #available(iOS 13.0, *) {
                 
-                if traitCollection.userInterfaceStyle == .dark{
+                if traitCollection.userInterfaceStyle == .dark {
                     
                     if isSelected{
                         self.parentView.backgroundColor = UIColor.white

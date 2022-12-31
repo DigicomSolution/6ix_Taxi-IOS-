@@ -418,7 +418,7 @@ extension RideNowView : PostViewProtocol {
         }
     }
     
-    func getEstimateFare(api: Base, data: EstimateFare?) {
+    func getEstimateFare(api: Base, data: EstimateFare?) { // here is fare
         // print("\nselected ",data)
         if let serviceTypeId = data?.service_type, let index = self.datasource.firstIndex(where: { $0.id == serviceTypeId }) {
             //self.getProviders(by: serviceTypeId)
