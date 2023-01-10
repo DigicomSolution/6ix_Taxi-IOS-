@@ -36,6 +36,7 @@ target 'TranxitUser' do
     pod 'SwiftKeychainWrapper'
     pod 'DTTJailbreakDetection'
     pod "ScalingCarousel"
+    pod "KRProgressHUD"
 
 #  target 'UserTests' do
 #    inherit! :search_paths

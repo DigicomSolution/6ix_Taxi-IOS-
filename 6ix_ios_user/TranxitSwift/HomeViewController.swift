@@ -19,11 +19,15 @@ import SwiftKeychainWrapper
 import ScalingCarousel
 import SwiftUI
 import StripeUICore
-
+import KRProgressHUD
 var riderStatus : RideStatus = .none // Provider Current Status
 
 class HomeViewController: UIViewController {
     // single trip
+    @IBOutlet weak var roundTripButton: UIButton!
+    @IBOutlet weak var singleTripButton: UIButton!
+    @IBOutlet weak var cashImage: UIImageView!
+    @IBOutlet weak var cardImage: UIImageView!
     @IBOutlet weak var vehicleNameLabel: UILabel!
    
     @IBOutlet weak var tripCurrentFareLabel: UILabel!
@@ -57,13 +61,25 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var offerTableView: UITableView!
     @IBOutlet weak var offerView: UIView!
     
+    var currentUserMapLocatio : CLLocationCoordinate2D?
+    var currency : String?
+    var isOfferAccepted = false
+    var isWaitngForOffer = false
     var currntRequest : Request?
     var rides = [Service]()
     var offers = [Offer]()
     var selectedVehIndex = -1
     var newPaymentType : PaymentType = .CASH
     var selectedService : Service?
-    var curOfferAmountByUser : Double = 0
+    var curOfferAmountByUser : Double = 0.0
+    {
+        didSet {
+            let p = Formatter.shared.limit(string: "\(curOfferAmountByUser)", maximumDecimal: 2)
+            self.tripCurrentFareLabel.text = "C$\(p)"
+            self.tripPriceLabel.text = "C$\(p)"
+            self.priceTextfield.text = "\(p)"
+        }
+    }
     
     var updatingDestination = false
     var isRoundTrip = false
@@ -159,6 +175,7 @@ class HomeViewController: UIViewController {
     private var isUserInteractingWithMap = false // Boolean to handle Mapview User interaction
     // private let transition = CircularTransition()  // Translation to for location Tap
     var mapViewHelper = GoogleMapsHelper()
+   
     //        private var favouriteViewSource : LottieView?
     //        private var favouriteViewDestination : LottieView?
     
@@ -265,6 +282,8 @@ class HomeViewController: UIViewController {
         self.localize()
         print("riderstatus>>>>>.",riderStatus)
         riderStatus = .none
+        cashImage.image = UIImage(named: "cash_black")
+        cardImage.image = UIImage(named: "card_white")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -334,9 +353,14 @@ class HomeViewController: UIViewController {
         locationSelectionTapAction()
     }
     @IBAction func singleBtnTapped(_ sender: UIButton) {
+        self.isRoundTrip = false
+        self.singleTripButton.setTitleColor(.white, for: .normal)
+        self.singleTripButton.backgroundColor = .black
+        self.roundTripButton.setTitleColor(.black, for: .normal)
+        self.roundTripButton.backgroundColor = .white
 
-        
         sendRequest()
+        
     }
   
     @IBAction func offerCancelBtnTapped(_ sender: UIButton) {
@@ -345,42 +369,48 @@ class HomeViewController: UIViewController {
         offerCancelButton.alpha = 0
     }
     @IBAction func sendRaiseSubmBtnTapped(_ sender: UIButton) {
-        sendRequest()
+        self.cancelRequest()
+       // sendRequest()
 
     }
     @IBAction func downFareBtnTapped(_ sender: UIButton) {
         if curOfferAmountByUser > 5 {
             curOfferAmountByUser = curOfferAmountByUser - 5
         }
-        tripCurrentFareLabel.text = "\(curOfferAmountByUser)"
+        tripCurrentFareLabel.text = "C$\(curOfferAmountByUser)"
     }
     @IBAction func raiseFateBtnTapped(_ sender: UIButton) {
         // request sent
         curOfferAmountByUser = curOfferAmountByUser + 5
-        tripCurrentFareLabel.text = "\(curOfferAmountByUser)"
+        tripCurrentFareLabel.text = "C$\(curOfferAmountByUser)"
 
     }
     @IBAction func roundTripBtnTapped(_ sender: UIButton) {
-        
+        self.isRoundTrip = true
+        self.singleTripButton.setTitleColor(.black, for: .normal)
+        self.singleTripButton.backgroundColor = .white
+        self.roundTripButton.setTitleColor(.white, for: .normal)
+        self.roundTripButton.backgroundColor = .black
+        sendRequest()
     }
     @IBAction func cashBtnTapped(_ sender: UIButton) {
         
-//        cashButton.backgroundColor = .black
-//        cashButton.setTitleColor(.white, for: .normal)
-//
-//        cardButton.backgroundColor = .black
-//        cardButton.setTitleColor(.white, for: .normal)
+
+        cashImage.image = UIImage(named: "cash_black")
+
+        cardImage.image = UIImage(named: "card_white")
+        self.newPaymentType = .CASH
+
     }
     @IBAction func cardBtnTapped(_ sender: UIButton) {
-//        cardButton.backgroundColor = .black
-//        cardButton.setTitleColor(.white, for: .normal)
-//
-//        cashButton.backgroundColor = UIColor(named: "offWhite")
-//        cashButton.setTitleColor(.black, for: .normal)
-        
+        cashImage.image = UIImage(named: "cash_white")
+        cardImage.image = UIImage(named: "card_black")
+        UIApplication.shared.keyWindow?.make(toast: Constants.string.selectCardToContinue.localize())
+        self.newPaymentType = .CARD
+
     }
     @IBAction func offerCancelBtnTapped1(_ sender: UIButton) {
-        offerView.isHidden.toggle()
+        //offerView.isHidden.toggle()
         offerView.alpha = 0
         offerCancelButton.isHidden = true
     }
@@ -389,7 +419,7 @@ class HomeViewController: UIViewController {
         UserDefaults.standard.setValue(true, forKey: "onRide")
         self.service?.round_trip = 0
         
-            if curOfferAmountByUser ==  0 {
+        if curOfferAmountByUser ==  0.0 {
             self.showToast(string: "Please enter your offer price")
             return
         }
@@ -399,10 +429,11 @@ class HomeViewController: UIViewController {
 
             return
         }
-
-            
-        self.createRequest(for: service, isScheduled: false, scheduleDate: nil, cardEntity: nil, paymentType: self.newPaymentType, price: Double(self.priceTextfield.text!)!)
         
+     
+        //self.tripCurrentFareLabel.text = "C$\(curOfferAmountByUser)"
+        
+        self.createRequest(for: service, isScheduled: false, scheduleDate: nil, cardEntity: nil, paymentType: self.newPaymentType, price: self.curOfferAmountByUser.precised(2))
     }
 }
 
@@ -754,6 +785,22 @@ extension HomeViewController {
             self.vehicleCollectionView.isHidden = false
             self.vehicleCollectionView.alpha = 1
             
+            let p  = positions[0].value!.coordinate
+            let p1 = self.sourceLocationDetail!.value!.coordinate
+            self.currentUserMapLocatio = p1
+            let l1 = CLLocationCoordinate2D(latitude: p.latitude, longitude: p.longitude)
+            let l2 = CLLocationCoordinate2D(latitude: p1.latitude, longitude: p1.longitude)
+
+            self.mapViewHelper.mapView?.getNewEstimation(between: l1, to: l2) { time, dis in
+                DispatchQueue.main.async {
+                    print("time:\(time), dis:\(dis)")
+                    self.tripDistanceLabel.text = dis
+                    self.tripTimeLAbel.text = time
+                    self.mileLabel.text = dis
+                    self.timeLAbel.text = time
+                }
+               
+            }
             self.positions = positions
             self.sourceLocationDetail = source
             self.drawPolyline(isReroute: false)
@@ -905,9 +952,6 @@ extension HomeViewController {
                 isCPRouteTrigged = true
             }
             /* Till Here */
-            
-            
-            
             
             
             //MARK:- set Marker for source and destination
@@ -1090,6 +1134,13 @@ extension HomeViewController {
         self.topRideDetailView.alpha = 0
         self.bottomRaiseView.alpha = 0
         self.offerView.alpha = 0
+        self.priceTextfield.text = ""
+        self.timeLAbel.text = "-"
+        self.mileLabel.text = "-"
+        self.selectedService = nil
+        self.selectedVehIndex = -1
+        self.curOfferAmountByUser = 0.0
+    
     }
     
     
@@ -1227,6 +1278,17 @@ extension HomeViewController : GMSMapViewDelegate {
         //
     }
     
+    func hideSEarchRideView(isHide:Bool){
+        if isHide {
+     
+            self.clearAllView()
+        }else{
+            self.bottomRaiseView.alpha =  1
+            self.topRideDetailView.alpha = 1
+            self.roundTripViewBottomConstriant.constant = 20
+        }
+    }
+    
 }
 
 // MARK:- Service Calls
@@ -1237,7 +1299,7 @@ extension HomeViewController  {
     
     private func checkForProviderStatus() {
         
-        HomePageHelper.shared.startListening(on: { [weak self] (error, request , offers) in
+        HomePageHelper.shared.startListening(on: { [weak self] (error, requestModel , offers) in
             
             guard let self = self else {
                 return
@@ -1245,10 +1307,37 @@ extension HomeViewController  {
             
             //List of all available providers
             self.getProviders()
-            self.currntRequest = request
+            var currentStatus : RideStatus = .none
+            if let r =  requestModel?.data?.first {
+                self.currntRequest = r
+               // self.setEstimation()
+//                self.bottomRaiseView.alpha =  1
+//                self.topRideDetailView.alpha = 1
+//                self.roundTripViewBottomConstriant.constant = -80
+//
+                 currentStatus = r.status ?? .none
+                print("ride_Status: \(currentStatus)")
+                self.offers = requestModel?.requests ?? []
+                self.handle(request: r)
+
+            }else{
+                self.currntRequest = nil
+                self.offers.removeAll()
+                self.offerView.alpha = 0
+                if self.isWaitngForOffer {
+                    self.isWaitngForOffer = false
+                  self.clearAllView()
+                }
+//                self.bottomRaiseView.alpha =  0
+//                self.topRideDetailView.alpha = 0
+//                self.roundTripViewBottomConstriant.constant = 20
+            }
+            self.currency = requestModel?.currency
+            let request = self.currntRequest
+            
             if error != nil {
                 riderStatus = .none
-             
+                self.showToast(string: error?.localizedDescription ?? "error")
             } else if request != nil {
                 
               
@@ -1338,7 +1427,7 @@ extension HomeViewController  {
                         //                            self.getDataFromFirebase(providerID: (request?.provider?.id)!)
                         // MARK:- Showing Provider ETA
                         
-                        let currentStatus = request?.status ?? .none
+                       
                         let sourceLat = request?.s_latitude
                         print("sourceLat>>>>.",sourceLat)
                         let siurceLong = request?.s_longitude
@@ -1353,7 +1442,9 @@ extension HomeViewController  {
                             
                             print("I m in accepted state")
                             
-                            
+                            self.offerView.alpha = 0
+                            self.vehicleCollectionView.alpha = 0
+                            self.localSelectionParentView.alpha = 0
                             
                             
                             self.showETA(destinatoin: LocationCoordinate(latitude: pLatitude, longitude: pLongitude),sorce: LocationCoordinate(latitude: self.sourceLocationDetail?.value?.coordinate.latitude ?? 0.0, longitude: self.sourceLocationDetail?.value?.coordinate.longitude ?? 0.0))
@@ -1421,17 +1512,8 @@ extension HomeViewController  {
                 }
                 
             }
-            if let offrs = offers, offrs.count > 0 {
-                DispatchQueue.main.async {
-                    self.topRideDetailView.alpha = 0
-                    self.bottomRaiseView.alpha = 0
-                    self.offerView.alpha = 1
-                    self.offerView.isHidden = false
-                    self.offers = offrs
-                    self.offerTableView.reloadData()
-                }
-              
-            }
+            
+           
         })
     }
     
@@ -1764,6 +1846,7 @@ extension HomeViewController : PostViewProtocol {
                 UIApplication.shared.keyWindow?.make(toast: message)
             } else {
                 if code != StatusCode.notreachable.rawValue && api != .checkRequest && api != .cancelRequest{
+                    print(api)
                     showAlert(message: message, okHandler: nil, fromView: self)
                 }
                 
@@ -1815,6 +1898,13 @@ extension HomeViewController : PostViewProtocol {
             riderStatus = .none
             return
         }
+        if api == .sendRequest {
+            self.isWaitngForOffer = true
+            self.bottomRaiseView.alpha = 1
+            self.topRideDetailView.alpha = 1
+            self.roundTripViewBottomConstriant.constant = -80
+           // self.tripCurrentFareLabel.text = "\(curOfferAmountByUser)"
+        }
         
         if api == .locationServicePostDelete {
             self.presenter?.get(api: .locationService, parameters: nil)
@@ -1823,14 +1913,21 @@ extension HomeViewController : PostViewProtocol {
             riderStatus = .none
             return
         }
+       
         if api != .payNow || api == .cancelRequest{
             if api == .cancelRequest {
                 riderStatus = .none
+                if self.topRideDetailView.alpha == 1 {
+                    self.sendRequest()
+                }
             }
+           
             //                DispatchQueue.main.async {
             //                    self.view.makeToast(message)
             //                }
-        } else {
+        }
+        
+        else {
             riderStatus = .none // Make Ride Status to Default
             if api == .payNow { // Remove PayNow if Card Payment is Success
                 self.removeInvoiceView()
@@ -1855,14 +1952,23 @@ extension HomeViewController : PostViewProtocol {
     
     
     func getEstimateFare(api: Base, data: EstimateFare?) {
+        if let d = data {
+            self.tripPriceLabel.text = "C$\(d.base_price ?? 0)"
+            self.tripDistanceLabel.text = "\(d.distance ?? 0)m"
+            self.tripTimeLAbel.text = "\(d.time ?? "-")"
+            //self.priceTextfield.text = "\(d.base_price ?? 0)"
+           // self.tripCurrentFareLabel.text = "\(d.base_price ?? 0)"
+            self.curOfferAmountByUser = Double(d.base_price ?? 0)
+
+        }
         if self.updatingDestination || self.isRoundTrip{
             if data != nil {
                 if let estimated_fare = data?.estimated_fare{
                     
-//                    let estimatedFareString = "\(String.removeNil(User.main.currency)) \(Int(estimated_fare))"
-                    
+//                    let estimatedFareString1 = "\(String.removeNil(User.main.currency)) \(Int(estimated_fare))"
                     let estimatedFareString = "\(String.removeNil(User.main.currency)) \(Formatter.shared.limit(string: "\(estimated_fare)", maximumDecimal: 2))"
-                    
+                    self.priceTextfield.text = estimatedFareString
+
                     self.popUpEstimatedFare(estimatedFareString: estimatedFareString)
                     self.isRoundTrip = false
                 }
@@ -2000,12 +2106,81 @@ extension HomeViewController : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "OfferCell") as! OfferCell
         let item = self.offers[indexPath.row]
-        cell.setData(item: item,distane: self.currntRequest?.distance ?? "",time: self.currntRequest?.travel_time ?? "")
+        if let s = self.currentUserMapLocatio {
+        let driverLocation = CLLocationCoordinate2D(latitude: item.provider?.latitude ?? 0, longitude: item.provider?.longitude ?? 0)
+            self.mapViewHelper.mapView?.getNewEstimation(between: s, to: driverLocation, completion: { time, dis in
+                DispatchQueue.main.async {
+                    cell.timeLAbel.text = time
+                    cell.distanceLabel.text = dis
+                }
+            })
+        }
+        
+        cell.setData(item: item,currency: self.currency ?? "", currentLocation: currLocation )
+        
+        cell.acceptBlock = {
+            if let id = item.id, let reqID = item.requestID {
+                self.acceptOfferAPiCall(id: id,reqId: reqID)
+            }
+        }
+        cell.rejectBlock = {
+            DispatchQueue.main.async {
+                self.offers.remove(at: indexPath.row)
+                self.offerTableView.reloadData()
+                if let id = item.id, let reqID = item.requestID {
+                    self.rejectOfferAPiCall(id: id,reqId: reqID)
+                }
+            }
+          
+            
+        }
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 180
+    }
+    
+    func acceptOfferAPiCall(id:Int, reqId : Int){
+        //KRProgressHUD.show()
+        
+        ApiCalls().acceptOffer(offerID: id, requestId: reqId) { msg, error in
+            self.isOfferAccepted = true
+            //KRProgressHUD.dismiss()
+            if let m = msg {
+                self.showToast(string: m)
+            }else{
+                self.showToast(string: error ?? "")
+
+            }
+        }
+    }
+    
+    func rejectOfferAPiCall(id:Int, reqId : Int){
+     //   KRProgressHUD.show()
+
+        ApiCalls().rejectOffer(offerID: id, requestId: reqId) { msg, error in
+          //  KRProgressHUD.dismiss()
+            
+            if let m = msg {
+                self.showToast(string: m)
+            }else{
+                self.showToast(string: error ?? "")
+
+            }
+        }
+    }
+    
+    func setEstimation(){
+        
+        if let lat = self.currntRequest?.latitude, let long = self.currntRequest?.longitude {
+            let des = CLLocationCoordinate2D(latitude: lat, longitude: long)
+            mapViewHelper.mapView?.getNewEstimation(between: sourceCoordinate, to: des, completion: { time, dis in
+                self.tripDesLabel.text = dis
+                self.tripTimeLAbel.text = time
+            })
+        }
     }
 }
 
@@ -2015,6 +2190,7 @@ extension HomeViewController : UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         if !textField.text!.isEmpty {
             self.curOfferAmountByUser = Double(textField.text!) ?? 0
+            tripCurrentFareLabel.text = "\(self.curOfferAmountByUser)"
         }
     }
 }

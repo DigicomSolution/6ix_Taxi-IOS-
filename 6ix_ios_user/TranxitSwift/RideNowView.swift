@@ -430,6 +430,10 @@ extension RideNowView : PostViewProtocol {
                 self.collectionViewService.reloadItems(at: [IndexPath(item: index, section: 0)])
             }
         }
+        if let est = data {
+            print(est.base_price)
+           // self.priceTextfield.text = "\(est.base_price ?? 0)"
+        }
     }
     
     func getServiceList(api: Base, data: [Service]) {

@@ -27,7 +27,10 @@ private struct OverView : Decodable {
 
 private struct LegsObject : Decodable {
     var duration : DurationObject?
+    var distance : DurationObject?
 }
+
+
 
 private struct DurationObject : Decodable {
     var text : String?
@@ -59,6 +62,15 @@ extension GMSMapView {
         self.getGoogleResponse(between: source, to: destination) { (mapPath) in
             if let estimationString = mapPath.routes?.first?.legs?.first?.duration?.text {
                 completion(estimationString)
+            }
+        }
+    }
+    
+    func getNewEstimation(between source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completion : @escaping((String,String)->Void)) {
+        self.getGoogleResponse(between: source, to: destination) { (mapPath) in
+            if let estimationString = mapPath.routes?.first?.legs?.first?.duration?.text {
+                let dis = mapPath.routes?.first?.legs?.first?.distance?.text  ?? ""
+                completion(estimationString,dis)
             }
         }
     }

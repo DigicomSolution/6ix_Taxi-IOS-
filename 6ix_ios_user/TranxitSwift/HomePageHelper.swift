@@ -14,7 +14,7 @@ class HomePageHelper {
     private var timer : Timer?
     static var shared = HomePageHelper()
     // MARK:- Start Listening for Provider Status Changes
-    func startListening(on completion : @escaping ((CustomError?,Request?, [Offer]? )->Void)) {
+    func startListening(on completion : @escaping ((CustomError?,RequestModal?, [Offer]? )->Void)) {
         
         DispatchQueue.main.async {
             self.stopListening()
@@ -39,14 +39,16 @@ class HomePageHelper {
     
     //MARK:- Get Request Data From Service
     
-    private func getData(on completion : @escaping ((CustomError?,Request?, [Offer]?)->Void)) {
+    private func getData(on completion : @escaping ((CustomError?,RequestModal?, [Offer]?)->Void)) {
         
         
         
         Webservice().retrieve(api: .checkRequest, url: nil, data: nil, imageData: nil, paramters: nil, type: .GET) { (error, data) in
             
             guard error == nil else {
+                
                 completion(error, nil,nil)
+                
                // DispatchQueue.main.async { self.stopListening() }
                 return
             }
@@ -77,7 +79,8 @@ class HomePageHelper {
                 return
             }
              let offer = request.requests ?? []
-            completion(nil, requestFirst, offer)
+            print("offers:\(offer.count)")
+            completion(nil, request, offer)
         }
     }
     

@@ -245,6 +245,8 @@
 		8894E22B1FE7D7980097B4B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8894E22A1FE7D7980097B4B3 /* Assets.xcassets */; };
 		8A246AC57C006D33F3758D05 /* Pods_TranxitUser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6662DE5BCE4E42C6F27B3CBD /* Pods_TranxitUser.framework */; };
 		AC193B5B29608431001E8DAA /* Offers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC193B5A29608431001E8DAA /* Offers.swift */; };
+		AC7F625629632042003A1C15 /* ApiCalls.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7F625529632042003A1C15 /* ApiCalls.swift */; };
+		AC7F625729632043003A1C15 /* ApiCalls.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7F625529632042003A1C15 /* ApiCalls.swift */; };
 		AC87CA422959B685000DBEA0 /* VehicleColCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC87CA402959B685000DBEA0 /* VehicleColCell.swift */; };
 		AC87CA432959B685000DBEA0 /* VehicleColCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AC87CA412959B685000DBEA0 /* VehicleColCell.xib */; };
 		AC89226629570DA9005B5012 /* Radomir Tinkov - Gilroy-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC89226429570DA8005B5012 /* Radomir Tinkov - Gilroy-Light.otf */; };
@@ -524,6 +526,7 @@
 		8894E22A1FE7D7980097B4B3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		92D29CDF2363655EE2062287 /* Pods-TranxitUser.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TranxitUser.debug.xcconfig"; path = "Target Support Files/Pods-TranxitUser/Pods-TranxitUser.debug.xcconfig"; sourceTree = "<group>"; };
 		AC193B5A29608431001E8DAA /* Offers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Offers.swift; sourceTree = "<group>"; };
+		AC7F625529632042003A1C15 /* ApiCalls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiCalls.swift; sourceTree = "<group>"; };
 		AC87CA402959B685000DBEA0 /* VehicleColCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleColCell.swift; sourceTree = "<group>"; };
 		AC87CA412959B685000DBEA0 /* VehicleColCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VehicleColCell.xib; sourceTree = "<group>"; };
 		AC89226429570DA8005B5012 /* Radomir Tinkov - Gilroy-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Radomir Tinkov - Gilroy-Light.otf"; sourceTree = "<group>"; };
@@ -1202,6 +1205,7 @@
 			isa = PBXGroup;
 			children = (
 				8871FBDC1FE7DDDF002335D5 /* ApiList.swift */,
+				AC7F625529632042003A1C15 /* ApiCalls.swift */,
 			);
 			name = Api;
 			sourceTree = "<group>";
@@ -2232,6 +2236,7 @@
 			files = (
 				08813E58213D147800830717 /* UserDefaultsKeys.swift in Sources */,
 				0802AF8720D9535800A8AA1B /* RideRequestHandler.swift in Sources */,
+				AC7F625729632043003A1C15 /* ApiCalls.swift in Sources */,
 				0875010320D7D4EC00CFA858 /* IntentHandler.swift in Sources */,
 				0802AF8A20D9551E00A8AA1B /* ApiList.swift in Sources */,
 			);
@@ -2283,6 +2288,7 @@
 				889480211FECE717006AF5A9 /* Button.swift in Sources */,
 				08583BF6211C17DF00B5ABC0 /* Store.swift in Sources */,
 				08641D8F20A1B51C00AA0D1F /* CircularTransition.swift in Sources */,
+				AC7F625629632042003A1C15 /* ApiCalls.swift in Sources */,
 				18D7C04121C11EB7009065ED /* HelpEntity.swift in Sources */,
 				08E49CEB2142686800FCD042 /* RequestModal.swift in Sources */,
 				08D7CCBD213976DD0055C95D /* ChatPush.swift in Sources */,
@@ -2652,7 +2658,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6XFW64J744;
 				ENABLE_BITCODE = NO;
@@ -2667,7 +2673,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.4.3;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.6ixtaxi.customer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -2689,7 +2695,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6XFW64J744;
 				ENABLE_BITCODE = NO;
@@ -2703,7 +2709,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.4.3;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.6ixtaxi.customer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

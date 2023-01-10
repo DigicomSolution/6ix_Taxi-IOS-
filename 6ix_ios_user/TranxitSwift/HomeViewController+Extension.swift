@@ -148,6 +148,7 @@ extension HomeViewController {
     
     @objc func openMsgVC() {
         if let vc = self.storyboard?.instantiateViewController(withIdentifier: Storyboard.Ids.SingleChatController) as? SingleChatController {
+            providerForMsg = self.currntRequest?.provider
             vc.set(user: providerForMsg, requestId: self.currentRequestId)
             let navigation = UINavigationController(rootViewController: vc)
             self.present(navigation, animated: true, completion: nil)
@@ -209,6 +210,10 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
         
         self.sourceMarker.snippet = service.pricing?.time
         self.mapViewHelper.mapView?.selectedMarker = (service.pricing?.time) == nil ? nil : self.sourceMarker
+        if let p = service.pricing?.estimated_fare , p > 0.0 {
+        //self.priceTextfield.text = "\(service.pricing?.estimated_fare ?? 0)"
+        self.curOfferAmountByUser = Double(p)
+        }
     }
     
 //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -520,36 +525,52 @@ extension HomeViewController {
     // MARK:- Show RideStatus View
     
     func showRideStatusView(with request : Request) {
-        
+        self.offerView.alpha = 0
+        self.localSelectionParentView.alpha = 0
         self.removeRideNow()
         //self.localSelectionParentView.isHidden = true
         self.viewLocationButtons.isHidden = true
         self.loader.isHidden = true
         print("ViewAddressOuter ", #function, !(request.status == .pickedup))
+        var addInsects : CGFloat = 0
+        if request.status == .arrived {
+            addInsects = 40
+        }
         
-        if self.rideStatusView == nil, let rideStatus = Bundle.main.loadNibNamed(XIB.Names.RideStatusView, owner: self, options: [:])?.first as? RideStatusView {
+        let rideStatus = Bundle.main.loadNibNamed(XIB.Names.RideStatusView, owner: self, options: [:])?.first as! RideStatusView
+        var yAxis: CGFloat = 0.0
+        var height: CGFloat = 0.0
+        if #available(iOS 11.0, *) {
+            yAxis = (self.view.frame.height-(rideStatus.frame.height+UIApplication.shared.windows[0].safeAreaInsets.bottom ))
+            height = rideStatus.frame.height+UIApplication.shared.windows[0].safeAreaInsets.bottom
+        } else {
+            yAxis = self.view.frame.height-rideStatus.frame.height
+            height = rideStatus.frame.height
+        }
+        
+        if self.rideStatusView == nil{
             UserDefaults.standard.setValue(true, forKey: "onRide")
-            var yAxis: CGFloat = 0.0
-            var height: CGFloat = 0.0
-            if #available(iOS 11.0, *) {
-                yAxis = (self.view.frame.height-(rideStatus.frame.height+UIApplication.shared.windows[0].safeAreaInsets.bottom))
-                height = rideStatus.frame.height+UIApplication.shared.windows[0].safeAreaInsets.bottom
-            } else {
-                yAxis = self.view.frame.height-rideStatus.frame.height
-                height = rideStatus.frame.height
-            }
-            rideStatus.frame = CGRect(origin: CGPoint(x: 0, y: yAxis), size: CGSize(width: self.view.frame.width, height: height))
+            
+          
+            rideStatus.frame = CGRect(origin: CGPoint(x: 0, y: yAxis - addInsects), size: CGSize(width: self.view.frame.width, height: height + addInsects))
             
             rideStatusView = rideStatus
+            rideStatusView?.onClickMessage = {
+                self.openMsgVC()
+            }
             self.view.addSubview(rideStatus)
 //            self.addMessageButton(with: CGRect(x: self.view.frame.width-50, y: yAxis-30, width: 30, height: 30), to: request.provider)
 //            self.addMessageButton(with: CGRect(x: self.view.frame.width-50, y: yAxis-40, width: 40, height: 40), to: request.provider)
             
-            self.addMessageButton(with: CGRect(x: 16, y: yAxis-40, width: 40, height: 40), to: request.provider)
+          //  self.addMessageButton(with: CGRect(x: 16, y: yAxis-40, width: 40, height: 40), to: request.provider)
             
             rideStatus.show(with: .bottom, completion: nil)
-        }
+        }else {
         
+            
+            rideStatusView?.frame  = CGRect(origin: CGPoint(x: 0, y: yAxis - addInsects), size: CGSize(width: self.view.frame.width, height: height + addInsects))
+         
+        }
         
         // Change Provider Location
         //        if let latitude = request.provider?.latitude, let longitude = request.provider?.longitude {
@@ -796,6 +817,7 @@ extension HomeViewController {
         topRideDetailView.alpha = 1
         bottomRaiseView.alpha = 1
         offerCancelButton.alpha = 1
+        self.roundTripViewBottomConstriant.constant = -80
         
         localSelectionParentView.isHidden = true
         vehicleCollectionView.isHidden = true
@@ -824,8 +846,8 @@ extension HomeViewController {
         self.tripSourceAddressLabel.text = self.sourceAddressLabel.text
         self.tripDesLabel.text = self.stop1AddressLabel.text
         self.vehicleNameLabel.text = self.selectedService?.name
-        self.tripPriceLabel.text = "C$\(self.currntRequest?.offer_price ?? 0)"
-        self.tripCurrentFareLabel.text = "C$\(self.currntRequest?.offer_price ?? 0)"
+//        self.tripPriceLabel.text = "C$\(self.currntRequest?.offer_price ?? 0)"
+//        self.tripCurrentFareLabel.text = "C$\(self.currntRequest?.offer_price ?? 0)"
         
     }
     // MARK:- Remove Loader View
@@ -981,11 +1003,39 @@ extension HomeViewController {
         switch status{
             
         case .searching:
-            self.showLoaderView(with: self.currentRequestId)
+           // self.showLoaderView(with: self.currentRequestId)
             //self.perform(#selector(self.validateRequest), with: self, afterDelay: requestInterval)
-        case .accepted, .arrived, .started, .pickedup:
-            self.showRideStatusView(with: request)
+            self.topRideDetailView.alpha = 1
+            self.bottomRaiseView.alpha = 1
+            self.localSelectionParentView.alpha = 0
+            self.roundTripViewBottomConstriant.constant = -80
             
+            if offers.count > 0 {
+                if !self.isOfferAccepted {
+                self.topRideDetailView.alpha = 0
+                self.bottomRaiseView.alpha = 0
+                self.offerView.alpha = 1
+                self.offerView.isHidden = false
+                self.offerTableView.reloadData()
+                }
+            }
+            
+        case .accepted:
+            
+            self.showRideStatusView(with: request)
+         
+
+        case .arrived:
+            print("arrived")
+            self.showRideStatusView(with: request)
+
+        case .started:
+            print("arrived")
+            self.showRideStatusView(with: request)
+
+        case .pickedup:
+            self.showRideStatusView(with: request)
+
         case .dropped:
             
             //            mapViewHelper?.getCurrentLocation(onReceivingLocation: { (location) in
@@ -1133,6 +1183,10 @@ extension HomeViewController {
         }
         if [RideStatus.none, .cancelled].contains(status) {
             self.currentRequestId = 0 // Remove Current Request
+        }
+        if status == .none {
+            self.localSelectionParentView.alpha = 1
+           // self.roundTripViewBottomConstriant.constant = -80
         }
         
         

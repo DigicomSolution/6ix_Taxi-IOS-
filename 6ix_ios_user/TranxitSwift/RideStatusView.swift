@@ -10,6 +10,13 @@ import UIKit
 
 class RideStatusView: UIView {
     
+    @IBOutlet weak var mainViewHeightConstaint: NSLayoutConstraint!
+    @IBOutlet weak var arrivedStatusLabel: UILabel!
+    @IBOutlet weak var arrivedView: UIView!
+    @IBOutlet weak var arrivedViewHieghtConstraint: NSLayoutConstraint!
+    @IBOutlet weak var arivingLabel: UILabel!
+    @IBOutlet weak var ratingLAbel: UILabel!
+    @IBOutlet weak var messageBtn: UIButton!
     @IBOutlet private weak var labelTopTitle : UILabel!
     @IBOutlet private weak var imageViewProvider : UIImageView!
     @IBOutlet private weak var labelProviderName : UILabel!
@@ -52,6 +59,8 @@ class RideStatusView: UIView {
     
     var onClickCancel : (()->Void)?
     var onClickShare : (()->Void)?
+    var onClickMessage : (()->Void)?
+
 
     private var request : Request?
     
@@ -63,6 +72,9 @@ class RideStatusView: UIView {
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         self.imageViewProvider.makeRoundedCorner()
+    }
+    @IBAction func messageBtnTapped(_ sender: UIButton) {
+        onClickMessage?()
     }
 }
 
@@ -76,6 +88,7 @@ extension RideStatusView {
         self.buttonShareRide.addTarget(self, action: #selector(self.shareAction), for: .touchUpInside)
         self.setDesign()
         
+     
     }
     
     // MARK:- Set Designs
@@ -118,9 +131,9 @@ extension RideStatusView {
     }
     
     func setETA(value : String) {
-        
-        self.labelETA.text = " \(Constants.string.ETA.localize()): \(value) "
-       
+        if currentStatus != .pickedup {
+            self.labelETA.text = " \(Constants.string.ETA.localize()): \(value) "
+         }
     }
     
     
@@ -132,23 +145,43 @@ extension RideStatusView {
         self.currentStatus = values.status ?? .none
         
         
+        if currentStatus == .arrived {
+            self.arrivedView.alpha = 1
+            self.arrivedViewHieghtConstraint.constant = 40
+            mainViewHeightConstaint.constant = 250
+            arivingLabel.text = "OTP"
+            labelETA.text = values.otp
+            layoutIfNeeded()
+        }else {
+            arivingLabel.text = "Arriving In"
+            self.arrivedView.alpha = 0
+            labelETA.text = "0Min."
+            self.arrivedViewHieghtConstraint.constant = 0
+            mainViewHeightConstaint.constant = 200
+            layoutIfNeeded()
+        }
+        
+        
+       
+        
+        
 //        self.labelETA.isHidden = !([RideStatus.accepted,.started,,].contains(self.currentStatus))
-        self.labelTopTitle.text = {
-            switch values.status! {
-                case .accepted, .started:
-                self.labelETA.isHidden = false
-                   return Constants.string.driverAccepted.localize()
-                case .arrived:
-                    self.labelETA.isHidden = true
-                   return Constants.string.driverArrived.localize()
-                case .pickedup:
-                   self.labelOtp.isHidden = true
-                self.labelETA.isHidden = true
-                   return Constants.string.youAreOnRide.localize()
-                default:
-                  return .Empty
-               }
-            }()
+//        self.labelTopTitle.text = {
+//            switch values.status! {
+//                case .accepted, .started:
+//                self.labelETA.isHidden = false
+//                   return Constants.string.driverAccepted.localize()
+//                case .arrived:
+//                    self.labelETA.isHidden = false
+//                   return Constants.string.driverArrived.localize()
+//                case .pickedup:
+//                   self.labelOtp.isHidden = true
+//                self.labelETA.isHidden = true
+//                   return Constants.string.youAreOnRide.localize()
+//                default:
+//                  return .Empty
+//               }
+//            }()
         
         Cache.image(forUrl: Common.getImageUrl(for: values.provider?.avatar)) { (image) in
             if image != nil {
@@ -168,6 +201,8 @@ extension RideStatusView {
         
         self.labelProviderName.text = String.removeNil(values.provider?.first_name)+" "+String.removeNil(values.provider?.last_name)
         self.viewRating.rating = Float(values.provider?.rating ?? "0") ?? 0
+        let rate = Float(values.provider?.rating ?? "0") ?? 0
+        self.ratingLAbel.text = "\(rate)"
         self.labelServiceName.text = values.service?.name
         self.labelServiceNumber.text = values.provider_service?.service_number
         self.labelServiceDescription.text = values.provider_service?.service_model

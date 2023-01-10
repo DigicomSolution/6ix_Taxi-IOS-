@@ -156,6 +156,9 @@ PODS:
   - Imaginary (5.0.0):
     - Cache (~> 6.0.0)
   - IQKeyboardManagerSwift (6.5.10)
+  - KRActivityIndicatorView (3.0.7)
+  - KRProgressHUD (3.4.7):
+    - KRActivityIndicatorView (= 3.0.7)
   - KWDrawerController (4.2):
     - KWDrawerController/Core (= 4.2)
   - KWDrawerController/Core (4.2)
@@ -211,6 +214,7 @@ DEPENDENCIES:
   - IHKeyboardAvoiding
   - ImagePicker
   - IQKeyboardManagerSwift
+  - KRProgressHUD
   - KWDrawerController
   - Lightbox
   - lottie-ios
@@ -260,6 +264,8 @@ SPEC REPOS:
     - ImagePicker
     - Imaginary
     - IQKeyboardManagerSwift
+    - KRActivityIndicatorView
+    - KRProgressHUD
     - KWDrawerController
     - leveldb-library
     - Lightbox
@@ -314,6 +320,8 @@ SPEC CHECKSUMS:
   ImagePicker: 1d950bbb2422548ed58791b4ec7f42fe42920511
   Imaginary: cf5e3a7dd6ab1dcbd47ba8ce5edf2307c4e99eb3
   IQKeyboardManagerSwift: 52962c76ab33532f15ad9f3ff4e5715eda5335bb
+  KRActivityIndicatorView: ad69e89c4ce40c986cf580595be4829dcad0e35a
+  KRProgressHUD: a248f0bc6c9c2aed40a37b76e03ffecc7f85c887
   KWDrawerController: 244ecb42378bd13a56826458647b76758db5cb67
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   Lightbox: cc3d5124f024fa8197fd23f913160db1c61a1852
@@ -328,6 +336,6 @@ SPEC CHECKSUMS:
   StripeUICore: b3d64c5cbcb4cacfa88f9a0950cdf1b4df72792e
   SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
 
-PODFILE CHECKSUM: 19e22d71551fc27534dd13514c3d489e9bf21641
+PODFILE CHECKSUM: b38fdc37b03a9f3cfe2458879a2d2bdb59742c05
 
 COCOAPODS: 1.11.3
