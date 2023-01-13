@@ -432,7 +432,7 @@ extension RideNowView : PostViewProtocol {
         }
         if let est = data {
             print(est.base_price)
-           // self.priceTextfield.text = "\(est.base_price ?? 0)"
+         //  self.user.text = "\(est.base_price ?? 0)"
         }
     }
     

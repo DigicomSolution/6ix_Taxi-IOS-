@@ -268,7 +268,7 @@
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(120)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DPc-Mb-JG8">
+                                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(120)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DPc-Mb-JG8">
                                     <rect key="frame" x="122.5" y="45" width="39.5" height="19.5"/>
                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
                                     <color key="textColor" systemColor="opaqueSeparatorColor"/>
@@ -356,6 +356,20 @@
                                         </userDefinedRuntimeAttribute>
                                     </userDefinedRuntimeAttributes>
                                 </button>
+                                <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SQ6-Rs-AmG">
+                                    <rect key="frame" x="312" y="15" width="12" height="12"/>
+                                    <color key="backgroundColor" systemColor="systemRedColor"/>
+                                    <color key="tintColor" systemColor="systemRedColor"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="12" id="Bqh-vX-bvj"/>
+                                        <constraint firstAttribute="height" constant="12" id="KvO-wy-o8e"/>
+                                    </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <real key="value" value="6"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                </imageView>
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
@@ -365,10 +379,12 @@
                                 <constraint firstItem="DPc-Mb-JG8" firstAttribute="centerY" secondItem="hlb-sx-qCz" secondAttribute="centerY" id="6GP-zU-SpG"/>
                                 <constraint firstItem="hF4-7j-ukM" firstAttribute="top" secondItem="vtq-sx-0Sz" secondAttribute="top" id="6sh-ST-qUo"/>
                                 <constraint firstItem="eO3-Zg-zmj" firstAttribute="top" secondItem="VaF-Va-E0i" secondAttribute="bottom" constant="10" id="BOJ-Ki-BbM"/>
+                                <constraint firstItem="SQ6-Rs-AmG" firstAttribute="top" secondItem="LSg-Tb-Hcr" secondAttribute="top" id="CiN-QL-Dh0"/>
                                 <constraint firstItem="C7l-pq-umb" firstAttribute="top" secondItem="hF4-7j-ukM" secondAttribute="bottom" constant="10" id="FcU-Rj-igi"/>
                                 <constraint firstItem="ICD-UG-Uw8" firstAttribute="leading" secondItem="Oey-fu-IdD" secondAttribute="leading" constant="20" id="IsQ-3Y-OxC"/>
                                 <constraint firstAttribute="trailing" secondItem="LSg-Tb-Hcr" secondAttribute="trailing" constant="20" id="J7D-uM-qjA"/>
                                 <constraint firstAttribute="bottom" secondItem="eO3-Zg-zmj" secondAttribute="bottom" constant="10" id="ONK-mw-X33"/>
+                                <constraint firstItem="SQ6-Rs-AmG" firstAttribute="trailing" secondItem="LSg-Tb-Hcr" secondAttribute="trailing" id="RHH-FP-td7"/>
                                 <constraint firstItem="ICD-UG-Uw8" firstAttribute="top" secondItem="Oey-fu-IdD" secondAttribute="top" constant="10" id="SSI-Vp-qqz"/>
                                 <constraint firstItem="huH-Ja-hs7" firstAttribute="leading" secondItem="VaF-Va-E0i" secondAttribute="leading" id="ULb-YG-nBy"/>
                                 <constraint firstItem="bjr-GD-KEM" firstAttribute="centerY" secondItem="VaF-Va-E0i" secondAttribute="centerY" id="Vqx-tV-sGE"/>
@@ -471,6 +487,7 @@
                 <outlet property="labelServiceNumber" destination="VaF-Va-E0i" id="98X-ug-8O6"/>
                 <outlet property="labelTopTitle" destination="aw5-Qu-5Ts" id="dm6-re-fmq"/>
                 <outlet property="mainViewHeightConstaint" destination="Vok-OP-J59" id="gKI-9o-shM"/>
+                <outlet property="messageBadgeView" destination="SQ6-Rs-AmG" id="6mt-wI-lgH"/>
                 <outlet property="messageBtn" destination="LSg-Tb-Hcr" id="sgP-jR-T50"/>
                 <outlet property="ratingLAbel" destination="hlb-sx-qCz" id="IwK-S4-Rgf"/>
                 <outlet property="viewRating" destination="5Tq-8s-WBM" id="IzS-j7-q9z"/>
@@ -484,7 +501,7 @@
         </designable>
     </designables>
     <resources>
-        <image name="arr" width="128" height="128"/>
+        <image name="arr" width="22" height="22"/>
         <image name="call bold" width="16.666666030883789" height="16.666666030883789"/>
         <image name="cross bold" width="16.666666030883789" height="16.666666030883789"/>
         <image name="message" catalog="system" width="128" height="113"/>

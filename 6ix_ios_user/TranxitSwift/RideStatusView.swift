@@ -9,7 +9,8 @@
 import UIKit
 
 class RideStatusView: UIView {
-    
+    @IBOutlet weak var messageBadgeView: UIImageView!
+
     @IBOutlet weak var mainViewHeightConstaint: NSLayoutConstraint!
     @IBOutlet weak var arrivedStatusLabel: UILabel!
     @IBOutlet weak var arrivedView: UIView!

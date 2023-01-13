@@ -24,6 +24,8 @@ var riderStatus : RideStatus = .none // Provider Current Status
 
 class HomeViewController: UIViewController {
     // single trip
+    @IBOutlet weak var raiseButton: UIButton!
+    @IBOutlet weak var downButton: UIButton!
     @IBOutlet weak var roundTripButton: UIButton!
     @IBOutlet weak var singleTripButton: UIButton!
     @IBOutlet weak var cashImage: UIImageView!
@@ -80,6 +82,8 @@ class HomeViewController: UIViewController {
             self.priceTextfield.text = "\(p)"
         }
     }
+    
+    var firtstimatedFare : Double = 0.0
     
     var updatingDestination = false
     var isRoundTrip = false
@@ -146,7 +150,6 @@ class HomeViewController: UIViewController {
     var providerForMsg: Provider!
     
     var stops : [Stops]?
-    
     
     var service_type_id :Int?
     
@@ -284,6 +287,8 @@ class HomeViewController: UIViewController {
         riderStatus = .none
         cashImage.image = UIImage(named: "cash_black")
         cardImage.image = UIImage(named: "card_white")
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleNotification(notification:)), name: Notification.Name("message"), object: nil)
+        downButton.isUserInteractionEnabled = false
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -304,12 +309,17 @@ class HomeViewController: UIViewController {
         }
     }
     
-    
+    @objc func handleNotification(notification: Notification) {
+        print("message noti")
+        self.rideStatusView?.messageBadgeView.isHidden = false
+    }
    
     @objc func isChatPushRedirection() {
-        
+        self.rideStatusView?.messageBadgeView.isHidden = true
+
         if let ChatPage = self.storyboard?.instantiateViewController(withIdentifier: Storyboard.Ids.SingleChatController) as? SingleChatController {
             ChatPage.set(user: self.currentProvider ?? Provider(), requestId: self.currentRequestId)
+            //ChatPage.startObservers()
             let navigation = UINavigationController(rootViewController: ChatPage)
             self.present(navigation, animated: true, completion: nil)
         }
@@ -374,14 +384,16 @@ class HomeViewController: UIViewController {
 
     }
     @IBAction func downFareBtnTapped(_ sender: UIButton) {
-        if curOfferAmountByUser > 5 {
-            curOfferAmountByUser = curOfferAmountByUser - 5
+        if curOfferAmountByUser > self.firtstimatedFare {
+            curOfferAmountByUser = curOfferAmountByUser - 1
         }
         tripCurrentFareLabel.text = "C$\(curOfferAmountByUser)"
     }
     @IBAction func raiseFateBtnTapped(_ sender: UIButton) {
         // request sent
-        curOfferAmountByUser = curOfferAmountByUser + 5
+        downButton.isUserInteractionEnabled = true
+
+        curOfferAmountByUser = curOfferAmountByUser + 1
         tripCurrentFareLabel.text = "C$\(curOfferAmountByUser)"
 
     }
@@ -391,7 +403,8 @@ class HomeViewController: UIViewController {
         self.singleTripButton.backgroundColor = .white
         self.roundTripButton.setTitleColor(.white, for: .normal)
         self.roundTripButton.backgroundColor = .black
-        sendRequest()
+        //sendRequest()
+        self.popUpwaitTime()
     }
     @IBAction func cashBtnTapped(_ sender: UIButton) {
         
@@ -781,6 +794,10 @@ extension HomeViewController {
         vc.callback = { [weak self] (positions,source)in
             
             guard let self = self else { return }
+            
+            if positions.count > 1 {
+                self.moreLabel.text = "+\(positions.count - 1) more"
+            }
             
             self.vehicleCollectionView.isHidden = false
             self.vehicleCollectionView.alpha = 1
@@ -1317,7 +1334,40 @@ extension HomeViewController  {
 //
                  currentStatus = r.status ?? .none
                 print("ride_Status: \(currentStatus)")
-                self.offers = requestModel?.requests ?? []
+                //self.offers = requestModel?.requests ?? []
+                
+                let rs = requestModel?.requests ?? []
+                
+                self.offers.forEach { r in
+                    
+                    if rs.contains(where: { r1 in
+                        r.requestID == r1.requestID
+                    }) {
+                        print("older exist")
+                    } else{
+                        print("older removed")
+                        self.offers.removeAll { r1 in
+                            r.requestID == r1.requestID
+                        }
+                        self.offerTableView.reloadData()
+                    }
+                            
+                }
+                
+                rs.forEach { r in
+                    
+                    if self.offers.contains(where: { r1 in
+                        r.requestID == r1.requestID
+                    }) {
+                        print("new exist older")
+                    }else{
+                        print("new added older")
+                        self.offers.append(r)
+                        self.offerTableView.reloadData()
+                    }
+                    
+                }
+                
                 self.handle(request: r)
 
             }else{
@@ -1379,7 +1429,7 @@ extension HomeViewController  {
                             self.stop1AddressLabel.textColor = .systemGray
                         }
                         if stop2.status == "DROPPED"{
-                            self.stop2AddressLabel.textColor = .systemGray
+                            self.stop2AddressLabel?.textColor = .systemGray
                         }
                         self.stop2StackView?.isHidden = false
                         self.stop3StackView?.isHidden = true
@@ -1402,11 +1452,11 @@ extension HomeViewController  {
                         }
                         if stop3.status == "DROPPED"
                         {
-                            self.stop3AddressLabel.textColor = .systemGray
+                            self.stop3AddressLabel?.textColor = .systemGray
                         }
                         
-                        self.stop2StackView.isHidden = false
-                        self.stop3StackView.isHidden = false
+                        self.stop2StackView?.isHidden = false
+                        self.stop3StackView?.isHidden = false
                     }
                 }
                 
@@ -1598,7 +1648,7 @@ extension HomeViewController  {
     
     func getEstimateFareFor(serviceId : Int, isRoundTrip:Int, waitingMin:Int) {
         
-        DispatchQueue.global(qos: .userInteractive).async {
+        DispatchQueue.main.async {
             
             
             //                guard let sourceLocation = self.sourceLocationDetail?.value?.coordinate, let destinationLocation = self.positions?[0].value?.coordinate, sourceLocation.latitude>0, sourceLocation.longitude>0, destinationLocation.latitude>0, destinationLocation.longitude>0 else {
@@ -1675,8 +1725,9 @@ extension HomeViewController  {
             estimateFare.waiting_minutes = waitingMin
             print("EstimateFare", estimateFare)
             print(estimateFare.JSONRepresentation)
-            self.presenter?.get(api: .estimateFare, parameters: estimateFare.JSONRepresentation)
             
+            self.presenter?.get(api: .estimateFare, parameters: estimateFare.JSONRepresentation)
+        //    self.sendRequest()
         }
     }
     
@@ -1953,12 +2004,15 @@ extension HomeViewController : PostViewProtocol {
     
     func getEstimateFare(api: Base, data: EstimateFare?) {
         if let d = data {
-            self.tripPriceLabel.text = "C$\(d.base_price ?? 0)"
+           
             self.tripDistanceLabel.text = "\(d.distance ?? 0)m"
             self.tripTimeLAbel.text = "\(d.time ?? "-")"
             //self.priceTextfield.text = "\(d.base_price ?? 0)"
            // self.tripCurrentFareLabel.text = "\(d.base_price ?? 0)"
-            self.curOfferAmountByUser = Double(d.base_price ?? 0)
+            let p = (Double(d.distance ?? 0) * Double(d.base_price ?? 0)).precised(2)
+            self.curOfferAmountByUser = Double(p)
+            self.firtstimatedFare = Double(p)
+            self.tripPriceLabel.text = "C$\(p)"
 
         }
         if self.updatingDestination || self.isRoundTrip{
@@ -1967,10 +2021,10 @@ extension HomeViewController : PostViewProtocol {
                     
 //                    let estimatedFareString1 = "\(String.removeNil(User.main.currency)) \(Int(estimated_fare))"
                     let estimatedFareString = "\(String.removeNil(User.main.currency)) \(Formatter.shared.limit(string: "\(estimated_fare)", maximumDecimal: 2))"
-                    self.priceTextfield.text = estimatedFareString
-
+                   // self.priceTextfield.text = estimatedFareString
+                    self.curOfferAmountByUser = Double(estimated_fare)
                     self.popUpEstimatedFare(estimatedFareString: estimatedFareString)
-                    self.isRoundTrip = false
+                    //self.isRoundTrip = false
                 }
             }
         }
@@ -2189,8 +2243,15 @@ extension HomeViewController : UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         if !textField.text!.isEmpty {
-            self.curOfferAmountByUser = Double(textField.text!) ?? 0
-            tripCurrentFareLabel.text = "\(self.curOfferAmountByUser)"
+            let am = Double(textField.text!) ?? 0
+            if firtstimatedFare > 0 {
+                if am < firtstimatedFare {
+                    self.priceTextfield.text = "\(firtstimatedFare)"
+                    self.showSimpleAlert(title: "Update your offer", message: "Minimum offer is c$ \(firtstimatedFare)")
+                    return
+                }
+            }
+            self.curOfferAmountByUser = am
         }
     }
 }

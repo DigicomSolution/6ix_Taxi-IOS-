@@ -21,7 +21,8 @@ enum ChatType : Int {
 }
 
 class SingleChatController: UIViewController {
-    
+    var isChatOpen = false
+
     
     @IBOutlet private var tableView : UITableView!
     @IBOutlet private var textViewSingleChat : UITextView!
@@ -89,6 +90,7 @@ class SingleChatController: UIViewController {
     let imageCellRecieverNib = "ImageCellReciever"
     
     
+    
 }
 
 
@@ -99,6 +101,7 @@ extension SingleChatController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initialLoads()
+        isChatOpen = true
     }
     
     //MARK:- Set Current User Data
@@ -123,6 +126,7 @@ extension SingleChatController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.navigationBar.removeGestureRecognizer(self.navigationTapgesture)
+        isChatOpen = false
     }
     
     
@@ -270,7 +274,7 @@ extension SingleChatController {
  
     // MARK:- Start Observers
     
-    private func startObservers(){
+     func startObservers(){
         
         let chatPath = Common.getChatId(with: requestId)
         
@@ -293,7 +297,6 @@ extension SingleChatController {
                         
                     }
                     self.makeTone()
-                    
                 } else {
                     
                     self.datasource =  childValue
@@ -302,6 +305,10 @@ extension SingleChatController {
                         self.reload()
                     }
                 }
+            
+            if !self.isChatOpen {
+                NotificationCenter.default.post(name: Notification.Name("message"), object: nil)
+            }
             
             
         }

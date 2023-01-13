@@ -82,7 +82,8 @@ extension HomeViewController{
             print(self.service?.waiting_minutes,"Waiting minutes are")
             
             
-          //  self.createRequest(for: self.service!, isScheduled: false, scheduleDate: nil, cardEntity: nil, paymentType: paymentType)
+            //self.createRequest(for: self.service!, isScheduled: false, scheduleDate: nil, cardEntity: nil, paymentType: paymentType)
+            self.sendRequest()
         }
        
         self.popUpDialog.dismiss()
@@ -130,7 +131,7 @@ extension HomeViewController: WaitTimeDelegate{
     
     func confirmTimeAction(minutes: Int) {
         
-        if let id = self.service?.id {
+        if let id = self.selectedService?.id {
             self.popUpDialog.dismiss {
                 self.isRoundTrip = true
                 self.service?.round_trip = 1

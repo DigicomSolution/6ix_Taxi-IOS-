@@ -21,6 +21,19 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="52V-G7-2Rr">
                         <rect key="frame" x="10" y="10" width="300" height="160"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pFt-L8-IXS" customClass="HorizontalProgressBar" customModule="TranxitUser" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="300" height="5"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="5" id="Nht-zV-GSR"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="barColor">
+                                        <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="1Nj-UL-JzV">
                                 <rect key="frame" x="10" y="10.5" width="50" height="49"/>
                                 <color key="tintColor" white="0.66666666669999997" alpha="0.60878728400000004" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -52,7 +65,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(120)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CNI-Oo-4Nu">
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(120)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CNI-Oo-4Nu">
                                 <rect key="frame" x="127.5" y="71.5" width="39.5" height="20"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
                                 <color key="textColor" systemColor="opaqueSeparatorColor"/>
@@ -127,6 +140,8 @@
                         <constraints>
                             <constraint firstItem="CNI-Oo-4Nu" firstAttribute="centerY" secondItem="VBF-vI-p7d" secondAttribute="centerY" id="0kn-WP-PR3"/>
                             <constraint firstItem="VBF-vI-p7d" firstAttribute="centerY" secondItem="Rjv-pH-m4M" secondAttribute="centerY" id="7TY-23-xhZ"/>
+                            <constraint firstAttribute="trailing" secondItem="pFt-L8-IXS" secondAttribute="trailing" id="AsG-hd-d2Z"/>
+                            <constraint firstItem="pFt-L8-IXS" firstAttribute="top" secondItem="52V-G7-2Rr" secondAttribute="top" id="Bbw-jw-99I"/>
                             <constraint firstItem="1Nj-UL-JzV" firstAttribute="leading" secondItem="52V-G7-2Rr" secondAttribute="leading" constant="10" id="Edn-L1-SBX"/>
                             <constraint firstItem="Qv7-jw-dwO" firstAttribute="leading" secondItem="EqN-1r-VeZ" secondAttribute="leading" id="GYU-k2-n6z"/>
                             <constraint firstItem="Mcs-Yi-jqE" firstAttribute="centerY" secondItem="Qv7-jw-dwO" secondAttribute="centerY" id="Gk5-Vn-VFG"/>
@@ -136,6 +151,7 @@
                             <constraint firstItem="VBF-vI-p7d" firstAttribute="leading" secondItem="Rjv-pH-m4M" secondAttribute="trailing" constant="6" id="Ms1-ou-anE"/>
                             <constraint firstAttribute="trailing" secondItem="Kdo-nY-fYX" secondAttribute="trailing" constant="10" id="OAO-dj-UrT"/>
                             <constraint firstAttribute="bottom" secondItem="JwS-1a-phe" secondAttribute="bottom" constant="10" id="Qwn-vw-OwG"/>
+                            <constraint firstItem="pFt-L8-IXS" firstAttribute="leading" secondItem="52V-G7-2Rr" secondAttribute="leading" id="RDR-I7-eq7"/>
                             <constraint firstItem="Ofa-L6-ysG" firstAttribute="leading" secondItem="JwS-1a-phe" secondAttribute="trailing" constant="15" id="RHf-hG-FfQ"/>
                             <constraint firstItem="Kdo-nY-fYX" firstAttribute="top" secondItem="52V-G7-2Rr" secondAttribute="top" constant="15" id="SRR-De-uDn"/>
                             <constraint firstItem="EqN-1r-VeZ" firstAttribute="leading" secondItem="1Nj-UL-JzV" secondAttribute="trailing" constant="10" id="Vcm-sF-xur"/>
@@ -178,6 +194,7 @@
                 <outlet property="timeLAbel" destination="Mcs-Yi-jqE" id="piK-nP-c9j"/>
                 <outlet property="totalReviewCountLabel" destination="CNI-Oo-4Nu" id="rQM-LY-KmJ"/>
                 <outlet property="vehicleNameLabel" destination="Qv7-jw-dwO" id="rEn-GH-5Zd"/>
+                <outlet property="vprogressBar" destination="pFt-L8-IXS" id="AB3-mr-eh3"/>
             </connections>
             <point key="canvasLocation" x="139" y="66"/>
         </tableViewCell>

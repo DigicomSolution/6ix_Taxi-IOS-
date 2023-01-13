@@ -147,6 +147,8 @@ extension HomeViewController {
     }
     
     @objc func openMsgVC() {
+        self.rideStatusView?.messageBadgeView.isHidden = true
+
         if let vc = self.storyboard?.instantiateViewController(withIdentifier: Storyboard.Ids.SingleChatController) as? SingleChatController {
             providerForMsg = self.currntRequest?.provider
             vc.set(user: providerForMsg, requestId: self.currentRequestId)
@@ -210,10 +212,15 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
         
         self.sourceMarker.snippet = service.pricing?.time
         self.mapViewHelper.mapView?.selectedMarker = (service.pricing?.time) == nil ? nil : self.sourceMarker
-        if let p = service.pricing?.estimated_fare , p > 0.0 {
-        //self.priceTextfield.text = "\(service.pricing?.estimated_fare ?? 0)"
-        self.curOfferAmountByUser = Double(p)
-        }
+      
+        let sId = service.id ?? 0
+        self.getEstimateFareFor(serviceId: sId,isRoundTrip:0, waitingMin: 0)
+        
+//        if let p = service.pricing?.estimated_fare , p > 0.0 {
+//        //self.priceTextfield.text = "\(service.pricing?.estimated_fare ?? 0)"
+//        self.curOfferAmountByUser = Double(p)
+//
+//        }
     }
     
 //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -1016,7 +1023,7 @@ extension HomeViewController {
                 self.bottomRaiseView.alpha = 0
                 self.offerView.alpha = 1
                 self.offerView.isHidden = false
-                self.offerTableView.reloadData()
+               // self.offerTableView.reloadData()
                 }
             }
             

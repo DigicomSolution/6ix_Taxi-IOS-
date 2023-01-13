@@ -257,6 +257,8 @@
 		ACE9E0A82957469000BFDB51 /* Offers.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ACE9E0A72957469000BFDB51 /* Offers.storyboard */; };
 		ACE9E0AD295747DA00BFDB51 /* OfferCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACE9E0AB295747DA00BFDB51 /* OfferCell.swift */; };
 		ACE9E0AE295747DA00BFDB51 /* OfferCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ACE9E0AC295747DA00BFDB51 /* OfferCell.xib */; };
+		ACEE2D432970CB2F00A071B0 /* VerticalProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACEE2D412970CB2F00A071B0 /* VerticalProgressBar.swift */; };
+		ACEE2D442970CB2F00A071B0 /* HorizontalProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACEE2D422970CB2F00A071B0 /* HorizontalProgressBar.swift */; };
 		BEE9EF6B242BD30C007B765B /* SignUpMobileNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE9EF6A242BD30C007B765B /* SignUpMobileNumberViewController.swift */; };
 		BEF8DAEB242BFE8B0070FCDE /* VerifyMobileNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEF8DAEA242BFE8A0070FCDE /* VerifyMobileNumberViewController.swift */; };
 		BEF8DAED242BFFB40070FCDE /* OTPStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEF8DAEC242BFFB40070FCDE /* OTPStackView.swift */; };
@@ -537,6 +539,8 @@
 		ACE9E0A72957469000BFDB51 /* Offers.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Offers.storyboard; sourceTree = "<group>"; };
 		ACE9E0AB295747DA00BFDB51 /* OfferCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfferCell.swift; sourceTree = "<group>"; };
 		ACE9E0AC295747DA00BFDB51 /* OfferCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OfferCell.xib; sourceTree = "<group>"; };
+		ACEE2D412970CB2F00A071B0 /* VerticalProgressBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalProgressBar.swift; sourceTree = "<group>"; };
+		ACEE2D422970CB2F00A071B0 /* HorizontalProgressBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HorizontalProgressBar.swift; sourceTree = "<group>"; };
 		BEE9EF6A242BD30C007B765B /* SignUpMobileNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpMobileNumberViewController.swift; sourceTree = "<group>"; };
 		BEF8DAEA242BFE8A0070FCDE /* VerifyMobileNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyMobileNumberViewController.swift; sourceTree = "<group>"; };
 		BEF8DAEC242BFFB40070FCDE /* OTPStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPStackView.swift; sourceTree = "<group>"; };
@@ -1128,6 +1132,7 @@
 		0846135F20627389002616EF /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				ACEE2D402970CAFD00A071B0 /* ProgressBar */,
 				58D7644F2878DF83000236A2 /* ConfiguredTableView */,
 				08E8D79720EB6DEA00DA34AF /* Stripe */,
 				0811B18420E7B55500B78323 /* ImagePicker */,
@@ -1943,6 +1948,15 @@
 			name = cell;
 			sourceTree = "<group>";
 		};
+		ACEE2D402970CAFD00A071B0 /* ProgressBar */ = {
+			isa = PBXGroup;
+			children = (
+				ACEE2D422970CB2F00A071B0 /* HorizontalProgressBar.swift */,
+				ACEE2D412970CB2F00A071B0 /* VerticalProgressBar.swift */,
+			);
+			name = ProgressBar;
+			sourceTree = "<group>";
+		};
 		BEE9EF69242BD2F1007B765B /* SignUpMobileNumber */ = {
 			isa = PBXGroup;
 			children = (
@@ -2322,6 +2336,7 @@
 				086BAF5E200778200087F15A /* Toast.swift in Sources */,
 				38492B3A2000F741001830AD /* JsonSerializing.swift in Sources */,
 				012B3307275230950061AFFA /* DoubleExtension.swift in Sources */,
+				ACEE2D442970CB2F00A071B0 /* HorizontalProgressBar.swift in Sources */,
 				883389591FE8F26D006B6C05 /* Presenter.swift in Sources */,
 				083617BF20B6E3C6009C9658 /* WalletViewController.swift in Sources */,
 				08F2B6B920123D2000CAB24E /* Cache.swift in Sources */,
@@ -2422,6 +2437,7 @@
 				08813E5D213D507700830717 /* ConfigViewController.swift in Sources */,
 				084182B7200F689500527D0D /* PresenterProcessor.swift in Sources */,
 				085C6FF420C194B000C13A74 /* Rate.swift in Sources */,
+				ACEE2D432970CB2F00A071B0 /* VerticalProgressBar.swift in Sources */,
 				08DF19C82006221B00B83AE3 /* AppData.swift in Sources */,
 				0805BDC3209C54F900ACDC38 /* ProfileViewController.swift in Sources */,
 				084EAE9D2270386F00BCBE7C /* CompanyModalObj.swift in Sources */,
@@ -2658,7 +2674,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 6XFW64J744;
 				ENABLE_BITCODE = NO;
@@ -2695,7 +2711,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6XFW64J744;
 				ENABLE_BITCODE = NO;

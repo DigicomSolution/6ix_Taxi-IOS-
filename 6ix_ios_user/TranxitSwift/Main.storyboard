@@ -11,14 +11,14 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
-        <array key="Gilroy-Light.otf">
-            <string>Gilroy-Light</string>
+        <array key="Gilroy-ExtraBold.otf">
+            <string>Gilroy-ExtraBold</string>
         </array>
         <array key="Nunito-Regular.ttf">
             <string>Nunito-Regular</string>
         </array>
-        <array key="Radomir Tinkov - Gilroy-ExtraBold.otf">
-            <string>Gilroy-ExtraBold</string>
+        <array key="Radomir Tinkov - Gilroy-Light.otf">
+            <string>Gilroy-Light</string>
         </array>
         <array key="clanpro_medium.otf">
             <string>ClanPro-Medium</string>
@@ -1073,7 +1073,7 @@
                                             <action selector="sendRaiseSubmBtnTapped:" destination="XRm-gD-70A" eventType="touchUpInside" id="uhc-Xa-HVC"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-5 C$" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F8N-OR-vPp">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-1 C$" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F8N-OR-vPp">
                                         <rect key="frame" x="10" y="49" width="70" height="36"/>
                                         <color key="backgroundColor" systemColor="quaternarySystemFillColor"/>
                                         <constraints>
@@ -1096,7 +1096,7 @@
                                             <action selector="downFareBtnTapped:" destination="XRm-gD-70A" eventType="touchUpInside" id="lcJ-9f-Yv3"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="+5 C$" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WVJ-Jw-5MU">
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="+1 C$" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WVJ-Jw-5MU">
                                         <rect key="frame" x="275" y="49" width="70" height="36"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
@@ -1231,6 +1231,7 @@
                         <outlet property="cashImage" destination="T1a-nz-8PX" id="syw-q6-Aoc"/>
                         <outlet property="changeDestinationButton" destination="aQs-nl-7Uv" id="R8h-8e-gyn"/>
                         <outlet property="constraint" destination="1VX-WP-XOw" id="l8p-Pq-txf"/>
+                        <outlet property="downButton" destination="QtT-7G-cpH" id="EXg-NG-U32"/>
                         <outlet property="estPRiceLabel" destination="hbS-PQ-286" id="gvJ-MZ-sZ0"/>
                         <outlet property="estmView" destination="ZpK-Dk-A7a" id="gUs-mT-Yu1"/>
                         <outlet property="gpsBtn" destination="9hG-We-yep" id="tam-tf-rU2"/>
@@ -1248,6 +1249,7 @@
                         <outlet property="offerTopView" destination="0ao-nf-lWg" id="UtY-cZ-KNW"/>
                         <outlet property="offerView" destination="EwI-KF-qay" id="2gC-Y5-QmL"/>
                         <outlet property="priceTextfield" destination="z6k-j5-anv" id="tlZ-o5-w16"/>
+                        <outlet property="raiseButton" destination="PZM-cT-k0l" id="O3G-QY-XV8"/>
                         <outlet property="roundTripButton" destination="Z9p-1I-CH0" id="zwf-Dh-Dbr"/>
                         <outlet property="roundTripViewBottomConstriant" destination="s4p-ch-HpA" id="ZVU-W7-2Ao"/>
                         <outlet property="sideMenuBtn" destination="Mi3-FP-2o5" id="v7C-6w-lqX"/>
@@ -1477,12 +1479,12 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your wallet amount is" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5hN-iD-CKU">
-                                        <rect key="frame" x="8" y="225" width="359" height="19.5"/>
+                                        <rect key="frame" x="8" y="225" width="359" height="17.5"/>
                                         <fontDescription key="fontDescription" name="ClanPro-Medium" family="Clan Pro" pointSize="15"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$ 0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ttf-Fv-7of" customClass="Label" customModule="TranxitUser" customModuleProvider="target">
-                                        <rect key="frame" x="8" y="249.5" width="359" height="30.5"/>
+                                        <rect key="frame" x="8" y="247.5" width="359" height="28"/>
                                         <fontDescription key="fontDescription" name="ClanPro-Medium" family="Clan Pro" pointSize="24"/>
                                         <color key="textColor" red="0.87843137250000003" green="0.42352941179999998" blue="0.57254901960000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -1493,7 +1495,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fWR-9M-Oac" customClass="View">
-                                        <rect key="frame" x="16" y="310" width="343" height="154.5"/>
+                                        <rect key="frame" x="16" y="305.5" width="343" height="154.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add money" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g4A-K7-LvU">
                                                 <rect key="frame" x="16" y="16" width="311" height="20.5"/>
@@ -1509,17 +1511,17 @@
                                                 </constraints>
                                             </view>
                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="eLG-CS-Cmz">
-                                                <rect key="frame" x="16" y="92" width="311" height="33"/>
+                                                <rect key="frame" x="16" y="94" width="311" height="31"/>
                                                 <subviews>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" placeholder="$ 0" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Olf-rv-tgI">
-                                                        <rect key="frame" x="0.0" y="0.0" width="74" height="33"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="74" height="31"/>
                                                         <color key="backgroundColor" systemColor="quaternarySystemFillColor"/>
                                                         <color key="textColor" systemColor="systemGrayColor"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                                     </textField>
                                                     <button opaque="NO" tag="99" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ofj-cn-8Pa" customClass="Button" customModule="TranxitUser" customModuleProvider="target">
-                                                        <rect key="frame" x="79" y="0.0" width="74" height="33"/>
+                                                        <rect key="frame" x="79" y="0.0" width="74" height="31"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <fontDescription key="fontDescription" name="ClanPro-Medium" family="Clan Pro" pointSize="16"/>
                                                         <state key="normal" title="$99">
@@ -1544,7 +1546,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" tag="199" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SCS-va-z0Z" customClass="Button" customModule="TranxitUser" customModuleProvider="target">
-                                                        <rect key="frame" x="158" y="0.0" width="74" height="33"/>
+                                                        <rect key="frame" x="158" y="0.0" width="74" height="31"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <fontDescription key="fontDescription" name="ClanPro-Medium" family="Clan Pro" pointSize="16"/>
                                                         <state key="normal" title="$199">
@@ -1569,7 +1571,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" tag="299" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gH3-oF-qdw" customClass="Button" customModule="TranxitUser" customModuleProvider="target">
-                                                        <rect key="frame" x="237" y="0.0" width="74" height="33"/>
+                                                        <rect key="frame" x="237" y="0.0" width="74" height="31"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <fontDescription key="fontDescription" name="ClanPro-Medium" family="Clan Pro" pointSize="16"/>
                                                         <state key="normal" title="$299">
@@ -1647,7 +1649,7 @@
                                         </connections>
                                     </button>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wef-DI-wcp">
-                                        <rect key="frame" x="16" y="480.5" width="343" height="51.5"/>
+                                        <rect key="frame" x="16" y="476" width="343" height="51.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZZK-X8-Fpj">
                                                 <rect key="frame" x="42" y="26" width="233" height="0.0"/>
@@ -4618,7 +4620,7 @@
             <size key="intrinsicContentSize" width="128" height="128"/>
         </designable>
         <designable name="Ofj-cn-8Pa">
-            <size key="intrinsicContentSize" width="31" height="33"/>
+            <size key="intrinsicContentSize" width="30" height="31"/>
         </designable>
         <designable name="Pab-Kw-gft">
             <size key="intrinsicContentSize" width="56" height="33"/>
@@ -4627,13 +4629,13 @@
             <size key="intrinsicContentSize" width="128" height="128"/>
         </designable>
         <designable name="SCS-va-z0Z">
-            <size key="intrinsicContentSize" width="42" height="33"/>
+            <size key="intrinsicContentSize" width="36" height="31"/>
         </designable>
         <designable name="SG2-M3-Y2g">
             <size key="intrinsicContentSize" width="64" height="64"/>
         </designable>
         <designable name="Ttf-Fv-7of">
-            <size key="intrinsicContentSize" width="38" height="30.5"/>
+            <size key="intrinsicContentSize" width="33.5" height="28"/>
         </designable>
         <designable name="YRa-2v-PqF">
             <size key="intrinsicContentSize" width="53" height="30"/>
@@ -4648,7 +4650,7 @@
             <size key="intrinsicContentSize" width="128" height="128"/>
         </designable>
         <designable name="gH3-oF-qdw">
-            <size key="intrinsicContentSize" width="42" height="33"/>
+            <size key="intrinsicContentSize" width="36" height="31"/>
         </designable>
         <designable name="jzw-ee-57j">
             <size key="intrinsicContentSize" width="45" height="33"/>

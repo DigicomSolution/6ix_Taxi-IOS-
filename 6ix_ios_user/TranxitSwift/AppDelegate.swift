@@ -39,6 +39,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         IQKeyboardManager.shared.enable = true
         
+        if #available(iOS 13.0, *) {
+            window?.overrideUserInterfaceStyle = .light
+        } else {
+            // Fallback on earlier versions
+        }
+        
         guard !DTTJailbreakDetection.isJailbroken() else{
             let sb = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "jailbrokenDeviceVC")
             self.window?.rootViewController = sb

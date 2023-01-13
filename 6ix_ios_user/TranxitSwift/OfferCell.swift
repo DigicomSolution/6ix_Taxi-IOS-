@@ -11,6 +11,7 @@ import CoreLocation
 import Alamofire
 
 class OfferCell: UITableViewCell {
+    @IBOutlet weak var vprogressBar: HorizontalProgressBar!
 
     @IBOutlet weak var declineButton: UIButton!
     @IBOutlet weak var acceptButton: UIButton!
@@ -29,6 +30,9 @@ class OfferCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        vprogressBar.pgHeight = 5
+        vprogressBar.pgWidth = self.frame.width
+        vprogressBar.frameBold = 0
     }
    
     
@@ -48,7 +52,7 @@ class OfferCell: UITableViewCell {
     
     
     func setData(item: Offer, currency: String, currentLocation: CLLocation?){
-        
+        stopProgress()
         priceLabel.text = "\(currency)\(item.offerPrice ?? 0)"
         driverNameLabel.text = "\(item.provider?.firstName ?? "-" ) \(item.provider?.lastName ?? "-" )"
         vehicleNameLabel.text = item.provider?.service?.service_number ?? ""
@@ -64,8 +68,15 @@ class OfferCell: UITableViewCell {
                 getTimeAndDistance(currLocation: l1, destLocatoon: provLocation)
             }
         }
+        startProgress()
     }
     
+    func startProgress(){
+        vprogressBar.startAnimation(type: "normal", duration: 45)
+    }
+    func stopProgress(){
+        vprogressBar.stopAnimation()
+    }
     
     func getTimeAndDistance(currLocation : CLLocation, destLocatoon:CLLocation) {
         
