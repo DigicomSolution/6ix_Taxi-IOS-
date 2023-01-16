@@ -31,7 +31,7 @@ let defaultMapLocation = LocationCoordinate(latitude: 43.651070, longitude: -79.
 
 
 let baseUrl = "https://6ixtaxi.com" //"https://6ixtaxi.com"
-let baseUrlStaging = "http://l7.6ixtaxi.com"       //"https://l7.6ixtaxi.com"
+let baseUrlStaging = "https://6ixtaxi.com" //"http://l7.6ixtaxi.com"       //"https://l7.6ixtaxi.com"
 
 let passwordLengthMax = 10
 //let distanceType = "km"
