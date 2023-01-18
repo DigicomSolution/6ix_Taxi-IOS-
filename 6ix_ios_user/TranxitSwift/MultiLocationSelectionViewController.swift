@@ -67,6 +67,7 @@ class MultiLocationSelectionViewController: UIViewController,GMSMapViewDelegate 
              DispatchQueue.main.async {
                 print("Reloaded")
                 self.tableViewBottom.reloadData()
+                
              }
         }
     }
@@ -81,7 +82,7 @@ class MultiLocationSelectionViewController: UIViewController,GMSMapViewDelegate 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.viewBottom.alpha = 0
         addMapView()
 //        if #available(iOS 13.0, *) {
 //            self.navigationController?.navigationBar.barTintColor = .systemBackground
@@ -470,6 +471,7 @@ extension MultiLocationSelectionViewController: UITableViewDelegate,UITableViewD
         }
         
         self.select(at: indexPath)
+        self.viewBottom.alpha = 0
     }
     
     private func getCell(for indexPath : IndexPath)->UITableViewCell{
@@ -788,6 +790,7 @@ extension MultiLocationSelectionViewController: UITextFieldDelegate
         }
         
         self.getPredications(from: searchText)
+        self.viewBottom.alpha = 1
     }
     
    
@@ -874,7 +877,7 @@ extension MultiLocationSelectionViewController
     
     func animateKeyboardAppearance(constant: CGFloat){
         UIView.animate(withDuration: 0.1) {
-            self.bottomViewBottomConstraint.constant = constant
+            self.bottomViewBottomConstraint?.constant = constant
             self.view.layoutIfNeeded()
         }
     }

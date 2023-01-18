@@ -24,6 +24,8 @@ var riderStatus : RideStatus = .none // Provider Current Status
 
 class HomeViewController: UIViewController {
     // single trip
+    @IBOutlet weak var driverFindingLabel: UILabel!
+    @IBOutlet weak var offerCancelButton: UIButton!
     @IBOutlet weak var raiseButton: UIButton!
     @IBOutlet weak var downButton: UIButton!
     @IBOutlet weak var roundTripButton: UIButton!
@@ -32,6 +34,7 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var cardImage: UIImageView!
     @IBOutlet weak var vehicleNameLabel: UILabel!
    
+    @IBOutlet weak var tripTypeLabel: UILabel!
     @IBOutlet weak var tripCurrentFareLabel: UILabel!
     @IBOutlet weak var addFareLabel: UILabel!
     @IBOutlet weak var minusFareLabel: UILabel!
@@ -40,7 +43,6 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var tripDesLabel: UILabel!
     @IBOutlet weak var tripSourceAddressLabel: UILabel!
     @IBOutlet weak var tripPriceLabel: UILabel!
-    
     
     @IBOutlet weak var locationViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var offerTopView: NSLayoutConstraint!
@@ -59,10 +61,13 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var roundTripViewBottomConstriant: NSLayoutConstraint!
     @IBOutlet weak var locationViewButtonConstraint: NSLayoutConstraint!
     @IBOutlet weak var vehicleCollectionView: ScalingCarouselView!
-    @IBOutlet weak var offerCancelButton: UIButton!
+   // @IBOutlet weak var offerCancelButton: UIButton!
     @IBOutlet weak var offerTableView: UITableView!
     @IBOutlet weak var offerView: UIView!
+    var isEstimationCall = false
+    var isAlreadyPopulated = false
     
+    var currentEstimation : EstimateFare?
     var currentUserMapLocatio : CLLocationCoordinate2D?
     var currency : String?
     var isOfferAccepted = false
@@ -70,7 +75,7 @@ class HomeViewController: UIViewController {
     var currntRequest : Request?
     var rides = [Service]()
     var offers = [Offer]()
-    var selectedVehIndex = -1
+    var selectedVehIndex = 0
     var newPaymentType : PaymentType = .CASH
     var selectedService : Service?
     var curOfferAmountByUser : Double = 0.0
@@ -80,6 +85,7 @@ class HomeViewController: UIViewController {
             self.tripCurrentFareLabel.text = "C$\(p)"
             self.tripPriceLabel.text = "C$\(p)"
             self.priceTextfield.text = "\(p)"
+            
         }
     }
     
@@ -171,7 +177,12 @@ class HomeViewController: UIViewController {
     
     var isOnBooking = false {  // Boolean to handle back using side menu button
         didSet {
-            sideMenuBtn.setImage(isOnBooking ? #imageLiteral(resourceName: "back-icon") : #imageLiteral(resourceName: "menu_icon"), for: .normal)
+            
+            if topRideDetailView.alpha == 1 {
+                sideMenuBtn.setTitle("Cancel", for: .normal)
+            }else{
+                sideMenuBtn.setImage(isOnBooking ? #imageLiteral(resourceName: "back-icon") : #imageLiteral(resourceName: "menu_icon"), for: .normal)
+            }
         }
     }
     
@@ -368,6 +379,7 @@ class HomeViewController: UIViewController {
         self.singleTripButton.backgroundColor = .black
         self.roundTripButton.setTitleColor(.black, for: .normal)
         self.roundTripButton.backgroundColor = .white
+        self.tripTypeLabel.text = "Single Trip"
 
         sendRequest()
         
@@ -377,6 +389,9 @@ class HomeViewController: UIViewController {
         topRideDetailView.alpha = 0
         bottomRaiseView.alpha = 0
         offerCancelButton.alpha = 0
+        offerCancelButton.alpha = 0
+        driverFindingLabel.alpha = 0
+        self.cancelRequest()
     }
     @IBAction func sendRaiseSubmBtnTapped(_ sender: UIButton) {
         self.cancelRequest()
@@ -405,6 +420,8 @@ class HomeViewController: UIViewController {
         self.roundTripButton.backgroundColor = .black
         //sendRequest()
         self.popUpwaitTime()
+        self.tripTypeLabel.text = "Round Trip"
+        self.isAlreadyPopulated = false
     }
     @IBAction func cashBtnTapped(_ sender: UIButton) {
         
@@ -425,9 +442,11 @@ class HomeViewController: UIViewController {
     @IBAction func offerCancelBtnTapped1(_ sender: UIButton) {
         //offerView.isHidden.toggle()
         offerView.alpha = 0
-        offerCancelButton.isHidden = true
+        offerCancelButton.alpha = 0
     }
     
+    @IBAction func cancelRideBtnTapped(_ sender: UIButton) {
+    }
     func sendRequest(){
         UserDefaults.standard.setValue(true, forKey: "onRide")
         self.service?.round_trip = 0
@@ -719,7 +738,7 @@ extension HomeViewController {
         } else {
             
             self.drawPolyline(isReroute: false) // Draw polyline between source and destination
-            self.getServicesList() // get Services
+          //  self.getServicesList() // get Services
         }
         
     }
@@ -798,6 +817,10 @@ extension HomeViewController {
             if positions.count > 1 {
                 self.moreLabel.text = "+\(positions.count - 1) more"
             }
+//            DispatchQueue.main.async {
+//                self.callFareApi(index: 0)
+//
+//            }
             
             self.vehicleCollectionView.isHidden = false
             self.vehicleCollectionView.alpha = 1
@@ -1116,7 +1139,9 @@ extension HomeViewController {
     // MARK:- SideMenu Button Action
     
     @IBAction private func sideMenuAction(){
-        self.cancelRequest()
+        if self.topRideDetailView.alpha == 1{
+            self.cancelRequest()
+        }
 
         sideMenuBtn.addPressAnimation()
         
@@ -1157,7 +1182,8 @@ extension HomeViewController {
         self.selectedService = nil
         self.selectedVehIndex = -1
         self.curOfferAmountByUser = 0.0
-    
+        offerCancelButton.alpha = 0
+        driverFindingLabel.alpha = 0
     }
     
     
@@ -1209,7 +1235,7 @@ extension HomeViewController : GMSMapViewDelegate {
             
             func getUpdate(on location : CLLocationCoordinate2D, completion :@escaping ((LocationDetail)->Void)) {
                 self.drawPolyline(isReroute: false)
-                self.getServicesList()
+           //     self.getServicesList()
                 self.mapViewHelper.getPlaceAddress(from: location, on: { (locationDetail) in
                     completion(locationDetail)
                 })
@@ -1303,6 +1329,8 @@ extension HomeViewController : GMSMapViewDelegate {
             self.bottomRaiseView.alpha =  1
             self.topRideDetailView.alpha = 1
             self.roundTripViewBottomConstriant.constant = 20
+            offerCancelButton.alpha = 1
+            driverFindingLabel.alpha = 1
         }
     }
     
@@ -1725,6 +1753,7 @@ extension HomeViewController  {
             estimateFare.waiting_minutes = waitingMin
             print("EstimateFare", estimateFare)
             print(estimateFare.JSONRepresentation)
+            KRProgressHUD.show()
             
             self.presenter?.get(api: .estimateFare, parameters: estimateFare.JSONRepresentation)
         //    self.sendRequest()
@@ -1791,10 +1820,10 @@ extension HomeViewController  {
             //                request.d_longitude = self.destinationLocationDetail?.coordinate.longitude
             //request.service_type_id = service.id
             request.service_type = service.id
-            request.is_round = service.round_trip
+            request.is_round =  self.isRoundTrip ? 1 : 0 //service.round_trip
             request.waiting_minutes = service.waiting_minutes
             request.payment_mode = paymentType
-            request.distance = "\(service.pricing?.distance ?? 0)"
+            request.distance = "\(service.pricing?.distance ?? 0)" //currentEstimation
             request.use_wallet = service.pricing?.useWallet
             request.card_id = entity?.card_id
             request.offer_price =  price
@@ -1890,7 +1919,7 @@ extension HomeViewController  {
 extension HomeViewController : PostViewProtocol {
     
     func onError(api: Base, message: String, statusCode code: Int) {
-        
+        KRProgressHUD.dismiss()
         DispatchQueue.main.async {
             self.loader.isHidden = true
             if api == .locationServicePostDelete {
@@ -1899,6 +1928,7 @@ extension HomeViewController : PostViewProtocol {
                 if code != StatusCode.notreachable.rawValue && api != .checkRequest && api != .cancelRequest{
                     print(api)
                     showAlert(message: message, okHandler: nil, fromView: self)
+                    self.clearAllView()
                 }
                 
                 
@@ -1916,6 +1946,8 @@ extension HomeViewController : PostViewProtocol {
             DispatchQueue.main.async {  // Show Services
                 self.showRideNowView(with: data)
             }
+            self.rides = data
+            self.callFareApi(index: 0)
         }else if api == .getProviders {  // Show Providers in Current Location
             DispatchQueue.main.async {
                 self.showProviderInCurrentLocation(with: data)
@@ -1954,6 +1986,8 @@ extension HomeViewController : PostViewProtocol {
             self.bottomRaiseView.alpha = 1
             self.topRideDetailView.alpha = 1
             self.roundTripViewBottomConstriant.constant = -80
+            offerCancelButton.alpha = 1
+            driverFindingLabel.alpha = 1
            // self.tripCurrentFareLabel.text = "\(curOfferAmountByUser)"
         }
         
@@ -2003,31 +2037,43 @@ extension HomeViewController : PostViewProtocol {
     
     
     func getEstimateFare(api: Base, data: EstimateFare?) {
+        KRProgressHUD.dismiss()
         if let d = data {
-           
-            self.tripDistanceLabel.text = "\(d.distance ?? 0)m"
-            self.tripTimeLAbel.text = "\(d.time ?? "-")"
-            //self.priceTextfield.text = "\(d.base_price ?? 0)"
-           // self.tripCurrentFareLabel.text = "\(d.base_price ?? 0)"
-            let p = (Double(d.distance ?? 0) * Double(d.base_price ?? 0)).precised(2)
-            self.curOfferAmountByUser = Double(p)
-            self.firtstimatedFare = Double(p)
-            self.tripPriceLabel.text = "C$\(p)"
+           // if isEstimationCall {
+            self.currentEstimation = data
+                isEstimationCall = false
+                self.tripDistanceLabel.text = "\(d.distance ?? 0)m"
+                self.tripTimeLAbel.text = "\(d.time ?? "-")"
+                //self.priceTextfield.text = "\(d.base_price ?? 0)"
+                // self.tripCurrentFareLabel.text = "\(d.base_price ?? 0)"
+                let p = d.estimated_fare ?? 0 //(Double(d.distance ?? 0) * Double(d.base_price ?? 0)).precised(2)
+                self.curOfferAmountByUser = Double(p)
+                self.firtstimatedFare = Double(p)
+                self.tripPriceLabel.text = "C$\(p)"
+                let estimatedFareString = "\(String.removeNil(User.main.currency)) \(Formatter.shared.limit(string: "\(p)", maximumDecimal: 2))"
+                if self.isRoundTrip {
+                    if !self.isAlreadyPopulated {
+                        self.isAlreadyPopulated = true
+                        self.popUpEstimatedFare(estimatedFareString: estimatedFareString)
+                    }
+                }
+
+            //}
 
         }
-        if self.updatingDestination || self.isRoundTrip{
-            if data != nil {
-                if let estimated_fare = data?.estimated_fare{
-                    
-//                    let estimatedFareString1 = "\(String.removeNil(User.main.currency)) \(Int(estimated_fare))"
-                    let estimatedFareString = "\(String.removeNil(User.main.currency)) \(Formatter.shared.limit(string: "\(estimated_fare)", maximumDecimal: 2))"
-                   // self.priceTextfield.text = estimatedFareString
-                    self.curOfferAmountByUser = Double(estimated_fare)
-                    self.popUpEstimatedFare(estimatedFareString: estimatedFareString)
-                    //self.isRoundTrip = false
-                }
-            }
-        }
+//        if self.updatingDestination || self.isRoundTrip {
+//            if data != nil {
+//                if let estimated_fare = data?.estimated_fare{
+//
+////                    let estimatedFareString1 = "\(String.removeNil(User.main.currency)) \(Int(estimated_fare))"
+//                    let estimatedFareString = "\(String.removeNil(User.main.currency)) \(Formatter.shared.limit(string: "\(estimated_fare)", maximumDecimal: 2))"
+//                   // self.priceTextfield.text = estimatedFareString
+//                    self.curOfferAmountByUser = Double(estimated_fare)
+//                    self.popUpEstimatedFare(estimatedFareString: estimatedFareString)
+//                    //self.isRoundTrip = false
+//                }
+//            }
+//        }
     }
     
     

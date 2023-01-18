@@ -189,32 +189,13 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
         }
         
      
-       
-        
-        
-     
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
-        let service = self.rides[indexPath.row]
-        self.selectedService = service
-        self.roundTripViewBottomConstriant.constant = 20
-        selectedVehIndex = indexPath.row
-        self.vehicleCollectionView.reloadData()
-                
-       // self.isOnBooking = true
-
-        self.showEstimationView(with: service)
-      
-      //  self.popUpCableView(service: service)
-        
-        self.sourceMarker.snippet = service.pricing?.time
-        self.mapViewHelper.mapView?.selectedMarker = (service.pricing?.time) == nil ? nil : self.sourceMarker
-      
-        let sId = service.id ?? 0
-        self.getEstimateFareFor(serviceId: sId,isRoundTrip:0, waitingMin: 0)
+       
+        callFareApi(index: indexPath.row)
         
 //        if let p = service.pricing?.estimated_fare , p > 0.0 {
 //        //self.priceTextfield.text = "\(service.pricing?.estimated_fare ?? 0)"
@@ -226,6 +207,22 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
 //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 //      //  return CGSize(width: 300, height: 260)
 //    }
+    func callFareApi(index: Int) {
+        self.isEstimationCall = true
+        let service = self.rides[index]
+        self.selectedService = service
+        self.roundTripViewBottomConstriant.constant = 20
+        selectedVehIndex = index
+        self.vehicleCollectionView.reloadData()
+                
+        self.showEstimationView(with: service)
+        
+        self.sourceMarker.snippet = service.pricing?.time
+        self.mapViewHelper.mapView?.selectedMarker = (service.pricing?.time) == nil ? nil : self.sourceMarker
+        
+        let sId = service.id ?? 0
+        self.getEstimateFareFor(serviceId: sId,isRoundTrip:0, waitingMin: 0)
+    }
 }
 extension HomeViewController {
     
@@ -825,7 +822,8 @@ extension HomeViewController {
         bottomRaiseView.alpha = 1
         offerCancelButton.alpha = 1
         self.roundTripViewBottomConstriant.constant = -80
-        
+        offerCancelButton.alpha = 1
+        driverFindingLabel.alpha = 1
         localSelectionParentView.isHidden = true
         vehicleCollectionView.isHidden = true
         
@@ -1016,11 +1014,14 @@ extension HomeViewController {
             self.bottomRaiseView.alpha = 1
             self.localSelectionParentView.alpha = 0
             self.roundTripViewBottomConstriant.constant = -80
-            
+            offerCancelButton.alpha = 1
+            driverFindingLabel.alpha = 1
             if offers.count > 0 {
                 if !self.isOfferAccepted {
                 self.topRideDetailView.alpha = 0
                 self.bottomRaiseView.alpha = 0
+                    offerCancelButton.alpha = 0
+                    driverFindingLabel.alpha = 0
                 self.offerView.alpha = 1
                 self.offerView.isHidden = false
                // self.offerTableView.reloadData()
@@ -1174,7 +1175,7 @@ extension HomeViewController {
                     self.rideStatusView = nil
                 })
                 
-                self.getServicesList()
+             //   self.getServicesList()
                 UserDefaults.standard.setValue(false, forKey: "onRide")
             }else{
                 self.removeRideStatusView()
