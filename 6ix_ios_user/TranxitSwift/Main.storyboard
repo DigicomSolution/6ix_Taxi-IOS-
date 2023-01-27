@@ -11,14 +11,14 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
+        <array key="Gilroy-ExtraBold.otf">
+            <string>Gilroy-ExtraBold</string>
+        </array>
         <array key="Gilroy-Light.otf">
             <string>Gilroy-Light</string>
         </array>
         <array key="Nunito-Regular.ttf">
             <string>Nunito-Regular</string>
-        </array>
-        <array key="Radomir Tinkov - Gilroy-ExtraBold.otf">
-            <string>Gilroy-ExtraBold</string>
         </array>
         <array key="clanpro_medium.otf">
             <string>ClanPro-Medium</string>
@@ -341,8 +341,8 @@
                                                         <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="+ 2 More Stops" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J6B-TW-yMl">
-                                                        <rect key="frame" x="207" y="32" width="68" height="12"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J6B-TW-yMl">
+                                                        <rect key="frame" x="275" y="38" width="0.0" height="0.0"/>
                                                         <fontDescription key="fontDescription" name="Gilroy-Light" family="Gilroy" pointSize="10"/>
                                                         <color key="textColor" red="0.53725490200000003" green="0.53725490200000003" blue="0.53725490200000003" alpha="1" colorSpace="calibratedRGB"/>
                                                         <nil key="highlightedColor"/>
@@ -4607,10 +4607,10 @@
             <size key="intrinsicContentSize" width="128" height="128"/>
         </designable>
         <designable name="951-ob-9Bv">
-            <size key="intrinsicContentSize" width="56" height="33"/>
+            <size key="intrinsicContentSize" width="49" height="31"/>
         </designable>
         <designable name="9a6-qW-WM1">
-            <size key="intrinsicContentSize" width="56" height="33"/>
+            <size key="intrinsicContentSize" width="49" height="31"/>
         </designable>
         <designable name="9hG-We-yep">
             <size key="intrinsicContentSize" width="20" height="22"/>
@@ -4619,22 +4619,22 @@
             <size key="intrinsicContentSize" width="128" height="128"/>
         </designable>
         <designable name="Ofj-cn-8Pa">
-            <size key="intrinsicContentSize" width="31" height="33"/>
+            <size key="intrinsicContentSize" width="30" height="31"/>
         </designable>
         <designable name="Pab-Kw-gft">
-            <size key="intrinsicContentSize" width="56" height="33"/>
+            <size key="intrinsicContentSize" width="49" height="31"/>
         </designable>
         <designable name="Qve-wo-QF6">
             <size key="intrinsicContentSize" width="128" height="128"/>
         </designable>
         <designable name="SCS-va-z0Z">
-            <size key="intrinsicContentSize" width="42" height="33"/>
+            <size key="intrinsicContentSize" width="36" height="31"/>
         </designable>
         <designable name="SG2-M3-Y2g">
             <size key="intrinsicContentSize" width="64" height="64"/>
         </designable>
         <designable name="Ttf-Fv-7of">
-            <size key="intrinsicContentSize" width="38" height="30.5"/>
+            <size key="intrinsicContentSize" width="33.5" height="28"/>
         </designable>
         <designable name="YRa-2v-PqF">
             <size key="intrinsicContentSize" width="53" height="30"/>
@@ -4649,10 +4649,10 @@
             <size key="intrinsicContentSize" width="128" height="128"/>
         </designable>
         <designable name="gH3-oF-qdw">
-            <size key="intrinsicContentSize" width="42" height="33"/>
+            <size key="intrinsicContentSize" width="36" height="31"/>
         </designable>
         <designable name="jzw-ee-57j">
-            <size key="intrinsicContentSize" width="45" height="33"/>
+            <size key="intrinsicContentSize" width="40" height="31"/>
         </designable>
         <designable name="zjg-fn-Qvq">
             <size key="intrinsicContentSize" width="36" height="30"/>

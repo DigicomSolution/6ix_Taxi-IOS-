@@ -1184,6 +1184,7 @@ extension HomeViewController {
         self.curOfferAmountByUser = 0.0
         offerCancelButton.alpha = 0
         driverFindingLabel.alpha = 0
+        self.moreLabel.text = ""
     }
     
     
