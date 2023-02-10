@@ -239,7 +239,6 @@ class STPPostalCodeValidator: NSObject {
             "HK",
             "IE",
             "JM",
-            "JP",
             "KE",
             "KI",
             "KM",

@@ -181,7 +181,7 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "VehicleColCell", for: indexPath) as! VehicleColCell
         let item = self.rides[indexPath.row]
-        cell.setData(ride: item)
+        cell.setData(ride: item, indexPath: indexPath)
         if selectedVehIndex == indexPath.row {
             cell.selectedButton.isHidden = false
         }else {
@@ -211,7 +211,7 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
         self.isEstimationCall = true
         let service = self.rides[index]
         self.selectedService = service
-        self.roundTripViewBottomConstriant.constant = 20
+        self.roundTripViewBottomConstriant.constant = 10
         selectedVehIndex = index
         self.vehicleCollectionView.reloadData()
                 
@@ -252,7 +252,7 @@ extension HomeViewController {
             self.isOnBooking = true
             self.rideNowView?.onClickProceed = { [weak self] service in
                 
-                self?.roundTripViewBottomConstriant.constant = 20
+                self?.roundTripViewBottomConstriant.constant = 10
                 
                self?.showEstimationView(with: service) // new
             
@@ -942,13 +942,13 @@ extension HomeViewController {
         stop2AddressLabel?.text = ""
         stop3AddressLabel?.text = ""
         if #available(iOS 13.0, *) {
-            stop1AddressLabel?.textColor = .label
-            stop2AddressLabel?.textColor = .label
-            stop3AddressLabel?.textColor = .label
+            stop1AddressLabel?.textColor = .black//.label
+            stop2AddressLabel?.textColor = .black//.label
+            stop3AddressLabel?.textColor = .black//.label
         } else {
-            stop1AddressLabel.textColor = .black
-            stop2AddressLabel.textColor = .black
-            stop3AddressLabel.textColor = .black
+            stop1AddressLabel?.textColor = .black
+            stop2AddressLabel?.textColor = .black
+            stop3AddressLabel?.textColor = .black
         }
         self.stop2StackView?.isHidden = true
         self.stop3StackView?.isHidden = true
@@ -1010,6 +1010,7 @@ extension HomeViewController {
         case .searching:
            // self.showLoaderView(with: self.currentRequestId)
             //self.perform(#selector(self.validateRequest), with: self, afterDelay: requestInterval)
+            self.offerView.alpha = 0
             self.topRideDetailView.alpha = 1
             self.bottomRaiseView.alpha = 1
             self.localSelectionParentView.alpha = 0

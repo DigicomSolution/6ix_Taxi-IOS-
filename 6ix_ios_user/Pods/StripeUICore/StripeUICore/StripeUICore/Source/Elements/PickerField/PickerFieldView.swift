@@ -15,65 +15,39 @@ protocol PickerFieldViewDelegate: AnyObject {
 /**
  An input field that looks like TextFieldView but whose input is another view.
  
- - Note: This view has padding according to `directionalLayoutMargins`.
  For internal SDK use only
  */
 @objc(STP_Internal_PickerFieldView)
 final class PickerFieldView: UIView {
-    // MARK: - Views
     private lazy var toolbar = DoneButtonToolbar(delegate: self)
-    private lazy var textField: PickerTextField = {
+    lazy var textField: PickerTextField = {
         let textField = PickerTextField()
         textField.inputView = pickerView
         textField.adjustsFontForContentSizeCategory = true
-        textField.font = theme.fonts.subheadline
+        textField.font = ElementsUITheme.current.fonts.subheadline
         textField.inputAccessoryView = toolbar
         textField.delegate = self
         return textField
     }()
-    private lazy var floatingPlaceholderTextFieldView: FloatingPlaceholderTextFieldView? = {
-        guard let label = label else {
-            return nil
-        }
-        let floatingPlaceholderView = FloatingPlaceholderTextFieldView(textField: textField, theme: theme)
-        floatingPlaceholderView.placeholder = label
-        return floatingPlaceholderView
-    }()
-    private lazy var chevronImageView: UIImageView? = {
-        guard shouldShowChevron else {
-            return nil
-        }
-        let imageView = UIImageView(image: Image.icon_chevron_down.makeImage().withRenderingMode(.alwaysTemplate))
-        imageView.setContentHuggingPriority(.required, for: .horizontal)
-        imageView.tintColor = theme.colors.textFieldText
-        return imageView
-    }()
-    private lazy var hStackView: UIStackView = {
-        let hStackView = UIStackView(
-            arrangedSubviews: [floatingPlaceholderTextFieldView ?? textField, chevronImageView].compactMap { $0 }
-        )
-        hStackView.alignment = .center
-        hStackView.spacing = 6
-        return hStackView
-    }()
-    private let pickerView: UIView
-    
-    // MARK: - Other private properties
-    private let label: String?
+    private var textFieldView: FloatingPlaceholderTextFieldView? = nil
+
     private let shouldShowChevron: Bool
-    private weak var delegate: PickerFieldViewDelegate?
-    private let theme: ElementsUITheme
-    
-    // MARK: - Public properties
+    private let pickerView: UIView
+    weak var delegate: PickerFieldViewDelegate?
+
     var displayText: String? {
         get {
             return textField.text
         }
         set {
-            if newValue != textField.text {
-                invalidateIntrinsicContentSize()
-            }
             textField.text = newValue
+            textFieldView?.updatePlaceholder(animated: true)
+            
+            // Note: Calling `layoutIfNeeded` when outside of the window
+            // heirarchy causes autolayout errors
+            if window != nil {
+                textField.layoutIfNeeded() // Fixes an issue on iOS 15 where setting textField properties causes it to lay out from zero size.
+            }
         }
     }
     
@@ -85,31 +59,54 @@ final class PickerFieldView: UIView {
             textField.accessibilityLabel = newValue
         }
     }
-    
+
     // MARK: - Initializers
-    
+
     /**
-     - Parameter label: The label of this picker
-     - Parameter shouldShowChevron: Whether a downward chevron should be displayed in this field
-     - Parameter pickerView: A `UIPicker` or `UIDatePicker` view that opens when this field becomes first responder
-     - Parameter delegate: Delegate for this view
-     - Parameter theme: Theme for the picker field
+     - Parameters:
+       - label: The label of this picker
+       - shouldShowChevron: Whether a downward chevron should be displayed in this field
+       - pickerView: A `UIPicker` or `UIDatePicker` view that opens when this field becomes first responder
+       - delegate: Delegate for this view
      */
     init(
         label: String?,
         shouldShowChevron: Bool,
         pickerView: UIView,
-        delegate: PickerFieldViewDelegate,
-        theme: ElementsUITheme
+        delegate: PickerFieldViewDelegate
     ) {
-        self.label = label
         self.shouldShowChevron = shouldShowChevron
         self.pickerView = pickerView
         self.delegate = delegate
-        self.theme = theme
         super.init(frame: .zero)
-        addAndPinSubview(hStackView, directionalLayoutMargins: ElementsUI.contentViewInsets)
-        layer.borderColor = theme.colors.border.cgColor
+        layer.borderColor = ElementsUITheme.current.colors.border.cgColor
+        
+        let chevronImageView: UIImageView? = {
+            guard shouldShowChevron else { return nil }
+            let imageView = UIImageView(image: Image.icon_chevron_down.makeImage().withRenderingMode(.alwaysTemplate))
+            imageView.setContentHuggingPriority(.required, for: .horizontal)
+            imageView.tintColor = ElementsUITheme.current.colors.textFieldText
+            return imageView
+        }()
+        if let label = label {
+            let floatingPlaceholderView = FloatingPlaceholderTextFieldView(textField: textField)
+            floatingPlaceholderView.placeholder = label
+            
+            let hStack = UIStackView(
+                arrangedSubviews: [floatingPlaceholderView, chevronImageView].compactMap { $0 }
+            )
+            hStack.spacing = 6
+            hStack.alignment = .center
+            addAndPinSubview(hStack, insets: ElementsUI.contentViewInsets)
+            textFieldView = floatingPlaceholderView
+        } else {
+            let hStack = UIStackView(
+                arrangedSubviews:[textField, chevronImageView].compactMap { $0 }
+            )
+            hStack.alignment = .center
+            addAndPinSubview(hStack)
+        }
+
         defer {
             isUserInteractionEnabled = true
         }
@@ -118,18 +115,18 @@ final class PickerFieldView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Overrides
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        floatingPlaceholderTextFieldView?.updatePlaceholder(animated: false)
+        textFieldView?.updatePlaceholder(animated: false)
     }
-    
+
     override var isUserInteractionEnabled: Bool {
         didSet {
             if isUserInteractionEnabled {
-                textField.textColor = theme.colors.textFieldText
+                textField.textColor = ElementsUITheme.current.colors.textFieldText
             } else {
                 textField.textColor = CompatibleColor.tertiaryLabel
             }
@@ -138,34 +135,18 @@ final class PickerFieldView: UIView {
             }
         }
     }
-    
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        layer.borderColor = theme.colors.border.cgColor
+        layer.borderColor = ElementsUITheme.current.colors.border.cgColor
     }
-    
+
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard isUserInteractionEnabled, !isHidden, self.point(inside: point, with: event) else {
             return nil
         }
         // Forward all events within our bounds to the textfield
         return textField
-    }
-    
-    override var intrinsicContentSize: CGSize {
-        // I'm implementing this to disambiguate layout of a horizontal stack view containing this view
-        let hStackViewSize = hStackView.systemLayoutSizeFitting(.zero)
-        return CGSize(
-            width: hStackViewSize.width + directionalLayoutMargins.leading + directionalLayoutMargins.trailing,
-            height: hStackViewSize.height + directionalLayoutMargins.top + directionalLayoutMargins.bottom
-        )
-    }
-    
-    override func becomeFirstResponder() -> Bool {
-        if super.becomeFirstResponder() {
-            return true
-        }
-        return textField.becomeFirstResponder()
     }
 }
 
@@ -189,17 +170,18 @@ extension PickerFieldView: UITextFieldDelegate {
         UIAccessibility.post(notification: .layoutChanged, argument: pickerView)
         delegate?.didBeginEditing(self)
     }
-    
+
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        textField.layoutIfNeeded()
+        delegate?.didFinish(self)
+    }
+
     func textField(
         _ textField: UITextField,
         shouldChangeCharactersIn range: NSRange,
         replacementString string: String
     ) -> Bool {
         return false
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        delegate?.didFinish(self)
     }
 }
 
@@ -208,5 +190,6 @@ extension PickerFieldView: UITextFieldDelegate {
 extension PickerFieldView: DoneButtonToolbarDelegate {
     func didTapDone(_ toolbar: DoneButtonToolbar) {
         _ = textField.resignFirstResponder()
+        delegate?.didFinish(self)
     }
 }

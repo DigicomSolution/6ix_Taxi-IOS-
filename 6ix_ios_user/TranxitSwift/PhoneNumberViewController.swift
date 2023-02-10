@@ -33,6 +33,8 @@ class PhoneNumberViewController: UIViewController, FPNTextFieldDelegate {
     
         override func viewDidLoad() {
             super.viewDidLoad()
+        let viewControllerName = String.init(describing: self.classForCoder)
+        print("VCName***: \(viewControllerName)")
             
             numberTextField.delegate = self
             numberTextField.flagButtonSize = CGSize(width: 35, height: 35)

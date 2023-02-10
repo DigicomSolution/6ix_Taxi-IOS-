@@ -47,7 +47,8 @@ public class STPAUBECSDebitFormView: STPMultiFormTextField, STPMultiFormFieldDel
         viewModel = STPAUBECSFormViewModel()
         _nameTextField = _buildTextField()
         _nameTextField.keyboardType = .default
-        _nameTextField.placeholder = .Localized.full_name
+        _nameTextField.placeholder = STPLocalizedString(
+            "Full name", "Placeholder string for name entry field.")
         _nameTextField.accessibilityLabel = _nameTextField.placeholder
         _nameTextField.textContentType = .name
 

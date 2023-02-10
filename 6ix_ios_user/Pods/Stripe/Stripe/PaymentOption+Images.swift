@@ -19,8 +19,15 @@ extension PaymentOption {
             return paymentMethod.makeIcon()
         case .new(let confirmParams):
             return confirmParams.makeIcon()
-        case .link(_):
-            return Image.pm_type_link.makeImage()
+        case .link(_, let confirmOption):
+            switch confirmOption {
+            case .forNewAccount(_, _, let paymentMethodParams):
+                return paymentMethodParams.makeIcon()
+            case .withPaymentDetails(let paymentDetails):
+                return paymentDetails.makeIcon()
+            case .withPaymentMethodParams(let paymentMethodParams):
+                return paymentMethodParams.makeIcon()
+            }
         }
     }
 
@@ -34,7 +41,8 @@ extension PaymentOption {
         case .new(let confirmParams):
             return confirmParams.paymentMethodParams.makeCarouselImage(for: view)
         case .link:
-            return Image.link_carousel_logo.makeImage(template: true)
+            assertionFailure("Link is not offered in PaymentSheet carousel")
+            return UIImage()
         }
     }
 }
@@ -82,7 +90,7 @@ extension STPPaymentMethodParams {
             return STPImageLibrary.cardBrandImage(for: brand)
         default:
             // If there's no image specific to this PaymentMethod (eg card network logo, bank logo), default to the PaymentMethod type's icon
-            return self.paymentSheetPaymentMethodType().makeImage()
+            return type.makeImage()
         }
     }
 

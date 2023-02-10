@@ -34,7 +34,7 @@ class MultiLocationSelectionViewController: UIViewController,GMSMapViewDelegate 
     var delegate: MultiLocationVCDelegate?
     var destinationArray = [String]()
     var activeTextfield = UITextField()
-    var activeTextFieldTag = -2
+    var activeTextFieldTag = 0
     var callback : (([Bind<LocationDetail>],Bind<LocationDetail>) ->())?
     var destinationChanged: (([Stops],[Positions]) -> ())?
     var selectedTextfield: Int?
@@ -82,6 +82,8 @@ class MultiLocationSelectionViewController: UIViewController,GMSMapViewDelegate 
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let viewControllerName = String.init(describing: self.classForCoder)
+        print("VCName***: \(viewControllerName)")
         self.viewBottom.alpha = 0
         addMapView()
 //        if #available(iOS 13.0, *) {
@@ -761,7 +763,7 @@ extension MultiLocationSelectionViewController {
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
         
         self.locationCentreImage.tintColor = .secondary
-        self.locationCentreImage.image = #imageLiteral(resourceName: "sourcePin").withRenderingMode(.alwaysTemplate)
+        self.locationCentreImage.image = UIImage(named: "MarkerFullIcon")// #imageLiteral(resourceName: "sourcePin").withRenderingMode(.alwaysTemplate)
         self.locationCentreImage.isHidden = false
         
     }
@@ -810,7 +812,14 @@ extension MultiLocationSelectionViewController
         }
         else if !changeDest
         {
-            callback?(self.destinationLocationDetail!,self.sourceLocationDetail!)
+            if let destinationLocationDetail
+            {
+                if let _ = destinationLocationDetail[0].value?.coordinate
+                {
+                    callback?(self.destinationLocationDetail!,self.sourceLocationDetail!)
+                }
+            }
+            
         }
         self.changeDest = false
         deRegisterkeyboardNotification()

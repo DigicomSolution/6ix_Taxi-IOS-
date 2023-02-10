@@ -118,13 +118,4 @@ import Foundation
 
     // MARK: - Link Misc
     case linkAccountLookupFailure = "link.account_lookup.failure"
-
-    // MARK: - LUXE
-    case luxeSerializeFailure = "luxe_serialize_failure"
-    case luxeClientFilteredPaymentMethods = "luxe_client_filtered_payment_methods"
-    case luxeClientFilteredPaymentMethodsNone = "luxe_client_filtered_payment_methods_none"
-
-    // MARK: Address Element
-    case adddressShow = "mc_address_show"
-    case addressCompleted = "mc_addres_completed"
 }

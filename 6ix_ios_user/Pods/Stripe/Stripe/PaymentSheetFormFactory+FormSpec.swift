@@ -20,7 +20,7 @@ extension PaymentSheetFormFactory {
 
     func makeFormElementFromSpec(spec: FormSpec) -> FormElement {
         let elements = makeFormElements(from: spec)
-        return FormElement(autoSectioningElements: elements, theme: theme)
+        return FormElement(autoSectioningElements: elements)
     }
 
     private func makeFormElements(from spec: FormSpec) -> [Element] {
@@ -36,20 +36,17 @@ extension PaymentSheetFormFactory {
     private func fieldSpecToElement(fieldSpec: FormSpec.FieldSpec) -> Element? {
         switch fieldSpec {
         case .name(let spec):
-            return makeName(label: spec.translationId?.localizedValue, apiPath: spec.apiPath?["v1"])
+            return makeName(label: spec.labelId?.localizedValue, apiPath: spec.apiPath?["v1"])
         case .email(let spec):
             return makeEmail(apiPath: spec.apiPath?["v1"])
         case .selector(let selectorSpec):
-            let dropdownItems: [DropdownFieldElement.DropdownItem] = selectorSpec.items.map {
-                .init(pickerDisplayName: $0.displayText, labelDisplayName: $0.displayText, accessibilityLabel: $0.displayText, rawData: $0.apiValue ?? $0.displayText)
-            }
             let dropdownField = DropdownFieldElement(
-                items: dropdownItems,
-                label: selectorSpec.translationId.localizedValue,
-                theme: theme
+                items: selectorSpec.items.map { $0.displayText },
+                label: selectorSpec.labelId.localizedValue
             )
             return PaymentMethodElementWrapper(dropdownField) { dropdown, params in
-                let selectedValue = dropdown.selectedItem.rawData
+                let values = selectorSpec.items.map { $0.apiValue }
+                let selectedValue = values[dropdown.selectedIndex]
                 //TODO: Determine how to handle multiple versions
                 if let apiPathKey = selectorSpec.apiPath?["v1"] {
                     params.paymentMethodParams.additionalAPIParameters[apiPathKey] = selectedValue
@@ -61,7 +58,7 @@ extension PaymentSheetFormFactory {
         case .country(let spec):
             return makeCountry(countryCodes: spec.allowedCountryCodes, apiPath: spec.apiPath?["v1"])
         case .affirm_header:
-            return StaticElement(view: AffirmCopyLabel(theme: theme))
+            return StaticElement(view: AffirmCopyLabel())
         case .klarna_header:
             return makeKlarnaCopyLabel()
         case .klarna_country(let spec):

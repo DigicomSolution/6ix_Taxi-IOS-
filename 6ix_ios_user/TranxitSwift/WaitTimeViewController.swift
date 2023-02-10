@@ -26,6 +26,8 @@ class WaitTimeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let viewControllerName = String.init(describing: self.classForCoder)
+        print("VCName***: \(viewControllerName)")
         allTimeButton = [zeroMinButton,fiveMinButton,tenMinButton,fifteenMinButton,twentyMinButton]
 
         // Do any additional setup after loading the view.

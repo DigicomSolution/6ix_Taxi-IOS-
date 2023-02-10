@@ -12,8 +12,8 @@ import UIKit
 @_spi(STP) import StripeCore
 
 extension TextFieldElement {
-    static func makeIBAN(theme: ElementsUITheme = .default) -> TextFieldElement {
-        return TextFieldElement(configuration: IBANConfiguration(), theme: theme)
+    static func makeIBAN() -> TextFieldElement {
+        return TextFieldElement(configuration: IBANConfiguration())
     }
     
     // MARK: - IBANError

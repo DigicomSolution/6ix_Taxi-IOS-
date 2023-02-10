@@ -38,7 +38,7 @@ class TextFieldView: UIView {
     }
     
     var currentLogo: UIImage? {
-        let darkMode = viewModel.theme.colors.background.contrastingColor == .white
+        let darkMode = ElementsUITheme.current.colors.background.contrastingColor == .white
         return darkMode ? viewModel.logo?.darkMode : viewModel.logo?.lightMode
     }
     
@@ -53,11 +53,11 @@ class TextFieldView: UIView {
         textField.autocorrectionType = .no
         textField.spellCheckingType = .no
         textField.adjustsFontForContentSizeCategory = true
-        textField.font = viewModel.theme.fonts.subheadline
+        textField.font = ElementsUITheme.current.fonts.subheadline
         return textField
     }()
     private lazy var textFieldView: FloatingPlaceholderTextFieldView = {
-        return FloatingPlaceholderTextFieldView(textField: textField, theme: viewModel.theme)
+        return FloatingPlaceholderTextFieldView(textField: textField)
     }()
     /// This could be the logo of a network, a bank, etc.
     lazy var logoIconView: UIImageView = {
@@ -67,13 +67,13 @@ class TextFieldView: UIView {
     }()
     lazy var errorIconView: UIImageView = {
         let imageView = UIImageView(image: Image.icon_error.makeImage(template: true))
-        imageView.tintColor = viewModel.theme.colors.danger
+        imageView.tintColor = ElementsUITheme.current.colors.danger
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     lazy var clearButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.tintColor = viewModel.theme.colors.placeholderText
+        button.tintColor = ElementsUITheme.current.colors.placeholderText
         button.setImage(Image.icon_clear.makeImage(template: true), for: .normal)
         button.isHidden = true
         button.addTarget(self, action: #selector(clearText), for: .touchUpInside)
@@ -154,7 +154,14 @@ class TextFieldView: UIView {
         accessibilityLabel = viewModel.accessibilityLabel
         
         // Update placeholder, text
-        textFieldView.placeholder = viewModel.placeholder
+        textFieldView.placeholder = viewModel.floatingPlaceholder
+        if let staticPlaceholder = viewModel.staticPlaceholder {
+            textField.attributedPlaceholder = NSAttributedString(string: staticPlaceholder,
+                                                                 attributes: [.foregroundColor: ElementsUITheme.current.colors.placeholderText,
+                                                                                          .font: ElementsUITheme.current.fonts.subheadline])
+        } else {
+            textField.attributedPlaceholder = nil
+        }
 
         // Setting attributedText moves the cursor to the end, so we grab the cursor position now
         // Get the offset of the cursor from the end of the textField so it will keep
@@ -181,13 +188,13 @@ class TextFieldView: UIView {
         // Update text and border color
         if case .invalid(let error) = viewModel.validationState,
            error.shouldDisplay(isUserEditing: textField.isEditing) {
-            layer.borderColor = viewModel.theme.colors.danger.cgColor
-            textField.textColor = viewModel.theme.colors.danger
+            layer.borderColor = ElementsUITheme.current.colors.danger.cgColor
+            textField.textColor = ElementsUITheme.current.colors.danger
             errorIconView.alpha = 1
             accessibilityValue = viewModel.attributedText.string + ", " + error.localizedDescription
         } else {
-            layer.borderColor = viewModel.theme.colors.border.cgColor
-            textField.textColor = isUserInteractionEnabled ? viewModel.theme.colors.textFieldText : CompatibleColor.tertiaryLabel
+            layer.borderColor = ElementsUITheme.current.colors.border.cgColor
+            textField.textColor = isUserInteractionEnabled ? ElementsUITheme.current.colors.textFieldText : CompatibleColor.tertiaryLabel
             errorIconView.alpha = 0
             accessibilityValue = viewModel.attributedText.string
         }
@@ -244,8 +251,8 @@ extension TextFieldView: UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        delegate?.textFieldViewContinueToNextField(view: self)
         textField.resignFirstResponder()
+        delegate?.textFieldViewContinueToNextField(view: self)
         return false
     }
 

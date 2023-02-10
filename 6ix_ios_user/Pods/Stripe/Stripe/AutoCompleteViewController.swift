@@ -14,15 +14,14 @@ import MapKit
 
 protocol AutoCompleteViewControllerDelegate: AnyObject {
     
-    /// Called when the user has selected an address from the auto complete suggestions
-    /// - Parameter address: The address selected from the search results
-    func didSelectAddress(_ address: PaymentSheet.Address?)
-    func didSelectManualEntry(_ line1: String)
+    /// Called when the `AutoCompleteViewController` has dismissed
+    /// - Parameter address: If `address` is non-nil it has been selected by the user, otherwise nil when no selection was made
+    func didDismiss(with address: PaymentSheet.Address?)
 }
 
 @objc(STP_Internal_AutoCompleteViewController)
 class AutoCompleteViewController: UIViewController {
-    let configuration: AddressViewController.Configuration
+    let configuration: PaymentSheet.Configuration
     let addressSpecProvider: AddressSpecProvider
     private lazy var addressSearchCompleter: MKLocalSearchCompleter = {
        let searchCompleter = MKLocalSearchCompleter()
@@ -52,6 +51,15 @@ class AutoCompleteViewController: UIViewController {
     }
     
     // MARK: - Views
+    lazy var navigationBar: SheetNavigationBar = {
+        let navBar = SheetNavigationBar(
+            isTestMode: configuration.apiClient.isTestmode,
+            appearance: configuration.appearance
+        )
+        navBar.setStyle(.back)
+        navBar.delegate = self
+        return navBar
+    }()
     lazy var formView: UIView = {
         return formElement.view
     }()
@@ -71,6 +79,7 @@ class AutoCompleteViewController: UIViewController {
         tableView.backgroundColor = configuration.appearance.colors.background
         tableView.separatorColor = configuration.appearance.colors.componentDivider
         tableView.tableFooterView = UIView()
+        // TODO(porter) Left align cell labels with left of address search bar
         return tableView
     }()
     lazy var manualEntryButton: UIButton = {
@@ -85,37 +94,37 @@ class AutoCompleteViewController: UIViewController {
         return view
     }()
     lazy var errorLabel: UILabel = {
-        let label = ElementsUI.makeErrorLabel(theme: theme)
+        let label = ElementsUI.makeErrorLabel()
         label.isHidden = true
         return label
     }()
-    private var theme: ElementsUITheme {
-        return configuration.appearance.asElementsTheme
-    }
     
     // MARK: - Elements
     lazy var autoCompleteLine: TextFieldElement = {
-        let autoCompleteLine = TextFieldElement.Address.makeAutoCompleteLine(theme: theme)
+        let autoCompleteLine = TextFieldElement.Address.makeAutoCompleteLine()
         autoCompleteLine.delegate = self
         return autoCompleteLine
     }()
     lazy var lineSection: SectionElement = {
-        return SectionElement(elements: [autoCompleteLine], theme: theme)
+        return SectionElement(elements: [autoCompleteLine])
     }()
     lazy var formElement: FormElement = {
-        let form = FormElement(elements: [lineSection], theme: theme)
+        let form = FormElement(elements: [lineSection])
         form.delegate = self
         return form
     }()
     
     // MARK: - Initializers
     required init(
-        configuration: AddressViewController.Configuration,
+        configuration: PaymentSheet.Configuration,
         addressSpecProvider: AddressSpecProvider = .shared
     ) {
         self.configuration = configuration
         self.addressSpecProvider = addressSpecProvider
         super.init(nibName: nil, bundle: nil)
+        
+        // Set the current elements theme
+        ElementsUITheme.current = configuration.appearance.asElementsTheme
     }
     
     required init?(coder: NSCoder) {
@@ -123,7 +132,6 @@ class AutoCompleteViewController: UIViewController {
     }
     
     // MARK: - Overrides
-    var stackViewBottomConstraint: NSLayoutConstraint!
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = configuration.appearance.colors.background
@@ -134,66 +142,58 @@ class AutoCompleteViewController: UIViewController {
         stackView.setCustomSpacing(24, after: formStackView) // hardcoded from figma value
         stackView.setCustomSpacing(0, after: separatorView)
         stackView.setCustomSpacing(0, after: tableView)
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(stackView)
+        
+        [stackView].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
 
-        stackViewBottomConstraint = stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         NSLayoutConstraint.activate([
-            stackViewBottomConstraint,
-
-            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: view.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             separatorView.heightAnchor.constraint(equalToConstant: 0.33),
             manualEntryButton.heightAnchor.constraint(equalToConstant: manualEntryButton.frame.size.height)
         ])
-        
-    }
-    
-    private func registerForKeyboardNotifications() {
-        NotificationCenter.default.removeObserver(self)
-        NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
-    }
-    
-    @objc private func adjustForKeyboard(notification: Notification) {
-        guard
-            let keyboardScreenEndFrame = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
-        else {
-            return
-        }
-
-        view.layoutIfNeeded() // Ensures the view is laid out before animating
-        let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
-        let keyboardInViewHeight = view.safeAreaLayoutGuide.layoutFrame.intersection(keyboardViewEndFrame).height
-        if notification.name == UIResponder.keyboardWillHideNotification {
-            stackViewBottomConstraint.constant = 0
-        } else {
-            stackViewBottomConstraint.constant = -keyboardInViewHeight
-        }
-
-        // Animate the container above the keyboard
-        view.setNeedsLayout()
-        UIView.animateAlongsideKeyboard(notification) {
-            self.view.layoutIfNeeded()
-        }
     }
      
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        registerForKeyboardNotifications()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         autoCompleteLine.beginEditing()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: Private functions
     @objc private func manualEntryButtonTapped() {
+        self.dismiss(animated: true)
         // Populate address with partial for line 1
-        delegate?.didSelectManualEntry(autoCompleteLine.text)
+        let address = PaymentSheet.Address(city: nil, country: nil, line1: autoCompleteLine.text, line2: nil, postalCode: nil, state: nil)
+        delegate?.didDismiss(with: address)
+    }
+}
+
+// MARK: - SheetNavigationBarDelegate
+extension AutoCompleteViewController: SheetNavigationBarDelegate {
+    func sheetNavigationBarDidClose(_ sheetNavigationBar: SheetNavigationBar) {
+        self.dismiss(animated: true)
+        delegate?.didDismiss(with: nil)
+    }
+    
+    func sheetNavigationBarDidBack(_ sheetNavigationBar: SheetNavigationBar) {
+        self.dismiss(animated: true)
+        delegate?.didDismiss(with: nil)
+    }
+}
+
+// MARK: - BottomSheetContentViewController
+extension AutoCompleteViewController: BottomSheetContentViewController {
+    var requiresFullScreen: Bool {
+        return true
+    }
+    
+    func didTapOrSwipeToDismiss() {
+        self.dismiss(animated: true)
+        delegate?.didDismiss(with: nil)
     }
 }
 
@@ -266,9 +266,10 @@ extension AutoCompleteViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        results[indexPath.row].asAddress { [weak self] address in
+        results[indexPath.row].asAddress { address in
             DispatchQueue.main.async {
-                self?.delegate?.didSelectAddress(address)
+                self.dismiss(animated: true)
+                self.delegate?.didDismiss(with: address)
             }
         }
     }

@@ -15,7 +15,6 @@ struct FormSpec: Decodable {
     let type: String
     let async: Bool?
     let fields: [FieldSpec]
-    let nextActionSpec: NextActionSpec?
 
     enum FieldSpec: Decodable, Equatable {
         case name(NameFieldSpec)
@@ -80,92 +79,6 @@ struct FormSpec: Decodable {
             }
         }
     }
-
-    struct NextActionSpec: Decodable {
-        let confirmResponseStatusSpecs: [String: ConfirmResponseStatusSpecs]
-        let postConfirmHandlingPiStatusSpecs: [String: PostConfirmHandlingPiStatusSpecs]?
-
-        struct ConfirmResponseStatusSpecs: Decodable {
-            let type: NextActionStateType
-
-            struct RedirectToURL: Decodable {
-                let urlPath: String
-                let returnUrlPath: String
-                private enum CodingKeys: String, CodingKey {
-                    case urlPath
-                    case returnUrlPath
-                }
-                init(from decoder: Decoder) throws {
-                    let container = try decoder.container(keyedBy: CodingKeys.self)
-                    self.urlPath = try container.decodeIfPresent(String.self, forKey: .urlPath) ?? "next_action[redirect_to_url][url]"
-                    self.returnUrlPath = try container.decodeIfPresent(String.self, forKey: .returnUrlPath) ?? "next_action[redirect_to_url][return_url]"
-                }
-            }
-
-            enum NextActionStateType: Decodable {
-                case redirect_to_url(RedirectToURL)
-                case finished
-                case unknown(String)
-            }
-
-            private enum CodingKeys: String, CodingKey {
-                case type
-            }
-
-            init(from decoder: Decoder) throws {
-                let container = try decoder.container(keyedBy: CodingKeys.self)
-
-                let nextActionType = try container.decode(String.self, forKey: .type)
-
-                switch(nextActionType){
-                case "redirect_to_url":
-                    self.type = .redirect_to_url(try RedirectToURL(from: decoder))
-                case "finished":
-                    self.type = .finished
-                default:
-                    self.type = .unknown(nextActionType)
-                }
-            }
-        }
-
-        struct PostConfirmHandlingPiStatusSpecs: Decodable, Equatable {
-            let type: NextActionStateType
-
-            enum NextActionStateType: Decodable, Equatable {
-                case finished
-                case canceled
-                case unknown(String)
-            }
-
-            private enum CodingKeys: String, CodingKey {
-                case type
-            }
-
-            init(from decoder: Decoder) throws {
-                let container = try decoder.container(keyedBy: CodingKeys.self)
-
-                let nextActionType = try container.decode(String.self, forKey: .type)
-                switch(nextActionType) {
-                case "finished":
-                    self.type = .finished
-                case "canceled":
-                    self.type = .canceled
-                default:
-                    self.type = .unknown(nextActionType)
-                }
-            }
-        }
-    }
-}
-extension FormSpec {
-    static func nextActionSpec(paymentIntent: STPPaymentIntent) -> FormSpec.NextActionSpec? {
-        var nextActionSpec: FormSpec.NextActionSpec? = nil
-        if let paymentMethod = paymentIntent.paymentMethod?.paymentSheetPaymentMethodType(),
-           let paymentMethodString = PaymentSheet.PaymentMethodType.string(from: paymentMethod) {
-            nextActionSpec = FormSpecProvider.shared.nextActionSpec(for: paymentMethodString)
-        }
-        return nextActionSpec
-    }
 }
 
 extension FormSpec {
@@ -177,7 +90,7 @@ extension FormSpec {
         /// A form URL encoded key, whose value is `PropertyItemSpec.apiValue`
         let apiPath: [String:String]?
         /// An optional localizedId to control the label
-        let translationId: LocalizedString?
+        let labelId: LocalizedString?
     }
     struct SelectorSpec: Decodable, Equatable {
         struct PropertyItemSpec: Decodable, Equatable {
@@ -187,7 +100,7 @@ extension FormSpec {
             let apiValue: String?
         }
         /// The dropdown's label
-        let translationId: LocalizedString
+        let labelId: LocalizedString
         /// The list of items to display in the dropdown
         let items: [PropertyItemSpec]
         /// A form URL encoded key, whose value is `PropertyItemSpec.apiValue`

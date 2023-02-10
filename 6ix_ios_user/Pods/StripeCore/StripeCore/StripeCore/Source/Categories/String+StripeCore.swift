@@ -15,10 +15,6 @@ import Foundation
     var isSecretKey: Bool {
         return self.hasPrefix("sk_")
     }
-    
-    var nonEmpty: String? {
-       stringIfHasContentsElseNil(self)
-    }
 }
 
 @_spi(STP) public func stringIfHasContentsElseNil(_ string: String?) ->  // MARK: -

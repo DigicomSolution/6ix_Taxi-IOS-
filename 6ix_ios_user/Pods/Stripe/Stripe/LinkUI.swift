@@ -21,8 +21,6 @@ enum LinkUI {
         case captionEmphasized
     }
 
-    static let accountLookupDebounceTime: DispatchTimeInterval = .milliseconds(900)
-
     // MARK: - Corner radii
 
     static let cornerRadius: CGFloat = 12
@@ -52,19 +50,6 @@ enum LinkUI {
     static let smallContentSpacing: CGFloat = 8
 
     static let tinyContentSpacing: CGFloat = 4
-
-}
-
-// MARK: Development flags
-
-extension LinkUI {
-
-    /// Whether or not the UI can show features that are under development.
-    ///
-    /// - Note: This flag is meant to be controlled by launch arg.
-    static var featurePreview: Bool {
-        UserDefaults.standard.bool(forKey: "STPLinkFeaturePreview")
-    }
 
 }
 

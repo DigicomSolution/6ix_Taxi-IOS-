@@ -9,28 +9,28 @@ import Foundation
 
 /// Convenience methods to create address fields that are localized according to the AddressSpec
 extension AddressSpec {
-    func makeCityElement(defaultValue: String?, theme: ElementsUITheme = .default) -> TextFieldElement {
+    func makeCityElement(defaultValue: String?) -> TextFieldElement {
         return TextFieldElement.Address.CityConfiguration(
             label: cityNameType.localizedLabel,
             defaultValue: defaultValue,
             isOptional: !requiredFields.contains(.city)
-        ).makeElement(theme: theme)
+        ).makeElement()
     }
     
-    func makeStateElement(defaultValue: String?, theme: ElementsUITheme = .default) -> TextFieldElement {
+    func makeStateElement(defaultValue: String?) -> TextFieldElement {
         return TextFieldElement.Address.StateConfiguration(
             label: stateNameType.localizedLabel,
             defaultValue: defaultValue,
             isOptional: !requiredFields.contains(.state)
-        ).makeElement(theme: theme)
+        ).makeElement()
     }
     
-    func makePostalElement(countryCode: String, defaultValue: String?, theme: ElementsUITheme = .default) -> TextFieldElement {
+    func makePostalElement(countryCode: String, defaultValue: String?) -> TextFieldElement {
         return TextFieldElement.Address.PostalCodeConfiguration(
             countryCode: countryCode,
             label: zipNameType.localizedLabel,
             defaultValue: defaultValue,
             isOptional: !requiredFields.contains(.postal)
-        ).makeElement(theme: theme)
+        ).makeElement()
     }
 }

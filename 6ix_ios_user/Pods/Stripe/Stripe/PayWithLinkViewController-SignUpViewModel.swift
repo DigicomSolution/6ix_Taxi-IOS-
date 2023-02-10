@@ -130,7 +130,7 @@ extension PayWithLinkViewController {
 
         private let accountService: LinkAccountServiceProtocol
 
-        private let accountLookupDebouncer = OperationDebouncer(debounceTime: LinkUI.accountLookupDebounceTime)
+        private let accountLookupDebouncer = OperationDebouncer(debounceTime: .milliseconds(500))
 
         private let configuration: PaymentSheet.Configuration
 
@@ -187,7 +187,6 @@ private extension PayWithLinkViewController.SignUpViewModel {
 
         guard let emailAddress = emailAddress else {
             accountLookupDebouncer.cancel()
-            isLookingUpLinkAccount = false
             return
         }
 
@@ -197,21 +196,19 @@ private extension PayWithLinkViewController.SignUpViewModel {
             self?.accountService.lookupAccount(withEmail: emailAddress) { result in
                 guard let self = self else { return }
 
-                // Check the requested email address against the current one. Handle
-                // email address changes while a lookup is in-flight.
-                guard emailAddress == self.emailAddress else {
-                    // The email used for this lookup does not match the current address, so we ignore it
-                    return
-                }
-
                 self.isLookingUpLinkAccount = false
 
                 switch result {
                 case .success(let account):
-                    self.linkAccount = account
-                    self.delegate?.viewModel(self, didLookupAccount: account)
+                    // Check the received email address against the current one. Handle
+                    // email address changes while a lookup is in-flight.
+                    if account?.email == self.emailAddress {
+                        self.linkAccount = account
+                        self.delegate?.viewModel(self, didLookupAccount: account)
+                    } else {
+                        self.linkAccount = nil
+                    }
                 case .failure(let error):
-                    self.linkAccount = nil
                     self.errorMessage = error.nonGenericDescription
                 }
             }

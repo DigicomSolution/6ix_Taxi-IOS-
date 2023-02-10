@@ -44,8 +44,8 @@ class PaymentMethodElementWrapper<WrappedElementType: Element> {
             return paramsUpdater(textField, params)
         }
     }
-    convenience init(_ textFieldElementConfiguration: TextFieldElementConfiguration, theme: ElementsUITheme, paramsUpdater: @escaping ParamsUpdater) where WrappedElementType == TextFieldElement {
-        let textFieldElement = TextFieldElement(configuration: textFieldElementConfiguration, theme: theme)
+    convenience init(_ textFieldElementConfiguration: TextFieldElementConfiguration, paramsUpdater: @escaping ParamsUpdater) where WrappedElementType == TextFieldElement {
+        let textFieldElement = TextFieldElement(configuration: textFieldElementConfiguration)
         self.init(textFieldElement, paramsUpdater: paramsUpdater)
     }
     
@@ -71,8 +71,8 @@ extension PaymentMethodElementWrapper: Element {
         return element.beginEditing()
     }
     
-    var validationState: ElementValidationState {
-        return element.validationState
+    var errorText: String? {
+        return element.errorText
     }
     
     var subLabelText: String? {

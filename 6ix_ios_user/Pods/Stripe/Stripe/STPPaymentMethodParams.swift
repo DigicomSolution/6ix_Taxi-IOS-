@@ -1148,6 +1148,15 @@ extension STPPaymentMethodParams {
 // MARK: - PaymentSheet helpers
 
 extension STPPaymentMethodParams {
+    var paymentSheetLabel: String {
+        switch type {
+        case .card:
+            return "••••\(card?.last4 ?? "")"
+        default:
+            return label
+        }
+    }
+    
     var nonnil_billingDetails: STPPaymentMethodBillingDetails {
         guard let billingDetails = billingDetails else {
             let billingDetails = STPPaymentMethodBillingDetails()

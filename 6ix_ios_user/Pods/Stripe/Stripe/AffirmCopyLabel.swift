@@ -14,7 +14,7 @@ class AffirmCopyLabel: UIView {
 
     let logo = NSTextAttachment()
 
-    convenience init(theme: ElementsUITheme = .default) {
+    convenience init() {
         self.init(frame: .zero)
         let affirmLabel = UILabel()
 
@@ -22,8 +22,8 @@ class AffirmCopyLabel: UIView {
         logo.image = STPImageLibrary.affirmLogo()
         message.replaceOccurrences(of: "%@", with: logo)
         affirmLabel.attributedText = message
-        affirmLabel.font = theme.fonts.subheadline
-        affirmLabel.textColor = theme.colors.secondaryText
+        affirmLabel.font = ElementsUITheme.current.fonts.subheadline
+        affirmLabel.textColor = ElementsUITheme.current.colors.secondaryText
         affirmLabel.numberOfLines = 0
         affirmLabel.sizeToFit()
         addAndPinSubview(affirmLabel)

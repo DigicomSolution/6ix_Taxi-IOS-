@@ -9,7 +9,7 @@ import CoreGraphics
 import Foundation
 
 /// A `ValueProvider` that returns a CGFloat Value
-public final class FloatValueProvider: ValueProvider {
+public final class FloatValueProvider: AnyValueProvider {
 
   // MARK: Lifecycle
 
@@ -43,18 +43,6 @@ public final class FloatValueProvider: ValueProvider {
     Vector1D.self
   }
 
-  public var storage: ValueProviderStorage<Vector1D> {
-    if let block = block {
-      return .closure { frame in
-        self.hasUpdate = false
-        return Vector1D(Double(block(frame)))
-      }
-    } else {
-      hasUpdate = false
-      return .singleValue(Vector1D(Double(float)))
-    }
-  }
-
   public func hasUpdate(frame _: CGFloat) -> Bool {
     if block != nil {
       return true
@@ -62,9 +50,20 @@ public final class FloatValueProvider: ValueProvider {
     return hasUpdate
   }
 
+  public func value(frame: CGFloat) -> Any {
+    hasUpdate = false
+    let newCGFloat: CGFloat
+    if let block = block {
+      newCGFloat = block(frame)
+    } else {
+      newCGFloat = float
+    }
+    return Vector1D(Double(newCGFloat))
+  }
+
   // MARK: Private
 
-  private var hasUpdate = true
+  private var hasUpdate: Bool = true
 
   private var block: CGFloatValueBlock?
 }

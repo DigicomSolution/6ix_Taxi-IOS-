@@ -16,11 +16,13 @@ public enum CoordinateSpace: Int, Codable {
 
 // MARK: - Animation
 
-/// The `Animation` model is the top level model object in Lottie.
-///
-/// An `Animation` holds all of the animation data backing a Lottie Animation.
-/// Codable, see JSON schema [here](https://github.com/airbnb/lottie-web/tree/master/docs/json).
-public final class Animation: Codable, DictionaryInitializable {
+/**
+ The `Animation` model is the top level model object in Lottie.
+
+ An `Animation` holds all of the animation data backing a Lottie Animation.
+ Codable, see JSON schema [here](https://github.com/airbnb/lottie-web/tree/master/docs/json).
+ */
+public final class Animation: Codable {
 
   // MARK: Lifecycle
 
@@ -31,8 +33,8 @@ public final class Animation: Codable, DictionaryInitializable {
     startFrame = try container.decode(AnimationFrameTime.self, forKey: .startFrame)
     endFrame = try container.decode(AnimationFrameTime.self, forKey: .endFrame)
     framerate = try container.decode(Double.self, forKey: .framerate)
-    width = try container.decode(Double.self, forKey: .width)
-    height = try container.decode(Double.self, forKey: .height)
+    width = try container.decode(Int.self, forKey: .width)
+    height = try container.decode(Int.self, forKey: .height)
     layers = try container.decode([LayerModel].self, ofFamily: LayerType.self, forKey: .layers)
     glyphs = try container.decodeIfPresent([Glyph].self, forKey: .glyphs)
     fonts = try container.decodeIfPresent(FontList.self, forKey: .fonts)
@@ -46,52 +48,6 @@ public final class Animation: Codable, DictionaryInitializable {
       }
       self.markerMap = markerMap
     } else {
-      markerMap = nil
-    }
-  }
-
-  public init(dictionary: [String: Any]) throws {
-    version = try dictionary.value(for: CodingKeys.version)
-    if
-      let typeRawValue = dictionary[CodingKeys.type.rawValue] as? Int,
-      let type = CoordinateSpace(rawValue: typeRawValue)
-    {
-      self.type = type
-    } else {
-      type = .type2d
-    }
-    startFrame = try dictionary.value(for: CodingKeys.startFrame)
-    endFrame = try dictionary.value(for: CodingKeys.endFrame)
-    framerate = try dictionary.value(for: CodingKeys.framerate)
-    width = try dictionary.value(for: CodingKeys.width)
-    height = try dictionary.value(for: CodingKeys.height)
-    let layerDictionaries: [[String: Any]] = try dictionary.value(for: CodingKeys.layers)
-    layers = try [LayerModel].fromDictionaries(layerDictionaries)
-    if let glyphDictionaries = dictionary[CodingKeys.glyphs.rawValue] as? [[String: Any]] {
-      glyphs = try glyphDictionaries.map({ try Glyph(dictionary: $0) })
-    } else {
-      glyphs = nil
-    }
-    if let fontsDictionary = dictionary[CodingKeys.fonts.rawValue] as? [String: Any] {
-      fonts = try FontList(dictionary: fontsDictionary)
-    } else {
-      fonts = nil
-    }
-    if let assetLibraryDictionaries = dictionary[CodingKeys.assetLibrary.rawValue] as? [[String: Any]] {
-      assetLibrary = try AssetLibrary(value: assetLibraryDictionaries)
-    } else {
-      assetLibrary = nil
-    }
-    if let markerDictionaries = dictionary[CodingKeys.markers.rawValue] as? [[String: Any]] {
-      let markers = try markerDictionaries.map({ try Marker(dictionary: $0) })
-      var markerMap: [String: Marker] = [:]
-      for marker in markers {
-        markerMap[marker.name] = marker
-      }
-      self.markers = markers
-      self.markerMap = markerMap
-    } else {
-      markers = nil
       markerMap = nil
     }
   }
@@ -123,11 +79,11 @@ public final class Animation: Codable, DictionaryInitializable {
     case framerate = "fr"
     case width = "w"
     case height = "h"
-    case layers
+    case layers = "layers"
     case glyphs = "chars"
-    case fonts
+    case fonts = "fonts"
     case assetLibrary = "assets"
-    case markers
+    case markers = "markers"
   }
 
   /// The version of the JSON Schema.
@@ -137,10 +93,10 @@ public final class Animation: Codable, DictionaryInitializable {
   let type: CoordinateSpace
 
   /// The height of the composition in points.
-  let width: Double
+  let width: Int
 
   /// The width of the composition in points.
-  let height: Double
+  let height: Int
 
   /// The list of animation layers
   let layers: [LayerModel]

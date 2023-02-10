@@ -18,20 +18,17 @@ final class SectionView: UIView {
     // MARK: - Views
     
     lazy var errorOrSubLabel: UILabel = {
-        return ElementsUI.makeErrorLabel(theme: viewModel.theme)
+        return ElementsUI.makeErrorLabel()
     }()
     let containerView: SectionContainerView
     lazy var titleLabel: UILabel = {
-        return ElementsUI.makeSectionTitleLabel(theme: viewModel.theme)
+        return ElementsUI.makeSectionTitleLabel()
     }()
-    
-    let viewModel: SectionViewModel
     
     // MARK: - Initializers
     
     init(viewModel: SectionViewModel) {
-        self.viewModel = viewModel
-        self.containerView = SectionContainerView(views: viewModel.views, theme: viewModel.theme)
+        self.containerView = SectionContainerView(views: viewModel.views)
         super.init(frame: .zero)
 
         let stack = UIStackView(arrangedSubviews: [titleLabel, containerView, errorOrSubLabel])
@@ -59,11 +56,11 @@ final class SectionView: UIView {
         if let errorText = viewModel.errorText, !errorText.isEmpty {
             errorOrSubLabel.text = viewModel.errorText
             errorOrSubLabel.isHidden = false
-            errorOrSubLabel.textColor = viewModel.theme.colors.danger
+            errorOrSubLabel.textColor = ElementsUITheme.current.colors.danger
         } else if let subLabel = viewModel.subLabel {
             errorOrSubLabel.text = subLabel
             errorOrSubLabel.isHidden = false
-            errorOrSubLabel.textColor = viewModel.theme.colors.secondaryText
+            errorOrSubLabel.textColor = ElementsUITheme.current.colors.secondaryText
         } else {
             errorOrSubLabel.text = nil
             errorOrSubLabel.isHidden = true

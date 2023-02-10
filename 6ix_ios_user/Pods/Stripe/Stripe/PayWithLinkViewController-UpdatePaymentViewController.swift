@@ -65,7 +65,7 @@ extension PayWithLinkViewController {
         }()
         
         private lazy var errorLabel: UILabel = {
-            return ElementsUI.makeErrorLabel(theme: LinkUI.appearance.asElementsTheme)
+            return ElementsUI.makeErrorLabel()
         }()
         
         // Don't show checkbox if payment method is already default
@@ -80,13 +80,13 @@ extension PayWithLinkViewController {
             configuration: configuration
         )
 
-        init(linkAccount: PaymentSheetLinkAccount, context: Context, paymentMethod: ConsumerPaymentDetails) {
+        init(linkAccount: PaymentSheetLinkAccount, intent: Intent, configuration: PaymentSheet.Configuration, paymentMethod: ConsumerPaymentDetails) {
             self.linkAccount = linkAccount
-            self.intent = context.intent
-            self.configuration = context.configuration
+            self.intent = intent
+            self.configuration = configuration
             self.configuration.linkPaymentMethodsOnly = true
             self.paymentMethod = paymentMethod
-            super.init(context: context)
+            super.init(nibName: nil, bundle: nil)
         }
 
         required init?(coder: NSCoder) {

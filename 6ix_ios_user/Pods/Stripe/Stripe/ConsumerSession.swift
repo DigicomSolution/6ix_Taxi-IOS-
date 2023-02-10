@@ -120,7 +120,6 @@ extension ConsumerSession {
     class func signUp(
         email: String,
         phoneNumber: String,
-        locale: Locale = .autoupdatingCurrent,
         legalName: String?,
         countryCode: String?,
         with apiClient: STPAPIClient = STPAPIClient.shared,
@@ -130,7 +129,6 @@ extension ConsumerSession {
         apiClient.createConsumer(
             for: email,
             with: phoneNumber,
-            locale: locale,
             legalName: legalName,
             countryCode: countryCode,
             cookieStore: cookieStore,
@@ -178,7 +176,7 @@ extension ConsumerSession {
 
     func startVerification(
         type: VerificationSession.SessionType = .sms,
-        locale: Locale = .autoupdatingCurrent,
+        locale: String = Locale.autoupdatingCurrent.identifier,
         with apiClient: STPAPIClient = STPAPIClient.shared,
         cookieStore: LinkCookieStore = LinkSecureCookieStore.shared,
         consumerAccountPublishableKey: String?,

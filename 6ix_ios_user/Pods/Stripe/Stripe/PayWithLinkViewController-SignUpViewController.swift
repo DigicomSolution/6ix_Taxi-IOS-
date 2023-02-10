@@ -17,6 +17,7 @@ extension PayWithLinkViewController {
     /// For internal SDK use only
     @objc(STP_Internal_PayWithLinkSignUpViewController)
     final class SignUpViewController: BaseViewController {
+        private let context: Context
 
         private let viewModel: SignUpViewModel
 
@@ -47,27 +48,25 @@ extension PayWithLinkViewController {
             return label
         }()
 
-        private lazy var emailElement = LinkEmailElement(defaultValue: viewModel.emailAddress, theme: LinkUI.appearance.asElementsTheme)
+        private lazy var emailElement: LinkEmailElement = {
+            return LinkEmailElement(defaultValue: viewModel.emailAddress)
+        }()
 
         private lazy var phoneNumberElement = PhoneNumberElement(
-            defaultCountryCode: context.configuration.defaultBillingDetails.address.country,
-            defaultPhoneNumber: context.configuration.defaultBillingDetails.phone,
-            theme: LinkUI.appearance.asElementsTheme
+            defaultValue: context.configuration.defaultBillingDetails.phone,
+            defaultCountry: context.configuration.defaultBillingDetails.address.country
         )
+
+        private lazy var phoneNumberSection = SectionElement(elements: [phoneNumberElement])
 
         private lazy var nameElement = TextFieldElement(
             configuration: TextFieldElement.NameConfiguration(
                 type: .full,
                 defaultValue: viewModel.legalName
-            ),
-            theme: LinkUI.appearance.asElementsTheme
+            )
         )
 
-        private lazy var emailSection = SectionElement(elements: [emailElement], theme: LinkUI.appearance.asElementsTheme)
-
-        private lazy var phoneNumberSection = SectionElement(elements: [phoneNumberElement], theme: LinkUI.appearance.asElementsTheme)
-
-        private lazy var nameSection = SectionElement(elements: [nameElement], theme: LinkUI.appearance.asElementsTheme)
+        private lazy var nameSection = SectionElement(elements: [nameElement])
 
         private lazy var legalTermsView: LinkLegalTermsView = {
             let legalTermsView = LinkLegalTermsView(textAlignment: .center)
@@ -77,7 +76,7 @@ extension PayWithLinkViewController {
         }()
 
         private lazy var errorLabel: UILabel = {
-            let label = ElementsUI.makeErrorLabel(theme: LinkUI.appearance.asElementsTheme)
+            let label = ElementsUI.makeErrorLabel()
             label.isHidden = true
             return label
         }()
@@ -100,7 +99,7 @@ extension PayWithLinkViewController {
             let stackView = UIStackView(arrangedSubviews: [
                 titleLabel,
                 subtitleLabel,
-                emailSection.view,
+                emailElement.view,
                 phoneNumberSection.view,
                 nameSection.view,
                 legalTermsView,
@@ -124,13 +123,14 @@ extension PayWithLinkViewController {
             linkAccount: PaymentSheetLinkAccount?,
             context: Context
         ) {
+            self.context = context
             self.viewModel = SignUpViewModel(
                 configuration: context.configuration,
                 accountService: LinkAccountService(apiClient: context.configuration.apiClient),
                 linkAccount: linkAccount,
                 country: context.intent.countryCode
             )
-            super.init(context: context)
+            super.init(nibName: nil, bundle: nil)
         }
 
         required init?(coder: NSCoder) {
@@ -269,7 +269,7 @@ extension PayWithLinkViewController.SignUpViewController: ElementDelegate {
         switch emailElement.validationState {
         case .valid:
             viewModel.emailAddress = emailElement.emailAddressString
-        case .invalid:
+        case .invalid(_):
             viewModel.emailAddress = nil
         }
 
@@ -278,7 +278,7 @@ extension PayWithLinkViewController.SignUpViewController: ElementDelegate {
         switch nameElement.validationState {
         case .valid:
             viewModel.legalName = nameElement.text
-        case .invalid:
+        case .invalid(_):
             viewModel.legalName = nil
         }
     }

@@ -137,8 +137,8 @@ extension SavedPaymentMethodCollectionView {
             }
             NSLayoutConstraint.activate([
                 shadowRoundedRectangle.topAnchor.constraint(equalTo: contentView.topAnchor),
-                shadowRoundedRectangle.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-                shadowRoundedRectangle.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+                shadowRoundedRectangle.leftAnchor.constraint(equalTo: contentView.leftAnchor),
+                shadowRoundedRectangle.rightAnchor.constraint(equalTo: contentView.rightAnchor),
                 shadowRoundedRectangle.widthAnchor.constraint(
                     equalToConstant: roundedRectangleSize.width),
                 shadowRoundedRectangle.heightAnchor.constraint(
@@ -147,8 +147,8 @@ extension SavedPaymentMethodCollectionView {
                 label.topAnchor.constraint(
                     equalTo: shadowRoundedRectangle.bottomAnchor, constant: 4),
                 label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-                label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 2),
-                label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+                label.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 2),
+                label.rightAnchor.constraint(equalTo: contentView.rightAnchor),
 
                 paymentMethodLogo.centerXAnchor.constraint(
                     equalTo: shadowRoundedRectangle.centerXAnchor),
@@ -283,19 +283,6 @@ extension SavedPaymentMethodCollectionView {
                     shadowRoundedRectangle.accessibilityIdentifier = label.text
                     shadowRoundedRectangle.accessibilityLabel = label.text
                     paymentMethodLogo.image = PaymentOption.applePay.makeCarouselImage(for: self)
-                case .link:
-                    label.text = STPPaymentMethodType.link.displayName
-                    shadowRoundedRectangle.accessibilityIdentifier = label.text
-                    shadowRoundedRectangle.accessibilityLabel = label.text
-                    paymentMethodLogo.image = PaymentOption.link(option: .wallet).makeCarouselImage(for: self)
-                    if #available(iOS 13.0, *) {
-                        paymentMethodLogo.tintColor = UIColor.linkNavLogo.resolvedContrastingColor(
-                            forBackgroundColor: appearance.colors.componentBackground
-                        )
-                    } else {
-                        // TODO(ramont): Remove after dropping iOS 12 support.
-                        paymentMethodLogo.tintColor = appearance.colors.componentBackground.contrastingColor
-                    }
                 case .add:
                     label.text = STPLocalizedString(
                         "+ Add",

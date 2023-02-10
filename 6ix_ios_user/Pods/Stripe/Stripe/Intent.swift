@@ -153,12 +153,11 @@ class IntentConfirmParams {
         
         // Dashboard only supports a specific payment flow today
         assert(paymentMethodOptions == nil)
-        let options = STPConfirmPaymentMethodOptions()
-        options.setSetupFutureUsageIfNecessary(shouldSavePaymentMethod, paymentMethodType: paymentMethodType)
+        assert(shouldSavePaymentMethod == false)
+        params.paymentMethodOptions = STPConfirmPaymentMethodOptions()
         let cardOptions = STPConfirmCardOptions()
         cardOptions.additionalAPIParameters["moto"] = true
-        options.cardOptions = cardOptions
-        params.paymentMethodOptions = options
+        params.paymentMethodOptions?.cardOptions = cardOptions
         return params
     }
 }

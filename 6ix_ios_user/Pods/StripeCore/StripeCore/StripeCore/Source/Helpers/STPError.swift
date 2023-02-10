@@ -78,7 +78,7 @@ extension NSError {
             "processing_error": NSError.stp_cardErrorProcessingErrorUserMessage(),
             "invalid_owner_name": NSError.stp_invalidOwnerName,
             "invalid_bank_account_iban": NSError.stp_invalidBankAccountIban,
-            "generic_decline": NSError.stp_genericDeclineErrorUserMessage()
+            "generic_decline": NSError.stp_cardErrorDeclinedUserMessage()
         ]
 
         private static let apiErrorCodeToCardErrorCode: [String: STPCardErrorCode] = [
@@ -91,7 +91,8 @@ extension NSError {
             "incorrect_cvc": .invalidCVC,
             "card_declined": .cardDeclined,
             "processing_error": .processingError,
-            "incorrect_zip": .incorrectZip
+            "incorrect_zip": .incorrectZip,
+            "generic_decline": .cardDeclined
         ]
 
         private init() {}

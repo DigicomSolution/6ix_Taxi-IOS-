@@ -32,14 +32,9 @@ import UIKit
     }()
     public private(set) var isEditing: Bool = false
     private(set) var didReceiveAutofill: Bool = false
-    public var validationState: ElementValidationState {
-        return .init(
-            from: configuration.validate(text: text, isOptional: configuration.isOptional),
-            isUserEditing: isEditing
-        )
+    public var validationState: ValidationState {
+        return configuration.validate(text: text, isOptional: configuration.isOptional)
     }
-    
-    private let theme: ElementsUITheme
     
     public var inputAccessoryView: UIView? {
         set {
@@ -65,14 +60,14 @@ import UIKit
     }
 
     struct ViewModel {
-        let placeholder: String
+        let floatingPlaceholder: String?
+        let staticPlaceholder: String? // optional placeholder that does not float/stays in the underlying text field
         let accessibilityLabel: String
         let attributedText: NSAttributedString
         let keyboardProperties: KeyboardProperties
         let validationState: ValidationState
         let logo: (lightMode: UIImage, darkMode: UIImage)?
         let shouldShowClearButton: Bool
-        let theme: ElementsUITheme
     }
     
     var viewModel: ViewModel {
@@ -85,22 +80,21 @@ import UIKit
             }
         }()
         return ViewModel(
-            placeholder: placeholder,
+            floatingPlaceholder: configuration.placeholderShouldFloat ? placeholder : nil,
+            staticPlaceholder: configuration.placeholderShouldFloat ? nil : placeholder,
             accessibilityLabel: configuration.accessibilityLabel,
             attributedText: configuration.makeDisplayText(for: text),
             keyboardProperties: configuration.keyboardProperties(for: text),
-            validationState: configuration.validate(text: text, isOptional: configuration.isOptional),
+            validationState: validationState,
             logo: configuration.logo(for: text),
-            shouldShowClearButton: configuration.shouldShowClearButton,
-            theme: theme
+            shouldShowClearButton: configuration.shouldShowClearButton
         )
     }
 
     // MARK: - Initializer
     
-    public required init(configuration: TextFieldElementConfiguration, theme: ElementsUITheme = .default) {
+    public required init(configuration: TextFieldElementConfiguration) {
         self.configuration = configuration
-        self.theme = theme
     }
     
     /// Call this to manually set the text of the text field.
@@ -143,6 +137,16 @@ extension TextFieldElement: Element {
             delegate?.continueToNextField(element: self)
         }
         return didResign
+    }
+
+    public var errorText: String? {
+        guard
+            case .invalid(let error) = validationState,
+            error.shouldDisplay(isUserEditing: isEditing)
+        else {
+            return nil
+        }
+        return error.localizedDescription
     }
 
     public var subLabelText: String? {

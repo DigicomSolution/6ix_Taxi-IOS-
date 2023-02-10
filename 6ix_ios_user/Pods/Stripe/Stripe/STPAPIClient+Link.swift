@@ -52,7 +52,7 @@ extension STPAPIClient {
                     consumerSession.updateCookie(withStore: cookieStore)
                 case .notFound(_) where cookies != nil:
                     // Delete invalid cookie, if any
-                    cookieStore.delete(key: .session)
+                    cookieStore.delete(key: cookieStore.sessionCookieKey)
                 default:
                     break
                 }
@@ -65,7 +65,6 @@ extension STPAPIClient {
     func createConsumer(
         for email: String,
         with phoneNumber: String,
-        locale: Locale,
         legalName: String?,
         countryCode: String?,
         cookieStore: LinkCookieStore,
@@ -76,8 +75,7 @@ extension STPAPIClient {
         var parameters: [String: Any] = [
             "request_surface": "ios_payment_element",
             "email_address": email.lowercased(),
-            "phone_number": phoneNumber,
-            "locale": locale.toLanguageTag()
+            "phone_number": phoneNumber
         ]
 
         if let legalName = legalName {
@@ -168,7 +166,7 @@ extension STPAPIClient {
     func startVerification(
         for consumerSessionClientSecret: String,
         type: ConsumerSession.VerificationSession.SessionType,
-        locale: Locale,
+        locale: String,
         cookieStore: LinkCookieStore,
         consumerAccountPublishableKey: String?,
         completion: @escaping (Result<ConsumerSession, Error>) -> Void
@@ -188,7 +186,7 @@ extension STPAPIClient {
         var parameters: [String: Any] = [
             "credentials": ["consumer_session_client_secret": consumerSessionClientSecret],
             "type": typeString,
-            "locale": locale.toLanguageTag()
+            "locale": locale
         ]
         if let cookies = cookieStore.formattedSessionCookies() {
             parameters["cookies"] = cookies

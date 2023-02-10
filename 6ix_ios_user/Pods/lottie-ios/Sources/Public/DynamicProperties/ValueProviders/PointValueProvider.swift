@@ -8,7 +8,7 @@
 import CoreGraphics
 import Foundation
 /// A `ValueProvider` that returns a CGPoint Value
-public final class PointValueProvider: ValueProvider {
+public final class PointValueProvider: AnyValueProvider {
 
   // MARK: Lifecycle
 
@@ -42,18 +42,6 @@ public final class PointValueProvider: ValueProvider {
     Vector3D.self
   }
 
-  public var storage: ValueProviderStorage<Vector3D> {
-    if let block = block {
-      return .closure { frame in
-        self.hasUpdate = false
-        return block(frame).vector3dValue
-      }
-    } else {
-      hasUpdate = false
-      return .singleValue(point.vector3dValue)
-    }
-  }
-
   public func hasUpdate(frame _: CGFloat) -> Bool {
     if block != nil {
       return true
@@ -61,9 +49,20 @@ public final class PointValueProvider: ValueProvider {
     return hasUpdate
   }
 
+  public func value(frame: CGFloat) -> Any {
+    hasUpdate = false
+    let newPoint: CGPoint
+    if let block = block {
+      newPoint = block(frame)
+    } else {
+      newPoint = point
+    }
+    return newPoint.vector3dValue
+  }
+
   // MARK: Private
 
-  private var hasUpdate = true
+  private var hasUpdate: Bool = true
 
   private var block: PointValueBlock?
 }

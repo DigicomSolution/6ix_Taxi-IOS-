@@ -214,22 +214,27 @@ extension STPAnalyticsClient {
         duration: TimeInterval? = nil,
         linkEnabled: Bool? = nil,
         activeLinkSession: Bool? = nil,
-        configuration: PaymentSheet.Configuration? = nil,
-        params: [String: Any] = [:]
+        configuration: PaymentSheet.Configuration? = nil
     ) {
         var additionalParams = [:] as [String: Any]
         if isSimulatorOrTest {
             additionalParams["is_development"] = true
         }
 
-        additionalParams["duration"] = duration
-        additionalParams["link_enabled"] = linkEnabled
-        additionalParams["active_link_session"] = activeLinkSession
-        additionalParams["session_id"] = AnalyticsHelper.shared.sessionID
-        additionalParams["mpe_config"] = configuration?.analyticPayload
-        for (param, param_value) in params {
-            additionalParams[param] = param_value
+        if let duration = duration {
+            additionalParams["duration"] = duration
         }
+
+        if let linkEnabled = linkEnabled {
+            additionalParams["link_enabled"] = linkEnabled
+        }
+
+        if let activeLinkSession = activeLinkSession {
+            additionalParams["active_link_session"] = activeLinkSession
+        }
+        
+        additionalParams["mpe_config"] = configuration?.analyticPayload
+
         let analytic = PaymentSheetAnalytic(event: event,
                                             paymentConfiguration: nil,
                                             productUsage: productUsage,
@@ -238,7 +243,7 @@ extension STPAnalyticsClient {
         log(analytic: analytic)
     }
     
-    var isSimulatorOrTest: Bool {
+    private var isSimulatorOrTest: Bool {
         #if targetEnvironment(simulator)
             return true
         #else
@@ -279,8 +284,6 @@ extension SavedPaymentOptionsViewController.Selection {
             return .savedPM
         case .applePay:
             return .applePay
-        case .link:
-            return .link
         }
     }
 }

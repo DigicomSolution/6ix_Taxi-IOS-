@@ -21,6 +21,7 @@ extension PayWithLinkViewController {
         }
 
         let linkAccount: PaymentSheetLinkAccount
+        let context: Context
 
         let viewModel: WalletViewModel
 
@@ -51,7 +52,10 @@ extension PayWithLinkViewController {
             return button
         }()
 
-        private lazy var separator = SeparatorLabel(text: String.Localized.or)
+        private lazy var separator = SeparatorLabel(text: STPLocalizedString(
+            "Or",
+            "Separator label between two options"
+        ))
 
         private lazy var applePayButton: PKPaymentButton = {
             let button = PKPaymentButton(paymentButtonType: .plain, paymentButtonStyle: .compatibleAutomatic)
@@ -66,17 +70,16 @@ extension PayWithLinkViewController {
         }()
 
         private lazy var cvcElement: TextFieldElement = {
-            let configuration = TextFieldElement.CVCConfiguration(cardBrandProvider: {
-                [weak self] in
-                    return self?.viewModel.cardBrand ?? .unknown
-            })
+            let configuration = TextFieldElement.CVCConfiguration() { [weak self] in
+                return self?.viewModel.cardBrand ?? .unknown
+            }
 
-            return TextFieldElement(configuration: configuration, theme: LinkUI.appearance.asElementsTheme)
+            return TextFieldElement(configuration: configuration)
         }()
 
         private lazy var expiryDateElement: TextFieldElement = {
             let configuration = TextFieldElement.ExpiryDateConfiguration()
-            return TextFieldElement(configuration: configuration, theme: LinkUI.appearance.asElementsTheme)
+            return TextFieldElement(configuration: configuration)
         }()
 
         private lazy var expiredCardNoticeView: LinkNoticeView = {
@@ -88,8 +91,8 @@ extension PayWithLinkViewController {
         private lazy var cardDetailsRecollectionSection: SectionElement = {
             let sectionElement = SectionElement(
                 elements: [
-                    SectionElement.MultiElementRow([expiryDateElement, cvcElement], theme: LinkUI.appearance.asElementsTheme)
-                ], theme: LinkUI.appearance.asElementsTheme
+                    SectionElement.MultiElementRow([expiryDateElement, cvcElement])
+                ]
             )
             sectionElement.delegate = self
             return sectionElement
@@ -107,7 +110,7 @@ extension PayWithLinkViewController {
         }()
 
         private lazy var errorLabel: UILabel = {
-            let label = ElementsUI.makeErrorLabel(theme: LinkUI.appearance.asElementsTheme)
+            let label = ElementsUI.makeErrorLabel()
             label.textAlignment = .center
             label.isHidden = true
             return label
@@ -138,8 +141,9 @@ extension PayWithLinkViewController {
             paymentMethods: [ConsumerPaymentDetails]
         ) {
             self.linkAccount = linkAccount
+            self.context = context
             self.viewModel = WalletViewModel(linkAccount: linkAccount, context: context, paymentMethods: paymentMethods)
-            super.init(context: context)
+            super.init(nibName: nil, bundle: nil)
         }
 
         required init?(coder: NSCoder) {
@@ -151,20 +155,6 @@ extension PayWithLinkViewController {
             setupUI()
             updateUI(animated: false)
             viewModel.delegate = self
-        }
-
-        override func present(
-            _ viewControllerToPresent: UIViewController,
-            animated flag: Bool,
-            completion: (() -> Void)? = nil
-        ) {
-            // TODO(ramont): Move to `PayWithLinkViewController.BaseViewController` after #1241 lands.
-            if #available(iOS 13.0, *) {
-                // Any view controller presented by this controller should also be customized.
-                context.configuration.style.configure(viewControllerToPresent)
-            }
-
-            super.present(viewControllerToPresent, animated: flag, completion: completion)
         }
 
         func setupUI() {
@@ -220,11 +210,8 @@ extension PayWithLinkViewController {
                 animated: animated
             )
 
-            UIView.performWithoutAnimation {
-                expiryDateElement.view.setHiddenIfNecessary(!viewModel.shouldRecollectCardExpiryDate)
-                cvcElement.view.setHiddenIfNecessary(!viewModel.shouldRecollectCardCVC)
-                cardDetailsRecollectionSection.view.layoutIfNeeded()
-            }
+            expiryDateElement.view.setHiddenIfNecessary(!viewModel.shouldRecollectCardExpiryDate)
+            cvcElement.view.setHiddenIfNecessary(!viewModel.shouldRecollectCardCVC)
 
             confirmButton.update(
                 state: viewModel.confirmButtonStatus,
@@ -371,7 +358,8 @@ private extension PayWithLinkViewController.WalletViewController {
         let paymentMethod = viewModel.paymentMethods[index]
         let updatePaymentMethodVC = PayWithLinkViewController.UpdatePaymentViewController(
             linkAccount: linkAccount,
-            context: context,
+            intent: context.intent,
+            configuration: context.configuration,
             paymentMethod: paymentMethod
         )
         updatePaymentMethodVC.delegate = self
@@ -389,14 +377,14 @@ extension PayWithLinkViewController.WalletViewController: ElementDelegate {
         switch expiryDateElement.validationState {
         case .valid:
             viewModel.expiryDate = CardExpiryDate(expiryDateElement.text)
-        case .invalid:
+        case .invalid(_):
             viewModel.expiryDate = nil
         }
 
         switch cvcElement.validationState {
         case .valid:
             viewModel.cvc = cvcElement.text
-        case .invalid:
+        case .invalid(_):
             viewModel.cvc = nil
         }
     }
@@ -436,9 +424,6 @@ extension PayWithLinkViewController.WalletViewController: LinkPaymentMethodPicke
 
     func paymentMethodPickerDidChange(_ pickerView: LinkPaymentMethodPicker) {
         viewModel.selectedPaymentMethodIndex = pickerView.selectedIndex
-        if viewModel.selectedPaymentMethodIsSupported {
-            pickerView.setExpanded(false, animated: true)
-        }
     }
 
     func paymentMethodPicker(

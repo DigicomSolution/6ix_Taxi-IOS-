@@ -40,7 +40,6 @@ import UIKit
         return string(as: .national).count >= metadata.pattern.count
     }
     
-    /// The phone number without the country prefix and containing only digits
     public let number: String
     private let metadata: Metadata
     

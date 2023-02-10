@@ -112,8 +112,8 @@ extension RideStatusView {
     // MARK:- Localization
     private func localize() {
 
-        self.buttonCall.setTitle(Constants.string.call.localize().uppercased()
-            , for: .normal)
+//        self.buttonCall.setTitle(Constants.string.call.localize().uppercased()
+//            , for: .normal)
         self.buttonCancel.setTitle(Constants.string.Cancel.localize().uppercased(), for: .normal)
     }
     

@@ -9,7 +9,7 @@ import CoreGraphics
 import Foundation
 
 /// A `ValueProvider` that returns a CGColor Value
-public final class ColorValueProvider: ValueProvider {
+public final class ColorValueProvider: AnyValueProvider {
 
   // MARK: Lifecycle
 
@@ -17,21 +17,11 @@ public final class ColorValueProvider: ValueProvider {
   public init(block: @escaping ColorValueBlock) {
     self.block = block
     color = Color(r: 0, g: 0, b: 0, a: 1)
-    keyframes = nil
   }
 
   /// Initializes with a single color.
   public init(_ color: Color) {
     self.color = color
-    block = nil
-    keyframes = nil
-    hasUpdate = true
-  }
-
-  /// Initializes with multiple colors, with timing information
-  public init(_ keyframes: [Keyframe<Color>]) {
-    self.keyframes = keyframes
-    color = Color(r: 0, g: 0, b: 0, a: 1)
     block = nil
     hasUpdate = true
   }
@@ -54,20 +44,6 @@ public final class ColorValueProvider: ValueProvider {
     Color.self
   }
 
-  public var storage: ValueProviderStorage<Color> {
-    if let block = block {
-      return .closure { frame in
-        self.hasUpdate = false
-        return block(frame)
-      }
-    } else if let keyframes = keyframes {
-      return .keyframes(keyframes)
-    } else {
-      hasUpdate = false
-      return .singleValue(color)
-    }
-  }
-
   public func hasUpdate(frame _: CGFloat) -> Bool {
     if block != nil {
       return true
@@ -75,10 +51,20 @@ public final class ColorValueProvider: ValueProvider {
     return hasUpdate
   }
 
+  public func value(frame: CGFloat) -> Any {
+    hasUpdate = false
+    let newColor: Color
+    if let block = block {
+      newColor = block(frame)
+    } else {
+      newColor = color
+    }
+    return newColor
+  }
+
   // MARK: Private
 
-  private var hasUpdate = true
+  private var hasUpdate: Bool = true
 
   private var block: ColorValueBlock?
-  private var keyframes: [Keyframe<Color>]?
 }

@@ -106,11 +106,7 @@ final class LinkAccountService: LinkAccountServiceProtocol {
             return false
         }
 
-        return cookieStore.read(key: .lastLogoutEmail) == hashedEmail
-    }
-
-    func getLastSignUpEmail() -> String? {
-        return cookieStore.read(key: .lastSignupEmail)
+        return cookieStore.read(key: cookieStore.emailCookieKey) == hashedEmail
     }
 
 }

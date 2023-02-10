@@ -10,148 +10,155 @@ import UIKit
 import SafariServices
 @_spi(STP) import StripeUICore
 
+/// The view looks like:
+///
+/// Single row (width can contain all subviews):
+///   Pay in 4 interest-free payments of %@ with [Afterpay logo] [info button]
+///
+/// Multi row (width can't contain all subviews):
+///   Pay in 4 interest-free payments of %@ with
+///   [Afterpay logo] [info button]
 /// For internal SDK use only
 @objc(STP_Internal_AfterpayPriceBreakdownView)
 class AfterpayPriceBreakdownView: UIView {
-    private let afterPayClearPayLabel = UILabel()
-    private let theme: ElementsUITheme
+    private let priceBreakdownLabel = UILabel()
+    
     private lazy var afterpayMarkImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = STPImageLibrary.afterpayLogo(locale: locale)
-        imageView.tintColor = theme.colors.parentBackground.contrastingColor
+        imageView.tintColor = ElementsUITheme.current.colors.parentBackground.contrastingColor
 
         return imageView
     }()
-    private lazy var afterpayMarkImage: UIImage = {
-        return STPImageLibrary.afterpayLogo(locale: locale)
+    
+    private lazy var infoButton: UIButton = {
+        let button = UIButton()
+        button.setImage(STPImageLibrary.safeImageNamed("afterpay_icon_info@3x"), for: .normal)
+        return button
     }()
-    private lazy var infoImage: UIImage = {
-        return STPImageLibrary.safeImageNamed("afterpay_icon_info@3x")
-    }()
-
+    
     private lazy var infoURL: URL? = {
-        let language = locale.languageCode?.lowercased() ?? "en"
-        let region = locale.regionCode?.uppercased() ?? "US"
-        let localeCode = "\(language)_\(region)"
-        return URL(string: "https://static.afterpay.com/modal/\(localeCode).html")
+        let regionCode = Locale.current.regionCode ?? "us"
+        return URL(string: "https://static-us.afterpay.com/javascript/modal/\(regionCode.lowercased())_rebrand_modal.html")
     }()
-
-    static func numberOfInstallments(currency: String) -> Int {
-        return currency.uppercased() == "EUR" ? 3 : 4
-    }
 
     let locale: Locale
     
-    init(amount: Int, currency: String, locale: Locale = Locale.autoupdatingCurrent, theme: ElementsUITheme = .default) {
+    init(amount: Int, currency: String, locale: Locale = Locale.autoupdatingCurrent) {
         self.locale = locale
-        self.theme = theme
         super.init(frame: .zero)
-        let numInstallments = Self.numberOfInstallments(currency: currency)
-        let installmentAmount = amount / numInstallments
+        
+        let installmentAmount = amount / 4
         let installmentAmountDisplayString = String.localizedAmountDisplayString(for: installmentAmount, currency: currency)
         
-        afterPayClearPayLabel.attributedText = generateAfterPayClearPayString(numInstallments: numInstallments,
-                                                                              installmentAmountString: installmentAmountDisplayString)
-        afterPayClearPayLabel.numberOfLines = 0
-        afterPayClearPayLabel.translatesAutoresizingMaskIntoConstraints = false
-        afterPayClearPayLabel.isUserInteractionEnabled = true
-        addSubview(afterPayClearPayLabel)
+        priceBreakdownLabel.attributedText = generatePriceBreakdownString(installmentAmountString: installmentAmountDisplayString)
+        
+        [priceBreakdownLabel, afterpayMarkImageView, infoButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            addSubview($0)
+        }
 
         NSLayoutConstraint.activate([
-            afterPayClearPayLabel.leadingAnchor.constraint(
+            priceBreakdownLabel.leadingAnchor.constraint(
                 equalTo: leadingAnchor),
-            afterPayClearPayLabel.topAnchor.constraint(
+            priceBreakdownLabel.topAnchor.constraint(
                 equalTo: topAnchor),
-            afterPayClearPayLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
-            afterPayClearPayLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+
+            afterpayMarkImageView.bottomAnchor.constraint(
+                equalTo: bottomAnchor),
+
+            infoButton.leadingAnchor.constraint(
+                equalTo: afterpayMarkImageView.trailingAnchor, constant: 7),
+            infoButton.bottomAnchor.constraint(
+                equalTo: bottomAnchor),
         ])
         
-        afterPayClearPayLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapInfoButton)))
+        infoButton.addTarget(self, action: #selector(didTapInfoButton), for: .touchUpInside)
+    }
+    
+    override init(frame: CGRect) {
+        self.locale = Locale.autoupdatingCurrent
+        super.init(frame: frame)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    private lazy var singleRowConstraints: [NSLayoutConstraint] = [
+
+        afterpayMarkImageView.leadingAnchor.constraint(
+            equalTo: priceBreakdownLabel.trailingAnchor, constant: 5),
+        afterpayMarkImageView.centerYAnchor.constraint(
+            equalTo: priceBreakdownLabel.centerYAnchor),
+
+        infoButton.centerYAnchor.constraint(
+            equalTo: priceBreakdownLabel.centerYAnchor),
+    ]
+
+    private lazy var multiRowConstraints: [NSLayoutConstraint] = [
+
+        afterpayMarkImageView.leadingAnchor.constraint(
+            equalTo: leadingAnchor),
+        afterpayMarkImageView.topAnchor.constraint(
+            equalTo: priceBreakdownLabel.bottomAnchor, constant: 2),
+
+        infoButton.centerYAnchor.constraint(
+            equalTo: afterpayMarkImageView.centerYAnchor),
+    ]
+    
     override func layoutSubviews() {
         super.layoutSubviews()
+        
+        if !subviewsOutOfBounds() {
+            NSLayoutConstraint.deactivate(multiRowConstraints)
+            NSLayoutConstraint.activate(singleRowConstraints)
+            super.layoutSubviews()
+        } else {
+            NSLayoutConstraint.deactivate(singleRowConstraints)
+            NSLayoutConstraint.activate(multiRowConstraints)
+            super.layoutSubviews()
+        }
     }
-
-    private func generateAfterPayClearPayString(numInstallments: Int, installmentAmountString: String) -> NSMutableAttributedString {
+    
+    private func subviewsOutOfBounds() -> Bool {
+        let subviewsTotalWidth = [priceBreakdownLabel, afterpayMarkImageView, infoButton].reduce(0) { $0 + $1.bounds.width }
+        return subviewsTotalWidth >= bounds.width
+    }
+    
+    private func generatePriceBreakdownString(installmentAmountString: String) -> NSMutableAttributedString {
         let amountStringAttributes = [
-            NSAttributedString.Key.font: theme.fonts.subheadlineBold,
-            .foregroundColor: theme.colors.bodyText
+            NSAttributedString.Key.font: ElementsUITheme.current.fonts.subheadlineBold,
+            .foregroundColor: ElementsUITheme.current.colors.bodyText
         ]
+        
         let stringAttributes = [
-            NSAttributedString.Key.font: theme.fonts.subheadline,
-            .foregroundColor: theme.colors.bodyText
+            NSAttributedString.Key.font: ElementsUITheme.current.fonts.subheadline,
+            .foregroundColor: ElementsUITheme.current.colors.bodyText
         ]
-        let template = STPLocalizedString("Pay in <num_installments/> interest-free payments of <installment_price/> with <img/>",
-                                          "Pay in templated string for afterpay/clearpay")
+        
+        let amountString = NSMutableAttributedString(
+            string: "\(installmentAmountString) ",
+            attributes: amountStringAttributes
+        )
 
-        let resultingString = NSMutableAttributedString()
-        resultingString.append(NSAttributedString(string: ""))
-        guard let numInstallmentsRange = template.range(of: "<num_installments/>"),
-              let installmentPrice = template.range(of: "<installment_price/>"),
-              let img = template.range(of: "<img/>") else {
-            return resultingString
-        }
-
-        var numInstallmentsAppended = false
-        var installmentPriceAppended = false
-        var imgAppended = false
-
-        for (indexOffset, currCharacter) in template.enumerated() {
-            let currIndex = template.index(template.startIndex, offsetBy: indexOffset)
-            if numInstallmentsRange.contains(currIndex) {
-                if numInstallmentsAppended {
-                    continue
-                }
-                numInstallmentsAppended = true
-                resultingString.append(NSAttributedString(string: "\(numInstallments)",
-                                                          attributes: stringAttributes))
-            } else if installmentPrice.contains(currIndex) {
-                if installmentPriceAppended {
-                    continue
-                }
-                installmentPriceAppended = true
-                resultingString.append(NSAttributedString(string: installmentAmountString,
-                                                          attributes: amountStringAttributes))
-            } else if img.contains(currIndex) {
-                if imgAppended {
-                    continue
-                }
-                imgAppended = true
-                let titleFont = stringAttributes[NSAttributedString.Key.font] as! UIFont
-                let clearPay = attributedStringOfImageWithoutLink(uiImage: afterpayMarkImage, font: titleFont)
-                let infoButton = attributedStringOfImageWithoutLink(uiImage: infoImage, font: titleFont)
-                resultingString.append(clearPay)
-                resultingString.append(NSAttributedString(string: "\u{00A0}\u{00A0}", attributes: stringAttributes))
-                resultingString.append(infoButton)
-            } else {
-                resultingString.append(NSAttributedString(string: String(currCharacter),
-                                                          attributes: stringAttributes))
-            }
-        }
-        return resultingString
+        let payIn4String = NSMutableAttributedString(
+            string: "Pay in 4 interest-free payments of ",
+            attributes: stringAttributes
+        )
+        
+        let withString = NSMutableAttributedString(
+            string: "with",
+            attributes: stringAttributes
+        )
+        
+        payIn4String.append(amountString)
+        payIn4String.append(withString)
+        
+        return payIn4String
     }
-
-    private func attributedStringOfImageWithoutLink(uiImage: UIImage, font: UIFont) -> NSAttributedString {
-        let imageAttachment = NSTextAttachment()
-        imageAttachment.bounds = boundsOfImage(font: font, uiImage: uiImage)
-        imageAttachment.image = uiImage
-        return NSAttributedString(attachment: imageAttachment)
-    }
-
-    // https://stackoverflow.com/questions/26105803/center-nstextattachment-image-next-to-single-line-uilabel
-    private func boundsOfImage(font: UIFont, uiImage: UIImage) -> CGRect {
-        return CGRect(x: 0,
-                      y: (font.capHeight - uiImage.size.height).rounded() / 2,
-                      width: uiImage.size.width,
-                      height: uiImage.size.height)
-    }
-
+    
     @objc
     private func didTapInfoButton() {
         if let url = infoURL {
@@ -163,7 +170,7 @@ class AfterpayPriceBreakdownView: UIView {
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        afterpayMarkImageView.tintColor = theme.colors.parentBackground.contrastingColor
+        afterpayMarkImageView.tintColor = ElementsUITheme.current.colors.parentBackground.contrastingColor
     }
 }
 

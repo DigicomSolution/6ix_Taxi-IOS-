@@ -30,14 +30,16 @@ extension Animation {
 
   // MARK: Animation (Loading)
 
-  /// Loads an animation model from a bundle by its name. Returns `nil` if an animation is not found.
-  ///
-  /// - Parameter name: The name of the json file without the json extension. EG "StarAnimation"
-  /// - Parameter bundle: The bundle in which the animation is located. Defaults to `Bundle.main`
-  /// - Parameter subdirectory: A subdirectory in the bundle in which the animation is located. Optional.
-  /// - Parameter animationCache: A cache for holding loaded animations. Optional.
-  ///
-  /// - Returns: Deserialized `Animation`. Optional.
+  /**
+   Loads an animation model from a bundle by its name. Returns `nil` if an animation is not found.
+
+   - Parameter name: The name of the json file without the json extension. EG "StarAnimation"
+   - Parameter bundle: The bundle in which the animation is located. Defaults to `Bundle.main`
+   - Parameter subdirectory: A subdirectory in the bundle in which the animation is located. Optional.
+   - Parameter animationCache: A cache for holding loaded animations. Optional.
+
+   - Returns: Deserialized `Animation`. Optional.
+   */
   public static func named(
     _ name: String,
     bundle: Bundle = Bundle.main,
@@ -62,26 +64,29 @@ extension Animation {
       guard let json = try bundle.getAnimationData(name, subdirectory: subdirectory) else {
         return nil
       }
-      let animation = try Animation.from(data: json)
+      let animation = try JSONDecoder().decode(Animation.self, from: json)
       animationCache?.setAnimation(animation, forKey: cacheKey)
       return animation
     } catch {
       /// Decoding error.
-      LottieLogger.shared.warn("Error when decoding animation \"\(name)\": \(error)")
+      print(error)
       return nil
     }
   }
 
-  /// Loads an animation from a specific filepath.
-  /// - Parameter filepath: The absolute filepath of the animation to load. EG "/User/Me/starAnimation.json"
-  /// - Parameter animationCache: A cache for holding loaded animations. Optional.
-  ///
-  /// - Returns: Deserialized `Animation`. Optional.
+  /**
+   Loads an animation from a specific filepath.
+   - Parameter filepath: The absolute filepath of the animation to load. EG "/User/Me/starAnimation.json"
+   - Parameter animationCache: A cache for holding loaded animations. Optional.
+
+   - Returns: Deserialized `Animation`. Optional.
+   */
   public static func filepath(
     _ filepath: String,
     animationCache: AnimationCacheProvider? = nil)
     -> Animation?
   {
+
     /// Check cache for animation
     if
       let animationCache = animationCache,
@@ -93,7 +98,7 @@ extension Animation {
     do {
       /// Decode the animation.
       let json = try Data(contentsOf: URL(fileURLWithPath: filepath))
-      let animation = try Animation.from(data: json)
+      let animation = try JSONDecoder().decode(Animation.self, from: json)
       animationCache?.setAnimation(animation, forKey: filepath)
       return animation
     } catch {
@@ -102,84 +107,24 @@ extension Animation {
     }
   }
 
-  ///    Loads an animation model from the asset catalog by its name. Returns `nil` if an animation is not found.
-  ///    - Parameter name: The name of the json file in the asset catalog. EG "StarAnimation"
-  ///    - Parameter bundle: The bundle in which the animation is located. Defaults to `Bundle.main`
-  ///    - Parameter animationCache: A cache for holding loaded animations. Optional.
-  ///    - Returns: Deserialized `Animation`. Optional.
-  public static func asset(
-    _ name: String,
-    bundle: Bundle = Bundle.main,
-    animationCache: AnimationCacheProvider? = nil)
-    -> Animation?
-  {
-    /// Create a cache key for the animation.
-    let cacheKey = bundle.bundlePath + "/" + name
+  /**
+   Loads a Lottie animation asynchronously from the URL.
 
-    /// Check cache for animation
-    if
-      let animationCache = animationCache,
-      let animation = animationCache.animation(forKey: cacheKey)
-    {
-      /// If found, return the animation.
-      return animation
-    }
+   - Parameter url: The url to load the animation from.
+   - Parameter closure: A closure to be called when the animation has loaded.
+   - Parameter animationCache: A cache for holding loaded animations.
 
-    /// Load jsonData from Asset
-    guard let json = Data.jsonData(from: name, in: bundle) else {
-      return nil
-    }
-
-    do {
-      /// Decode animation.
-      let animation = try Animation.from(data: json)
-      animationCache?.setAnimation(animation, forKey: cacheKey)
-      return animation
-    } catch {
-      /// Decoding error.
-      return nil
-    }
-  }
-
-  /// Loads a Lottie animation from a `Data` object containing a JSON animation.
-  ///
-  /// - Parameter data: The object to load the animation from.
-  /// - Parameter strategy: How the data should be decoded. Defaults to using the strategy set in `LottieConfiguration.shared`.
-  /// - Returns: Deserialized `Animation`. Optional.
-  ///
-  public static func from(
-    data: Data,
-    strategy: DecodingStrategy = LottieConfiguration.shared.decodingStrategy) throws
-    -> Animation
-  {
-    switch strategy {
-    case .codable:
-      return try JSONDecoder().decode(Animation.self, from: data)
-    case .dictionaryBased:
-      let json = try JSONSerialization.jsonObject(with: data)
-      guard let dict = json as? [String: Any] else {
-        throw InitializableError.invalidInput
-      }
-      return try Animation(dictionary: dict)
-    }
-  }
-
-  /// Loads a Lottie animation asynchronously from the URL.
-  ///
-  /// - Parameter url: The url to load the animation from.
-  /// - Parameter closure: A closure to be called when the animation has loaded.
-  /// - Parameter animationCache: A cache for holding loaded animations.
-  ///
+   */
   public static func loadedFrom(
     url: URL,
-    session: URLSession = .shared,
     closure: @escaping Animation.DownloadClosure,
     animationCache: AnimationCacheProvider?)
   {
+
     if let animationCache = animationCache, let animation = animationCache.animation(forKey: url.absoluteString) {
       closure(animation)
     } else {
-      let task = session.dataTask(with: url) { data, _, error in
+      let task = URLSession.shared.dataTask(with: url) { data, _, error in
         guard error == nil, let jsonData = data else {
           DispatchQueue.main.async {
             closure(nil)
@@ -187,7 +132,7 @@ extension Animation {
           return
         }
         do {
-          let animation = try Animation.from(data: jsonData)
+          let animation = try JSONDecoder().decode(Animation.self, from: jsonData)
           DispatchQueue.main.async {
             animationCache?.setAnimation(animation, forKey: url.absoluteString)
             closure(animation)
@@ -197,6 +142,7 @@ extension Animation {
             closure(nil)
           }
         }
+
       }
       task.resume()
     }
@@ -204,14 +150,16 @@ extension Animation {
 
   // MARK: Animation (Helpers)
 
-  /// Markers are a way to describe a point in time by a key name.
-  ///
-  /// Markers are encoded into animation JSON. By using markers a designer can mark
-  /// playback points for a developer to use without having to worry about keeping
-  /// track of animation frames. If the animation file is updated, the developer
-  /// does not need to update playback code.
-  ///
-  /// Returns the Progress Time for the marker named. Returns nil if no marker found.
+  /**
+   Markers are a way to describe a point in time by a key name.
+
+   Markers are encoded into animation JSON. By using markers a designer can mark
+   playback points for a developer to use without having to worry about keeping
+   track of animation frames. If the animation file is updated, the developer
+   does not need to update playback code.
+
+   Returns the Progress Time for the marker named. Returns nil if no marker found.
+   */
   public func progressTime(forMarker named: String) -> AnimationProgressTime? {
     guard let markers = markerMap, let marker = markers[named] else {
       return nil
@@ -219,14 +167,16 @@ extension Animation {
     return progressTime(forFrame: marker.frameTime)
   }
 
-  /// Markers are a way to describe a point in time by a key name.
-  ///
-  /// Markers are encoded into animation JSON. By using markers a designer can mark
-  /// playback points for a developer to use without having to worry about keeping
-  /// track of animation frames. If the animation file is updated, the developer
-  /// does not need to update playback code.
-  ///
-  /// Returns the Frame Time for the marker named. Returns nil if no marker found.
+  /**
+   Markers are a way to describe a point in time by a key name.
+
+   Markers are encoded into animation JSON. By using markers a designer can mark
+   playback points for a developer to use without having to worry about keeping
+   track of animation frames. If the animation file is updated, the developer
+   does not need to update playback code.
+
+   Returns the Frame Time for the marker named. Returns nil if no marker found.
+   */
   public func frameTime(forMarker named: String) -> AnimationFrameTime? {
     guard let markers = markerMap, let marker = markers[named] else {
       return nil
@@ -234,20 +184,9 @@ extension Animation {
     return marker.frameTime
   }
 
-  /// Converts Frame Time (Seconds * Framerate) into Progress Time
-  /// (optionally clamped to between 0 and 1).
-  public func progressTime(
-    forFrame frameTime: AnimationFrameTime,
-    clamped: Bool = true)
-    -> AnimationProgressTime
-  {
-    let progressTime = ((frameTime - startFrame) / (endFrame - startFrame))
-
-    if clamped {
-      return progressTime.clamp(0, 1)
-    } else {
-      return progressTime
-    }
+  /// Converts Frame Time (Seconds * Framerate) into Progress Time (0 to 1).
+  public func progressTime(forFrame frameTime: AnimationFrameTime) -> AnimationProgressTime {
+    ((frameTime - startFrame) / (endFrame - startFrame)).clamp(0, 1)
   }
 
   /// Converts Progress Time (0 to 1) into Frame Time (Seconds * Framerate)

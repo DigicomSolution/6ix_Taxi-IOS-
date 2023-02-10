@@ -22,6 +22,8 @@ class WaitingTimeSelectionViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let viewControllerName = String.init(describing: self.classForCoder)
+        print("VCName***: \(viewControllerName)")
         Common.setFont(to: selectionLabel!, isTitle: true, size: 25)
         minutesButton.forEach { button in
             Common.setFont(to: button, isTitle: false)

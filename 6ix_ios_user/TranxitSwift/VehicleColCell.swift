@@ -38,7 +38,7 @@ class VehicleColCell: UICollectionViewCell {
         
     }
     
-    func setData(ride : Service ){
+    func setData(ride : Service, indexPath: IndexPath){
         
         
         desLabel.text = "\(ride.capacity ?? 0) Persons Can Ride"
@@ -46,8 +46,16 @@ class VehicleColCell: UICollectionViewCell {
 //        self.service = value
        vehicleNAme.text = ride.name
         
-       
-        self.imageLabel.setImage(with: ride.image, placeHolder: #imageLiteral(resourceName: "sedan-car-model"))
+        if indexPath.row % 2 == 0
+        {
+            self.imageLabel.image = UIImage(named: "car2")
+        }
+        else
+        {
+            self.imageLabel.image = UIImage(named: "car")
+        }
+        
+        //self.imageLabel.setImage(with: ride.image, placeHolder: #imageLiteral(resourceName: "sedan-car-model"))
                                     //.withRenderingMode(.alwaysTemplate))
     }
 }

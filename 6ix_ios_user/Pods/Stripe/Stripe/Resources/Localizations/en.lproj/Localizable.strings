@@ -17,7 +17,8 @@
 /* Title shown above a card entry form */
 "Add a card" = "Add a card";
 
-/* Text for a button that, when tapped, displays another screen where the customer can add a new payment method */
+/* Text for a button that, when tapped, displays another screen where the customer
+can add a new payment method */
 "Add a payment method" = "Add a payment method";
 
 /* Button prompt to add a bank account as a payment method. */
@@ -199,6 +200,9 @@ re-entering the security code (CVV/CVC). */
 /* Label for free shipping method */
 "Free" = "Free";
 
+/* Placeholder string for name entry field. */
+"Full name" = "Full name";
+
 /* Source type brand name */
 "Giropay" = "Giropay";
 
@@ -286,9 +290,6 @@ Pay faster at {Merchant Name} and thousands of merchants
 e.g, 'Pay faster at Example, Inc. and thousands of merchants.' */
 "Pay faster at %@ and thousands of merchants." = "Pay faster at %@ and thousands of merchants.";
 
-/* Pay in templated string for afterpay/clearpay */
-"Pay in <num_installments/> interest-free payments of <installment_price/> with <img/>" = "Pay in <num_installments/> interest-free payments of <installment_price/> with <img/>";
-
 /* Klarna pay later copy */
 "Pay later with Klarna." = "Pay later with Klarna.";
 
@@ -298,20 +299,17 @@ e.g, 'Pay faster at Example, Inc. and thousands of merchants.' */
 /* Title shown above a section containing various payment options */
 "Pay using" = "Pay using";
 
+/* Label preceding the selected payment method. */
+"Pay with" = "Pay with";
+
 /* Pay with {payment method} */
 "Pay with %@" = "Pay with %@";
 
 /* US Bank Account copy title for Mobile payment element form */
 "Pay with your bank account in just a few steps." = "Pay with your bank account in just a few steps.";
 
-/* Label for a section displaying payment details. */
-"Payment" = "Payment";
-
 /* Title for Payment Method screen */
 "Payment Method" = "Payment Method";
-
-/* Title for a section listing one or more payment methods. */
-"Payment methods" = "Payment methods";
 
 /* Payment Method type brand name */
 "PayPal" = "PayPal";
@@ -347,9 +345,6 @@ e.g, 'Pay faster at Example, Inc. and thousands of merchants.' */
 /* Label for a button that re-sends the a login code when tapped */
 "Resend code" = "Resend code";
 
-/* Title for address entry section */
-"Save address" = "Save address";
-
 /* The label of a switch indicating whether to save the payment method for future payments. */
 "Save for future payments" = "Save for future payments";
 
@@ -365,6 +360,9 @@ to be saved and used in future checkout sessions. */
 
 /* Title for the Link signup screen */
 "Secure 1⁠-⁠click checkout" = "Secure 1⁠-⁠click checkout";
+
+/* Label prompting the user to select one of the saved payment methods from a list. */
+"Select a saved payment" = "Select a saved payment";
 
 /* Title shown above a carousel containing the customer's payment methods */
 "Select your payment method" = "Select your payment method";
@@ -392,10 +390,6 @@ to be saved and used in future checkout sessions. */
 
 /* Label for shipping method form */
 "Shipping Method" = "Shipping Method";
-
-/* Text for an error that is shown when a user selects a shipping address that
-is not supported by the merchant */
-"Shipping to %@ is not supported." = "Shipping to %@ is not supported.";
 
 /* Accessibility label for an action or a button that shows a menu. */
 "Show menu" = "Show menu";
@@ -431,14 +425,8 @@ is not supported by the merchant */
 /* An error message. */
 "The IBAN you entered is invalid, \"%@\" is not a supported country code." = "The IBAN you entered is invalid, \"%@\" is not a supported country code.";
 
-/* Error message shown when the user enters an expired verification code. */
-"The provided verification code has expired." = "The provided verification code has expired.";
-
-/* Error message shown when the user enters an incorrect verification code. */
-"The provided verification code is incorrect." = "The provided verification code is incorrect.";
-
 /* A text notice shown when the user selects an expired card. */
-"This card has expired. Update your card info or choose a different payment method." = "This card has expired. Update your card info or choose a different payment method.";
+"This card has expired. Update it to keep using it or use a different payment." = "This card has expired. Update it to keep using it or use a different payment.";
 
 /* Text of a label indicating that a payment method is the default. */
 "This is your default" = "This is your default";
@@ -448,9 +436,6 @@ is not supported by the merchant */
 
 /* Error when the user hasn't allowed the current app to access the camera when scanning a payment card. 'Settings' is the localized name of the iOS Settings app. */
 "To scan your card, allow camera access in Settings." = "To scan your card, allow camera access in Settings.";
-
-/* Error message shown when the user enters an incorrect verification code too many times. */
-"Too many attempts. Please try again in a few minutes." = "Too many attempts. Please try again in a few minutes.";
 
 /* Label shown when a payment method cannot be used for the current transaction. */
 "Unavailable for this purchase" = "Unavailable for this purchase";

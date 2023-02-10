@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - ColorFormatDenominator
 
-public enum ColorFormatDenominator: Hashable {
+public enum ColorFormatDenominator {
   case One
   case OneHundred
   case TwoFiftyFive
@@ -28,7 +28,7 @@ public enum ColorFormatDenominator: Hashable {
 
 // MARK: - Color
 
-public struct Color: Hashable {
+public struct Color {
 
   public var r: Double
   public var g: Double

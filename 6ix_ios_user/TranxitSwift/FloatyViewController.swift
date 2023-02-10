@@ -17,6 +17,8 @@ open class FloatyViewController: UIViewController {
 
     override open func viewDidLoad() {
         super.viewDidLoad()
+        let viewControllerName = String.init(describing: self.classForCoder)
+        print("VCName***: \(viewControllerName)")
         view.addSubview(floaty)
     }
     

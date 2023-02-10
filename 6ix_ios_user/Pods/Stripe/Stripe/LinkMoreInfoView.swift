@@ -18,18 +18,15 @@ final class LinkMoreInfoView: UIView {
     }
     private lazy var logoView: UIImageView = {
         let imageView = UIImageView(image: Image.link_logo.makeImage(template: true))
-        imageView.tintColor = theme.colors.secondaryText
+        imageView.tintColor = ElementsUITheme.current.colors.secondaryText
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.isAccessibilityElement = true
         imageView.accessibilityLabel = STPPaymentMethodType.link.displayName
         return imageView
     }()
-    
-    private let theme: ElementsUITheme
 
-    init(theme: ElementsUITheme = .default) {
-        self.theme = theme
+    init() {
         super.init(frame: .zero)
         let stackView = UIStackView(arrangedSubviews: [logoView])
         stackView.axis = .horizontal

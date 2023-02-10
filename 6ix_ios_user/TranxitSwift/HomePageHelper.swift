@@ -79,7 +79,7 @@ class HomePageHelper {
                 return
             }
              let offer = request.requests ?? []
-            print("offers:\(offer.count)")
+            print("Testing:offers:\(offer.count)")
             completion(nil, request, offer)
         }
     }

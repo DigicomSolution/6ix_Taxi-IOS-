@@ -40,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         IQKeyboardManager.shared.enable = true
         
         if #available(iOS 13.0, *) {
-            window?.overrideUserInterfaceStyle = .light
+            //window?.overrideUserInterfaceStyle = .light
         } else {
             // Fallback on earlier versions
         }

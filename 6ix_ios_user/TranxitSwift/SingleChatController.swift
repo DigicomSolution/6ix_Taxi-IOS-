@@ -100,6 +100,8 @@ extension SingleChatController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let viewControllerName = String.init(describing: self.classForCoder)
+        print("VCName***: \(viewControllerName)")
         self.initialLoads()
         isChatOpen = true
     }

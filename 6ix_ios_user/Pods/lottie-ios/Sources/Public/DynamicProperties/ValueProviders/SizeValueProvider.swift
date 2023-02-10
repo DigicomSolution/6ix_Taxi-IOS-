@@ -9,7 +9,7 @@ import CoreGraphics
 import Foundation
 
 /// A `ValueProvider` that returns a CGSize Value
-public final class SizeValueProvider: ValueProvider {
+public final class SizeValueProvider: AnyValueProvider {
 
   // MARK: Lifecycle
 
@@ -43,18 +43,6 @@ public final class SizeValueProvider: ValueProvider {
     Vector3D.self
   }
 
-  public var storage: ValueProviderStorage<Vector3D> {
-    if let block = block {
-      return .closure { frame in
-        self.hasUpdate = false
-        return block(frame).vector3dValue
-      }
-    } else {
-      hasUpdate = false
-      return .singleValue(size.vector3dValue)
-    }
-  }
-
   public func hasUpdate(frame _: CGFloat) -> Bool {
     if block != nil {
       return true
@@ -62,9 +50,20 @@ public final class SizeValueProvider: ValueProvider {
     return hasUpdate
   }
 
+  public func value(frame: CGFloat) -> Any {
+    hasUpdate = false
+    let newSize: CGSize
+    if let block = block {
+      newSize = block(frame)
+    } else {
+      newSize = size
+    }
+    return newSize.vector3dValue
+  }
+
   // MARK: Private
 
-  private var hasUpdate = true
+  private var hasUpdate: Bool = true
 
   private var block: SizeValueBlock?
 }

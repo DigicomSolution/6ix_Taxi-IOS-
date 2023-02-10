@@ -39,6 +39,8 @@ class SettingTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let viewControllerName = String.init(describing: self.classForCoder)
+        print("VCName***: \(viewControllerName)")
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
         self.initalLoads()

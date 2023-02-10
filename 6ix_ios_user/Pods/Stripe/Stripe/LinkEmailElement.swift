@@ -36,15 +36,15 @@ class LinkEmailElement: Element {
         return stackView
     }()
 
-    var view: UIView {
-        return stackView
-    }
+    lazy var view: UIView = {
+        return FormView(viewModel: FormElement.ViewModel(elements: [stackView], bordered: true))
+    }()
     
     public var emailAddressString: String? {
         return emailAddressElement.text
     }
     
-    public var validationState: ElementValidationState {
+    public var validationState: TextFieldElement.ValidationState {
         return emailAddressElement.validationState
     }
     
@@ -74,14 +74,9 @@ class LinkEmailElement: Element {
         }
     }
     
-    public init(defaultValue: String? = nil, theme: ElementsUITheme = .default) {
-        emailAddressElement = TextFieldElement.makeEmail(defaultValue: defaultValue, theme: theme)
+    public init(defaultValue: String? = nil) {
+        emailAddressElement = TextFieldElement.makeEmail(defaultValue: defaultValue)
         emailAddressElement.delegate = self
-    }
-
-    @discardableResult
-    func beginEditing() -> Bool {
-        return emailAddressElement.beginEditing()
     }
 }
 

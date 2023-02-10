@@ -33,9 +33,9 @@ import UIKit
     func beginEditing() -> Bool
     
     /**
-     Whether this element contains valid user input or not.
+     The error text to display to the user, if any.
      */
-    var validationState: ElementValidationState { get }
+    var errorText: String? { get }
 
     /**
      Text to display to the user under the item, if any.
@@ -48,8 +48,8 @@ public extension Element {
         return false
     }
     
-    var validationState: ElementValidationState {
-        return .valid
+    var errorText: String? {
+        return nil
     }
 
     var subLabelText: String? {
@@ -88,29 +88,14 @@ public extension Element {
 
 extension Element {
     /// A poorly named convenience method that returns all Elements underneath this Element, including this Element.
-    public func getAllSubElements() -> [Element] {
+    func getAllSubElements() -> [Element] {
         switch self {
-        case let container as ContainerElement:
-            return [container] + container.elements.flatMap { $0.getAllSubElements() }
+        case let form as FormElement:
+            return [form] + form.elements.flatMap { $0.getAllSubElements() }
+        case let section as SectionElement:
+            return [section] + section.elements.flatMap { $0.getAllSubElements() }
         default:
             return [self]
         }
     }
-}
-
-@_spi(STP) @frozen public enum ElementValidationState {
-    case valid
-    case invalid(error: ElementValidationError, shouldDisplay: Bool)
-    
-    /// A convenience property to check if the state is valid because it's hard to make this type Equatable
-    public var isValid: Bool {
-        if case .valid = self {
-            return true
-        }
-        return false
-    }
-}
-
-@_spi(STP) public protocol ElementValidationError: Error {
-    var localizedDescription: String { get }
 }

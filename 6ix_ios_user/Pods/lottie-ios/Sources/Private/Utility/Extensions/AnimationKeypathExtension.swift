@@ -106,28 +106,30 @@ extension KeypathSearchable {
       return nil
     }
 
-    /// Now check child keypaths.
-    for child in childKeypaths {
-      if let layer = child.layer(for: nextKeypath) {
-        return layer
+    if nextKeypath.nextKeypath != nil {
+      /// Now check child keypaths.
+      for child in childKeypaths {
+        if let layer = child.layer(for: keyPath) {
+          return layer
+        }
       }
     }
     return nil
   }
 
-  func logKeypaths(for keyPath: AnimationKeypath?, logger: LottieLogger) {
+  func logKeypaths(for keyPath: AnimationKeypath?) {
     let newKeypath: AnimationKeypath
     if let previousKeypath = keyPath {
       newKeypath = previousKeypath.appendingKey(keypathName)
     } else {
       newKeypath = AnimationKeypath(keys: [keypathName])
     }
-    logger.info(newKeypath.fullPath)
+    print(newKeypath.fullPath)
     for key in keypathProperties.keys {
-      logger.info(newKeypath.appendingKey(key).fullPath)
+      print(newKeypath.appendingKey(key).fullPath)
     }
     for child in childKeypaths {
-      child.logKeypaths(for: newKeypath, logger: logger)
+      child.logKeypaths(for: newKeypath)
     }
   }
 }

@@ -20,7 +20,7 @@ protocol BottomSheetContentViewController: UIViewController {
 /// A VC containing a content view controller and manages the layout of its SheetNavigationBar.
 /// For internal SDK use only
 @objc(STP_Internal_BottomSheetViewController)
-class BottomSheetViewController: UIViewController, BottomSheetPresentable {
+class BottomSheetViewController: UIViewController, PanModalPresentable {
     struct Constants {
         static let keyboardAvoidanceEdgePadding: CGFloat = 16
     }
@@ -76,15 +76,15 @@ class BottomSheetViewController: UIViewController, BottomSheetPresentable {
             addChild(contentViewController)
             self.contentContainerView.addArrangedSubview(self.contentViewController.view)
             self.contentViewController.didMove(toParent: self)
-            if let presentationController = rootParent.presentationController
-                as? BottomSheetPresentationController
+            if let panModalPresentationController = rootParent.presentationController
+                as? PanModalPresentationController
             {
-                presentationController.forceFullHeight =
+                panModalPresentationController.forceFullHeight =
                     contentViewController.requiresFullScreen
             }
             self.contentContainerView.layoutIfNeeded()
 
-            animateHeightChange(forceAnimation: true)
+            animateHeightChange()
             // Add its navigation bar if necessary
             oldContentViewController.navigationBar.removeFromSuperview()
             navigationBarContainerView.addArrangedSubview(contentViewController.navigationBar)
@@ -218,7 +218,7 @@ class BottomSheetViewController: UIViewController, BottomSheetPresentable {
         }
     }
 
-    // MARK: - BottomSheetPresentable
+    // MARK: - PanModalPresentable
 
     var panScrollable: UIScrollView? {
         // Returning the scroll view causes contentInset issues; I'm not sure why.
@@ -265,6 +265,11 @@ extension BottomSheetViewController: PaymentSheetAuthenticationContext {
 
     func authenticationContextWillDismiss(_ viewController: UIViewController) {
         view.setNeedsLayout()
+        if let panModalPresentationController = rootParent.presentationController
+            as? PanModalPresentationController
+        {
+            panModalPresentationController.setNeedsLayoutUpdate()
+        }
     }
 
     func present(

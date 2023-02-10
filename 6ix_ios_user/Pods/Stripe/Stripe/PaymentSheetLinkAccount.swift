@@ -110,12 +110,11 @@ class PaymentSheetLinkAccount: PaymentSheetLinkAccountInfoProtocol {
             countryCode: countryCode,
             with: apiClient,
             cookieStore: cookieStore
-        ) { [weak self, email] result in
+        ) { [weak self] result in
             switch result {
             case .success(let signupResponse):
                 self?.currentSession = signupResponse.consumerSession
                 self?.publishableKey = signupResponse.preferences.publishableKey
-                self?.cookieStore.write(key: .lastSignupEmail, value: email)
                 completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
@@ -319,7 +318,7 @@ class PaymentSheetLinkAccount: PaymentSheetLinkAccountInfoProtocol {
         }
 
         // Delete cookie.
-        cookieStore.delete(key: .session)
+        cookieStore.delete(key: cookieStore.sessionCookieKey)
         
         markEmailAsLoggedOut()
         
@@ -332,7 +331,7 @@ class PaymentSheetLinkAccount: PaymentSheetLinkAccountInfoProtocol {
             return
         }
 
-        cookieStore.write(key: .lastLogoutEmail, value: hashedEmail)
+        cookieStore.write(key: cookieStore.emailCookieKey, value: hashedEmail)
     }
 
 }

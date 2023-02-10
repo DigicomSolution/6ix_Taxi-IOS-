@@ -8,35 +8,28 @@
 import Foundation
 #if os(iOS) || os(tvOS) || os(watchOS) || targetEnvironment(macCatalyst)
 import UIKit
-/// An interactive button that plays an animation when pressed.
+/**
+ An interactive button that plays an animation when pressed.
+ */
 open class AnimatedButton: AnimatedControl {
 
   // MARK: Lifecycle
 
-  public override init(
-    animation: Animation,
-    configuration: LottieConfiguration = .shared)
-  {
-    super.init(animation: animation, configuration: configuration)
-    isAccessibilityElement = true
+  public override init(animation: Animation) {
+    super.init(animation: animation)
+    accessibilityTraits = UIAccessibilityTraits.button
   }
 
   public override init() {
     super.init()
-    isAccessibilityElement = true
+    accessibilityTraits = UIAccessibilityTraits.button
   }
 
   required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
-    isAccessibilityElement = true
   }
 
   // MARK: Public
-
-  public override var accessibilityTraits: UIAccessibilityTraits {
-    set { super.accessibilityTraits = newValue }
-    get { super.accessibilityTraits.union(.button) }
-  }
 
   /// Sets the play range for the given UIControlEvent.
   public func setPlayRange(fromProgress: AnimationProgressTime, toProgress: AnimationProgressTime, event: UIControl.Event) {
@@ -76,9 +69,9 @@ open class AnimatedButton: AnimatedControl {
     }
   }
 
-  // MARK: Private
+  // MARK: Fileprivate
 
-  private var rangesForEvents: [UInt : (from: CGFloat, to: CGFloat)] =
+  fileprivate var rangesForEvents: [UInt : (from: CGFloat, to: CGFloat)] =
     [UIControl.Event.touchUpInside.rawValue : (from: 0, to: 1)]
 }
 #endif

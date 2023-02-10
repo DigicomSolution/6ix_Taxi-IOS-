@@ -52,7 +52,7 @@ struct AddressSpec: Decodable {
             self = ZipNameType(rawValue: zip_name_type) ?? .postal_code
         }
     }
-    enum LocalityNameType: String, Codable {
+    enum CityNameType: String, Codable {
         case district, suburb, post_town, suburb_or_city, city
         var localizedLabel: String {
             switch self {
@@ -64,8 +64,8 @@ struct AddressSpec: Decodable {
             }
         }
         init(from decoder: Decoder) throws {
-            let locality_name_type = try decoder.singleValueContainer().decode(String.self)
-            self = LocalityNameType(rawValue: locality_name_type) ?? .suburb_or_city
+            let city_name_type = try decoder.singleValueContainer().decode(String.self)
+            self = CityNameType(rawValue: city_name_type) ?? .suburb_or_city
         }
     }
     /// An enum of the fields that `AddressSpec` describes.
@@ -80,7 +80,7 @@ struct AddressSpec: Decodable {
     /// The order to display the fields.
     let fieldOrdering: [FieldType]
     let requiredFields: [FieldType]
-    let cityNameType: LocalityNameType
+    let cityNameType: CityNameType
     let stateNameType: StateNameType
     let zip: String?
     let zipNameType: ZipNameType
@@ -88,7 +88,7 @@ struct AddressSpec: Decodable {
     enum CodingKeys: String, CodingKey {
         case format = "fmt"
         case require = "require"
-        case localityNameType = "locality_name_type" // e.g. City
+        case cityNameType = "city_name_type"
         case stateNameType = "state_name_type"
         case zip = "zip"
         case zipNameType = "zip_name_type"
@@ -103,7 +103,7 @@ struct AddressSpec: Decodable {
         self.init(
             format: try? container.decode(String.self, forKey: .format),
             require: try? container.decode(String.self, forKey: .require),
-            cityNameType: try? container.decode(LocalityNameType.self, forKey: .localityNameType),
+            cityNameType: try? container.decode(CityNameType.self, forKey: .cityNameType),
             stateNameType: try? container.decode(StateNameType.self, forKey: .stateNameType),
             zip: try? container.decode(String.self, forKey: .zip),
             zipNameType: try? container.decode(ZipNameType.self, forKey: .zipNameType)
@@ -113,19 +113,14 @@ struct AddressSpec: Decodable {
     init(
         format: String? = nil,
         require: String? = nil,
-        cityNameType: LocalityNameType? = nil,
+        cityNameType: CityNameType? = nil,
         stateNameType: StateNameType? = nil,
         zip: String? = nil,
         zipNameType: ZipNameType? = nil
     ) {
-        var fieldOrdering: [FieldType] = (format ?? "NACSZ").compactMap {
+        self.fieldOrdering = (format ?? "NACSZ").compactMap {
            FieldType(rawValue: String($0))
         }
-        // We always collect line1 and line2 ("A"), so prepend if it's missing
-        if !fieldOrdering.contains(FieldType.line) {
-            fieldOrdering = [.line] + fieldOrdering
-        }
-        self.fieldOrdering = fieldOrdering
         self.requiredFields = (require ?? "ACSZ").compactMap {
             FieldType(rawValue: String($0))
         }

@@ -75,6 +75,12 @@ class HomeViewController: UIViewController {
     var currntRequest : Request?
     var rides = [Service]()
     var offers = [Offer]()
+    {
+        didSet
+        {
+            print("Testing:offers feed",offers.count)
+        }
+    }
     var selectedVehIndex = 0
     var newPaymentType : PaymentType = .CASH
     var selectedService : Service?
@@ -177,9 +183,13 @@ class HomeViewController: UIViewController {
     
     var isOnBooking = false {  // Boolean to handle back using side menu button
         didSet {
-            
+            if currntRequest == nil
+            {
+                imageViewMarkerCenter.isHidden = isOnBooking
+            }
             if topRideDetailView.alpha == 1 {
-                sideMenuBtn.setTitle("Cancel", for: .normal)
+                //sideMenuBtn.setTitle("Cancel", for: .normal)
+                sideMenuBtn.setImage(#imageLiteral(resourceName: "back-icon"), for: .normal)
             }else{
                 sideMenuBtn.setImage(isOnBooking ? #imageLiteral(resourceName: "back-icon") : #imageLiteral(resourceName: "menu_icon"), for: .normal)
             }
@@ -288,6 +298,8 @@ class HomeViewController: UIViewController {
     // MARK:- Life Cycle -
     override func viewDidLoad() {
         super.viewDidLoad()
+        let viewControllerName = String.init(describing: self.classForCoder)
+        print("VCName***: \(viewControllerName)")
         
         let heightOfSuperview = self.view.bounds.height
         self.navigationController?.isNavigationBarHidden = true
@@ -300,6 +312,10 @@ class HomeViewController: UIViewController {
         cardImage.image = UIImage(named: "card_white")
         NotificationCenter.default.addObserver(self, selector: #selector(self.handleNotification(notification:)), name: Notification.Name("message"), object: nil)
         downButton.isUserInteractionEnabled = false
+        
+//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+//
+//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -311,6 +327,9 @@ class HomeViewController: UIViewController {
 //        offerView.alpha = 1
 //        offerCancelButton.isHidden = false
         //IQKeyboardManager.shared.enable = true
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -803,6 +822,7 @@ extension HomeViewController {
         
         vc.mapViewHelper = mapViewHelper
         vc.delegate = self
+        vc.currentLocation = self.currentLocation
         
         if self.positions != nil
         {
@@ -824,6 +844,7 @@ extension HomeViewController {
             
             self.vehicleCollectionView.isHidden = false
             self.vehicleCollectionView.alpha = 1
+            self.imageViewMarkerCenter.isHidden = true
             
             let p  = positions[0].value!.coordinate
             let p1 = self.sourceLocationDetail!.value!.coordinate
@@ -834,13 +855,18 @@ extension HomeViewController {
             self.mapViewHelper.mapView?.getNewEstimation(between: l1, to: l2) { time, dis in
                 DispatchQueue.main.async {
                     print("time:\(time), dis:\(dis)")
-                    self.tripDistanceLabel.text = dis
+                    //self.tripDistanceLabel.text = dis
                     self.tripTimeLAbel.text = time
-                    self.mileLabel.text = dis
+                    self.mileLabel.text = dis.replacingOccurrences(of: "km", with: "").replacingOccurrences(of: "m", with: "")
+                    self.tripDistanceLabel.text = dis.replacingOccurrences(of: "km", with: "").replacingOccurrences(of: "m", with: "")
                     self.timeLAbel.text = time
                 }
-               
+                DispatchQueue.main.asyncAfter(deadline: .now()+1) {
+                    KRProgressHUD.dismiss()
+                }
+                
             }
+            
             self.positions = positions
             self.sourceLocationDetail = source
             self.drawPolyline(isReroute: false)
@@ -892,14 +918,14 @@ extension HomeViewController {
                     }
                     if let stop2 = positi[1].value?.address
                     {
-                        self.stop2AddressLabel.text = stop2
+                        self.stop2AddressLabel?.text = stop2
                     }
                     if let stop3 = positi[2].value?.address
                     {
-                        self.stop3AddressLabel.text = stop3
+                        self.stop3AddressLabel?.text = stop3
                     }
-                    self.stop2StackView.isHidden = false
-                    self.stop3StackView.isHidden = false
+                    self.stop2StackView?.isHidden = false
+                    self.stop3StackView?.isHidden = false
                 }
             }
             
@@ -1036,7 +1062,14 @@ extension HomeViewController {
         var currentLocationvalue:CLLocationCoordinate2D! //location object
         
         currentLocationvalue = CLLocationCoordinate2D(latitude:pointsArr?[0].toDouble() ?? 0.0, longitude: pointsArr?[1].toDouble() ?? 0.0)
-        self.imageViewMarkerCenter.isHidden = true
+        if isReroute
+        {
+            self.imageViewMarkerCenter.isHidden = true
+        }
+        else
+        {
+            self.imageViewMarkerCenter.isHidden = false
+        }
         //            if var sourceCoordinate = self.sourceLocationDetail?.value?.coordinate,
         //                let destinationCoordinate = self.positions?[0].value?.coordinate {  // Draw polyline from source to destination
         //                self.mapViewHelper?.mapView?.clear()
@@ -1180,11 +1213,18 @@ extension HomeViewController {
         self.timeLAbel.text = "-"
         self.mileLabel.text = "-"
         self.selectedService = nil
-        self.selectedVehIndex = -1
+        self.selectedVehIndex = 0
         self.curOfferAmountByUser = 0.0
         offerCancelButton.alpha = 0
         driverFindingLabel.alpha = 0
         self.moreLabel.text = ""
+        
+        
+        
+        self.vehicleCollectionView.alpha = 0
+        self.vehicleCollectionView.isHidden = true
+        self.roundTripViewBottomConstriant.constant = -80
+        
     }
     
     
@@ -1224,6 +1264,30 @@ extension HomeViewController {
         }
     }
     
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            var keyboardHeight = keyboardSize.height
+            print("keyboardHeight:",keyboardHeight)
+            
+            if #available(iOS 11.0, *) {
+                keyboardHeight = keyboardHeight - view.safeAreaInsets.bottom
+            }
+        
+            if self.view.frame.origin.y==0
+            {
+            self.view.frame.origin.y -= keyboardHeight
+            }
+        }
+    }
+    @objc func keyboardWillHide(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            let keyboardHeight = keyboardSize.height
+            print(keyboardHeight)
+
+            self.view.frame.origin.y=0
+            
+        }
+    }
 }
 
 // MARK:- MapView
@@ -1242,15 +1306,35 @@ extension HomeViewController : GMSMapViewDelegate {
                 })
             }
             
-            //                if self.sourceLocationDetail != nil {
-            //
-            //                    if let location = mapViewHelper.mapView?.projection.coordinate(for: viewMapOuter.center) {
-            //                        self.sourceLocationDetail?.value?.coordinate = location
-            //                        getUpdate(on: location) { (locationDetail) in
-            //                            self.sourceLocationDetail?.value = locationDetail
-            //                        }
-            //                    }
-            //                } else if self.destinationLocationDetail != nil {
+            if self.sourceLocationDetail != nil {
+                print("isOfferAccepted:",isOfferAccepted)
+                print("currntRequest",currntRequest)
+                if !isOnBooking
+                {
+                    if currntRequest == nil
+                    {
+                        imageViewMarkerCenter.isHidden = false
+                        if let location = mapViewHelper.mapView?.projection.coordinate(for: viewMapOuter.center) {
+                            self.sourceLocationDetail?.value?.coordinate = location
+                            getUpdate(on: location) { (locationDetail) in
+                                self.sourceLocationDetail?.value = locationDetail
+                                DispatchQueue.main.async {
+                                    self.sourceAddressLabel.text = locationDetail.address
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        imageViewMarkerCenter.isHidden = true
+                    }
+                }
+                else
+                {
+                    imageViewMarkerCenter.isHidden = true
+                }
+            }
+            //else if self.destinationLocationDetail != nil {
             //
             //                    if let location = mapViewHelper.mapView?.projection.coordinate(for: viewMapOuter.center) {
             //                        self.destinationLocationDetail?.coordinate = location
@@ -1329,7 +1413,7 @@ extension HomeViewController : GMSMapViewDelegate {
         }else{
             self.bottomRaiseView.alpha =  1
             self.topRideDetailView.alpha = 1
-            self.roundTripViewBottomConstriant.constant = 20
+            self.roundTripViewBottomConstriant.constant = 10
             offerCancelButton.alpha = 1
             driverFindingLabel.alpha = 1
         }
@@ -1366,19 +1450,20 @@ extension HomeViewController  {
                 //self.offers = requestModel?.requests ?? []
                 
                 let rs = requestModel?.requests ?? []
-                
+                print("Testing:requestModelCount",rs.count)
                 self.offers.forEach { r in
                     
                     if rs.contains(where: { r1 in
-                        r.requestID == r1.requestID
+                        //r.requestID == r1.requestID
+                        r.id == r1.id
                     }) {
-                        print("older exist")
+                        print("Testing:older exist")
                     } else{
-                        print("older removed")
+                        print("Testing:older removed")
                         self.offers.removeAll { r1 in
                             r.requestID == r1.requestID
                         }
-                        self.offerTableView.reloadData()
+                         self.offerTableView.reloadData()
                     }
                             
                 }
@@ -1386,11 +1471,12 @@ extension HomeViewController  {
                 rs.forEach { r in
                     
                     if self.offers.contains(where: { r1 in
-                        r.requestID == r1.requestID
+                        //r.requestID == r1.requestID
+                        r.id == r1.id
                     }) {
-                        print("new exist older")
+                        print("Testing:new exist older")
                     }else{
-                        print("new added older")
+                        print("Testing:new added older")
                         self.offers.append(r)
                         self.offerTableView.reloadData()
                     }
@@ -1444,7 +1530,7 @@ extension HomeViewController  {
                         self.stop2AddressLabel?.text = ""
                         self.stop3AddressLabel?.text = ""
                         if stop1.status == "DROPPED"{
-                            self.stop1AddressLabel.textColor = .systemGray
+                            //self.stop1AddressLabel.textColor = .systemGray
                         }
                     }
                     else if stops.count == 2
@@ -1523,6 +1609,7 @@ extension HomeViewController  {
                             
                             self.offerView.alpha = 0
                             self.vehicleCollectionView.alpha = 0
+                            self.vehicleCollectionView.isHidden = true
                             self.localSelectionParentView.alpha = 0
                             
                             
@@ -1922,14 +2009,18 @@ extension HomeViewController : PostViewProtocol {
     func onError(api: Base, message: String, statusCode code: Int) {
         KRProgressHUD.dismiss()
         DispatchQueue.main.async {
+            print("Testing:onError:API:",api)
+            print("Testing:onError:statusCode:",code)
+            print("Testing:onError:message:",message)
             self.loader.isHidden = true
             if api == .locationServicePostDelete {
                 UIApplication.shared.keyWindow?.make(toast: message)
             } else {
                 if code != StatusCode.notreachable.rawValue && api != .checkRequest && api != .cancelRequest{
-                    print(api)
+                    print("Testing:onError:inside:")
                     showAlert(message: message, okHandler: nil, fromView: self)
                     self.clearAllView()
+                    self.sideMenuBtn.setImage(#imageLiteral(resourceName: "menu_icon"), for: .normal)
                 }
                 
                 
@@ -2041,9 +2132,12 @@ extension HomeViewController : PostViewProtocol {
         KRProgressHUD.dismiss()
         if let d = data {
            // if isEstimationCall {
+            print("Testing: Estimate")
             self.currentEstimation = data
                 isEstimationCall = false
-                self.tripDistanceLabel.text = "\(d.distance ?? 0)m"
+            let diss = Formatter.shared.limit(string: "\(d.distance ?? 0)", maximumDecimal: 1)
+                //self.tripDistanceLabel.text = "\(d.distance ?? 0)"
+                self.tripDistanceLabel.text = diss
                 self.tripTimeLAbel.text = "\(d.time ?? "-")"
                 //self.priceTextfield.text = "\(d.base_price ?? 0)"
                 // self.tripCurrentFareLabel.text = "\(d.base_price ?? 0)"
@@ -2061,6 +2155,10 @@ extension HomeViewController : PostViewProtocol {
 
             //}
 
+        }
+        else
+        {
+            print("Testing:NoDAta in estimate")
         }
 //        if self.updatingDestination || self.isRoundTrip {
 //            if data != nil {
@@ -2202,6 +2300,7 @@ extension HomeViewController: MultiLocationVCDelegate{
 extension HomeViewController : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.offers.count
+        //return 4
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -2292,9 +2391,14 @@ extension HomeViewController : UITextFieldDelegate {
         if !textField.text!.isEmpty {
             let am = Double(textField.text!) ?? 0
             if firtstimatedFare > 0 {
-                if am < firtstimatedFare {
-                    self.priceTextfield.text = "\(firtstimatedFare)"
-                    self.showSimpleAlert(title: "Update your offer", message: "Minimum offer is c$ \(firtstimatedFare)")
+                if am < firtstimatedFare - 2 {
+                    
+                    let p = Formatter.shared.limit(string: "\(firtstimatedFare)", maximumDecimal: 2)
+                    self.priceTextfield.text = "\(p)"
+                    self.curOfferAmountByUser = firtstimatedFare
+                    
+                    let pu = Formatter.shared.limit(string: "\(firtstimatedFare - 2 )", maximumDecimal: 2)
+                    self.showSimpleAlert(title: "Update your offer", message: "Minimum offer is c$ \(pu)")
                     return
                 }
             }

@@ -16,7 +16,7 @@ final class LinkSecureCookieStore: LinkCookieStore {
 
     private init() {}
 
-    func write(key: LinkCookieKey, value: String, allowSync: Bool) {
+    func write(key: String, value: String, allowSync: Bool) {
         guard let data = value.data(using: .utf8) else {
             return
         }
@@ -41,7 +41,7 @@ final class LinkSecureCookieStore: LinkCookieStore {
         }
     }
 
-    func read(key: LinkCookieKey) -> String? {
+    func read(key: String) -> String? {
         let query = queryForKey(key, additionalParams: [
             kSecReturnData as String: kCFBooleanTrue as Any,
             kSecMatchLimit as String: kSecMatchLimitOne,
@@ -69,7 +69,7 @@ final class LinkSecureCookieStore: LinkCookieStore {
         return String(data: data, encoding: .utf8)
     }
 
-    func delete(key: LinkCookieKey) {
+    func delete(key: String) {
         let query = queryForKey(key, additionalParams: [
             kSecAttrSynchronizable as String: kSecAttrSynchronizableAny
         ])
@@ -82,12 +82,12 @@ final class LinkSecureCookieStore: LinkCookieStore {
     }
 
     private func queryForKey(
-        _ key: LinkCookieKey,
+        _ key: String,
         additionalParams: [String: Any]? = nil
     ) -> [String: Any] {
         var query = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: key.rawValue
+            kSecAttrAccount as String: key
         ] as [String : Any]
 
         additionalParams?.forEach({ (key, value) in

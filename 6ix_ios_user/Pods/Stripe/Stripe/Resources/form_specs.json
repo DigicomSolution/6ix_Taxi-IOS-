@@ -4,99 +4,76 @@
     "async": false,
     "fields": [
         {
-            "type": "afterpay_header"
+            "type": "afterpay_header",
+            "api_path": null
         },
         {
-            "type": "name"
+            "type": "name",
+            "api_path": {
+                "v1": "billing_details[name]"
+            }
         },
         {
-            "type": "email"
+            "type": "email",
+            "api_path": {
+                "v1": "billing_details[email]"
+            }
         },
         {
             "type": "billing_address",
-            "allowed_country_codes": null
-        }
-    ],
-    "next_action_spec": {
-        "confirm_response_status_specs": {
-            "requires_action": {
-                "type": "redirect_to_url"
-            }
-        },
-        "post_confirm_handling_pi_status_specs": {
-            "succeeded": {
-                "type": "finished"
+            "api_path": {
+                "v1": "billing_details[address]"
             },
-            "requires_action": {
-                "type": "canceled"
-            }
+            "allowed_country_codes": null,
+            "display_fields": null
         }
-    }
+    ]
 },
 {
     "type": "affirm",
     "async": false,
     "fields": [
         {
-            "type": "affirm_header"
+            "type": "affirm_header",
+            "api_path": null
         }
-    ],
-    "next_action_spec": {
-        "confirm_response_status_specs": {
-            "requires_action": {
-                "type": "redirect_to_url"
-            }
-        },
-        "post_confirm_handling_pi_status_specs": {
-            "succeeded": {
-                "type": "finished"
-            },
-            "requires_action": {
-                "type": "canceled"
-            }
-        }
-    }
+    ]
 },
 {
     "type": "klarna",
     "async": false,
     "fields": [
         {
-            "type": "klarna_header"
+            "type": "klarna_header",
+            "api_path": null
         },
         {
-            "type": "email"
+            "type": "email",
+            "api_path": {
+                "v1": "billing_details[email]"
+            }
         },
         {
-            "type": "klarna_country"
-        }
-    ],
-    "next_action_spec": {
-        "confirm_response_status_specs": {
-            "requires_action": {
-                "type": "redirect_to_url"
-            }
-        },
-        "post_confirm_handling_pi_status_specs": {
-            "succeeded": {
-                "type": "finished"
-            },
-            "requires_action": {
-                "type": "canceled"
+            "type": "klarna_country",
+            "api_path": {
+                "v1": "billing_details[address][country]"
             }
         }
-    }
+    ]
 },
 {
     "type": "ideal",
     "async": false,
     "fields": [
         {
-            "type": "name"
+            "type": "name",
+            "api_path": {
+                "v1": "billing_details[name]"
+            }
         },
         {
             "type": "selector",
-            "translation_id": "upe.labels.ideal.bank",
+            "label_id": "upe.labels.ideal.bank",
             "items": [
                 {"display_text":"ABN Amro", "api_value":"abn_amro"},
                 {"display_text":"ASN Bank", "api_value":"asn_bank"},
@@ -119,22 +96,7 @@
                 "v1": "ideal[bank]"
             }
         }
-    ],
-    "next_action_spec": {
-        "confirm_response_status_specs": {
-            "requires_action": {
-                "type": "redirect_to_url"
-            }
-        },
-        "post_confirm_handling_pi_status_specs": {
-            "succeeded": {
-                "type": "finished"
-            },
-            "requires_action": {
-                "type": "canceled"
-            }
-        }
-    }
+    ]
 },
 {
     "type": "sofort",
@@ -154,92 +116,69 @@
                 "v1": "sofort[country]"
             }
         }
-    ],
-    "next_action_spec": {
-        "confirm_response_status_specs": {
-            "requires_action": {
-                "type": "redirect_to_url"
-            }
-        },
-        "post_confirm_handling_pi_status_specs": {
-            "succeeded": {
-                "type": "finished"
-            },
-            "processing": {
-                "type": "finished"
-            },
-            "requires_action": {
-                "type": "canceled"
-            }
-        }
-    }
+    ]
 },
 {
     "type": "bancontact",
     "async": false,
     "fields": [
         {
-            "type": "name"
-        }
-    ],
-    "next_action_spec": {
-        "confirm_response_status_specs": {
-            "requires_action": {
-                "type": "redirect_to_url"
-            }
-        },
-        "post_confirm_handling_pi_status_specs": {
-            "succeeded": {
-                "type": "finished"
-            },
-            "requires_action": {
-                "type": "canceled"
+            "type": "name",
+            "api_path": {
+                "v1": "billing_details[name]"
             }
         }
-    }
+    ]
 },
 {
     "type": "sepa_debit",
     "async": true,
     "fields": [
         {
-            "type": "name"
+            "type": "name",
+            "api_path": {
+                "v1": "billing_details[name]"
+            }
         },
         {
-            "type": "email"
+            "type": "email",
+            "api_path": {
+                "v1": "billing_details[email]"
+            }
         },
         {
-            "type": "iban"
+            "type": "iban",
+            "api_path": {
+                "v1": "sepa_debit[iban]"
+            }
         },
         {
             "type": "billing_address",
-            "allowed_country_codes": null
+            "api_path": {
+                "v1": "billing_details[address]"
+            },
+            "allowed_country_codes": null,
+            "display_fields": null
         },
         {
-            "type": "sepa_mandate"
+            "type": "sepa_mandate",
+            "api_path": null
         }
-    ],
-    "next_action_spec": {
-        "confirm_response_status_specs": {
-            "processing": {
-                "type": "finished"
-            },
-            "succeeded": {
-                "type": "finished"
-            }
-        }
-    }
+    ]
 },
 {
     "type": "eps",
     "async": false,
     "fields": [
         {
-            "type": "name"
+            "type": "name",
+            "api_path": {
+                "v1": "billing_details[name]"
+            }
         },
         {
             "type": "selector",
-            "translation_id": "upe.labels.eps.bank",
+            "label_id": "upe.labels.eps.bank",
             "items": [
                 {"display_text":"Ärzte- und Apothekerbank", "api_value":"arzte_und_apotheker_bank"},
                 {"display_text":"Austrian Anadi Bank AG", "api_value":"austrian_anadi_bank_ag"},
@@ -277,60 +216,39 @@
                 "v1": "eps[bank]"
             }
         }
-    ],
-    "next_action_spec": {
-        "confirm_response_status_specs": {
-            "requires_action": {
-                "type": "redirect_to_url"
-            }
-        },
-        "post_confirm_handling_pi_status_specs": {
-            "succeeded": {
-                "type": "finished"
-            },
-            "requires_action": {
-                "type": "canceled"
-            }
-        }
-    }
+    ]
 },
 {
     "type": "giropay",
     "async": false,
     "fields": [
         {
-            "type": "name"
-        }
-    ],
-    "next_action_spec": {
-        "confirm_response_status_specs": {
-            "requires_action": {
-                "type": "redirect_to_url"
-            }
-        },
-        "post_confirm_handling_pi_status_specs": {
-            "succeeded": {
-                "type": "finished"
-            },
-            "requires_action": {
-                "type": "canceled"
+            "type": "name",
+            "api_path": {
+                "v1": "billing_details[name]"
             }
         }
-    }
+    ]
 },
 {
     "type": "p24",
     "async": false,
     "fields": [
         {
-            "type": "name"
+            "type": "name",
+            "api_path": {
+                "v1": "billing_details[name]"
+            }
         },
         {
-            "type": "email"
+            "type": "email",
+            "api_path": {
+                "v1": "billing_details[email]"
+            }
         },
         {
             "type": "selector",
-            "translation_id": "upe.labels.p24.bank",
+            "label_id": "upe.labels.p24.bank",
             "items": [
                 {"display_text":"Alior Bank", "api_value":"alior_bank"},
                 {"display_text":"Bank Millenium", "api_value":"bank_millennium"},
@@ -364,43 +282,13 @@
                 "v1": "p24[bank]"
             }
         }
-    ],
-    "next_action_spec": {
-        "confirm_response_status_specs": {
-            "requires_action": {
-                "type": "redirect_to_url"
-            }
-        },
-        "post_confirm_handling_pi_status_specs": {
-            "succeeded": {
-                "type": "finished"
-            },
-            "requires_action": {
-                "type": "canceled"
-            }
-        }
-    }
+    ]
 },
 {
     "type": "paypal",
     "async": false,
     "fields": [
-    ],
-    "next_action_spec": {
-        "confirm_response_status_specs": {
-            "requires_action": {
-                "type": "redirect_to_url"
-            }
-        },
-        "post_confirm_handling_pi_status_specs": {
-            "succeeded": {
-                "type": "finished"
-            },
-            "requires_action": {
-                "type": "canceled"
-            }
-        }
-    }
+    ]
 },
 {
     "type": "au_becs_debit",
@@ -408,37 +296,33 @@
     "fields": [
         {
             "type": "name",
-            "translation_id": "upe.labels.name.onAccount"
+            "api_path": {
+                "v1": "billing_details[name]"
+            },
+            "label_id": "upe.labels.name.onAccount"
         },
         {
-            "type": "email"
+            "type": "email",
+            "api_path": {
+                "v1": "billing_details[email]"
+            }
         },
         {
-            "type": "au_becs_bsb_number"
+            "type": "au_becs_bsb_number",
+            "api_path": {
+                "v1": "au_becs_debit[bsb_number]"
+            }
         },
         {
-            "type": "au_becs_account_number"
+            "type": "au_becs_account_number",
+            "api_path": {
+                "v1": "au_becs_debit[account_number]"
+            }
         },
         {
             "type": "au_becs_mandate",
             "api_path": null
         }
-    ],
-    "next_action_spec": {
-        "confirm_response_status_specs": {
-            "succeeded": {
-                "type": "finished"
-            },
-            "processing": {
-                "type": "finished"
-            }
-        }
-    }
-},
-{
-    "type": "card",
-    "async": false,
-    "fields": [
     ]
 }
 ]

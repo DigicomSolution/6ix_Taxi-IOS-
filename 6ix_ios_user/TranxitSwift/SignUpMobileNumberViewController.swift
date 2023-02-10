@@ -82,6 +82,8 @@ class SignUpMobileNumberViewController: UIViewController,FPNTextFieldDelegate{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let viewControllerName = String.init(describing: self.classForCoder)
+        print("VCName***: \(viewControllerName)")
         
         textFieldMobileNumber.delegate = self
 //        textFieldMobileNumber.setFlag(countryCode: userCurrentLocation?.countryCode ?? .PK)

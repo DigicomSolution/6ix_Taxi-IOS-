@@ -40,8 +40,8 @@ extension MKPlacemark {
     /// Converts this placemark into an address that can be interpreted by PaymentSheet
     var asAddress: PaymentSheet.Address {
         return PaymentSheet.Address(city: locality,
-                                    country: isoCountryCode,
-                                    line1: name,
+                                    country: country,
+                                    line1: ((subThoroughfare ?? "" ) + " " + (thoroughfare ?? "")).trimmingCharacters(in: .whitespacesAndNewlines),
                                     line2: nil, // Can't get line 2 from auto complete
                                     postalCode: postalCode,
                                     state: administrativeArea)

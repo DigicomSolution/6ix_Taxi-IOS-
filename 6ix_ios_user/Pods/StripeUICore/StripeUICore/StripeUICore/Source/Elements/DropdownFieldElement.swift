@@ -20,41 +20,17 @@ import UIKit
     public typealias DidUpdateSelectedIndex = (Int) -> Void
     
     public struct DropdownItem {
-        public init(pickerDisplayName: String, labelDisplayName: String, accessibilityLabel: String, rawData: String) {
-            self.pickerDisplayName = pickerDisplayName
-            self.labelDisplayName = labelDisplayName
-            self.accessibilityLabel = accessibilityLabel
-            self.rawData = rawData
-        }
-        
         /// Item label displayed in the picker
         public let pickerDisplayName: String
         
         /// Item label displayed in inline label when item has been selected
-        public let labelDisplayName: String
+        let labelDisplayName: String
         
         /// Accessibility label to use when this is in the inline label
-        public let accessibilityLabel: String
-        
-        /// The underlying data for this dropdown item.
-        /// e.g., A country dropdown item might display "United States" but its `rawData` is "US".
-        /// This is ignored by `DropdownFieldElement`, and is intended as a convenience to be used in conjunction with `selectedItem`
-        public let rawData: String
+        let accessibilityLabel: String
     }
 
-    // MARK: - Public properties
     weak public var delegate: ElementDelegate?
-    public let items: [DropdownItem]
-    public var selectedItem: DropdownItem {
-        return items[selectedIndex]
-    }
-    public var selectedIndex: Int {
-        didSet {
-            updatePickerField()
-        }
-    }
-    public var didUpdate: DidUpdateSelectedIndex?
-
     private(set) lazy var pickerView: UIPickerView = {
         let picker = UIPickerView()
         picker.delegate = self
@@ -66,16 +42,33 @@ import UIKit
             label: label,
             shouldShowChevron: true,
             pickerView: pickerView,
-            delegate: self,
-            theme: theme
+            delegate: self
         )
         return pickerFieldView
     }()
+    public let items: [DropdownItem]
+    let label: String?
 
-    // MARK: - Private properties
-    private let label: String?
-    private let theme: ElementsUITheme
+    public var selectedIndex: Int {
+        didSet {
+            updatePickerField()
+        }
+    }
+
     private var previouslySelectedIndex: Int
+    public var didUpdate: DidUpdateSelectedIndex?
+    
+    convenience public init(
+        items: [String],
+        defaultIndex: Int = 0,
+        label: String?,
+        didUpdate: DidUpdateSelectedIndex? = nil
+    ) {
+        let dropdownItems = items.map {
+            DropdownItem(pickerDisplayName: $0, labelDisplayName: $0, accessibilityLabel: $0)
+        }
+        self.init(items: dropdownItems, defaultIndex: defaultIndex, label: label, didUpdate: didUpdate)
+    }
 
     /**
      - Parameters:
@@ -93,13 +86,11 @@ import UIKit
         items: [DropdownItem],
         defaultIndex: Int = 0,
         label: String?,
-        theme: ElementsUITheme = .default,
         didUpdate: DidUpdateSelectedIndex? = nil
     ) {
         assert(!items.isEmpty, "`items` must contain at least one item")
 
         self.label = label
-        self.theme = theme
         self.items = items
         self.didUpdate = didUpdate
 
@@ -121,6 +112,7 @@ import UIKit
         selectedIndex = index
         didFinish(pickerFieldView)
     }
+
 }
 
 private extension DropdownFieldElement {
@@ -144,7 +136,7 @@ extension DropdownFieldElement: Element {
     }
     
     public func beginEditing() -> Bool {
-        return pickerFieldView.becomeFirstResponder()
+        return pickerFieldView.textField.becomeFirstResponder()
     }
 }
 
